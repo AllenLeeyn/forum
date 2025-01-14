@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting Forum on localhost 8080...")
+	fmt.Println("Starting Forum on http://localhost:8080/...")
 	utils.InitializeHtml()
 	http.HandleFunc("/", utils.HomePage)
 	http.HandleFunc("/login", utils.LoginPage)

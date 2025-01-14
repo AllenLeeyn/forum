@@ -1,5 +1,7 @@
 package utils
 
+//	Place for helper/util functions
+
 /* func PageHandler(w http.ResponseWriter, r *http.Request) {
 	switch strings.ToLower(r.URL.Path) {
 

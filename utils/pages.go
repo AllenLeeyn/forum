@@ -8,8 +8,11 @@ import (
 	"text/template"
 )
 
+//	Place for functions that executes different pages
+
 var tmpl *template.Template
 
+// Initializes all html files in templates folder
 func InitializeHtml() {
 	var err error
 	tmpl, err = template.ParseGlob("templates/*.html")
@@ -18,6 +21,7 @@ func InitializeHtml() {
 	}
 }
 
+// Home page
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		fmt.Println("Now we're on the home page")
@@ -30,6 +34,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the login page")
 	err := tmpl.ExecuteTemplate(os.Stdout, "login.html", nil)
@@ -38,6 +43,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the register page")
 	err := tmpl.ExecuteTemplate(os.Stdout, "register.html", nil)
@@ -46,6 +52,7 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Page for viewing posts
 func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the view posts page")
 	err := tmpl.ExecuteTemplate(os.Stdout, "view-post.html", nil)
@@ -54,6 +61,7 @@ func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Page for making posts
 func PostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the post page")
 	err := tmpl.ExecuteTemplate(os.Stdout, "post.html", nil)
