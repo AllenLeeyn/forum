@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"text/template"
 )
 
@@ -25,19 +24,19 @@ func InitializeHtml() {
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		fmt.Println("Now we're on the home page")
-		err := tmpl.ExecuteTemplate(os.Stdout, "index.html", nil)
+		err := tmpl.ExecuteTemplate(w, "index.html", nil)
 		if err != nil {
 			log.Fatalf("Error executing template: %v", err)
 		}
 	} else {
-		fmt.Println("Should throw error here")
+		fmt.Println("Error 404")
 	}
 }
 
 // Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the login page")
-	err := tmpl.ExecuteTemplate(os.Stdout, "login.html", nil)
+	err := tmpl.ExecuteTemplate(w, "login.html", nil)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
 	}
@@ -46,26 +45,26 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 // Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the register page")
-	err := tmpl.ExecuteTemplate(os.Stdout, "register.html", nil)
+	err := tmpl.ExecuteTemplate(w, "register.html", nil)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
 	}
 }
 
 // Page for viewing posts
-func ViewPostPage(w http.ResponseWriter, r *http.Request) {
+/* func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the view posts page")
-	err := tmpl.ExecuteTemplate(os.Stdout, "view-post.html", nil)
+	err := tmpl.ExecuteTemplate(w, "view-post.html", nil)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
 	}
-}
+} */
 
 // Page for making posts
-func PostPage(w http.ResponseWriter, r *http.Request) {
+/* func PostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the post page")
-	err := tmpl.ExecuteTemplate(os.Stdout, "post.html", nil)
+	err := tmpl.ExecuteTemplate(w, "post.html", nil)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
 	}
-}
+} */
