@@ -29,6 +29,16 @@ feedback:
 
 ```mermaid
 erDiagram
+    category{
+        int         categoryId PK
+        string      name
+    }
+
+    post_category{
+        int         postId FK
+        int         categoryId FK
+    }
+
     user{
         int         userId PK
         int         typeId FK
@@ -42,28 +52,36 @@ erDiagram
     post{
         int         postId PK
         int         userId FK
+        int         commentCount
+        int         likeCount
+        int         dislikeCount
+        string      title
+        text        content
+        dateTime    createdAt
+    }
+
+    comment{
+        int         commentId PK
+        int         userId FK
+        int         postId FK
         int         parentId(nullable) FK
         string      title
         text        content
         dateTime    createdAt
     }
 
-    feedback{
-        int         feedbackId PK
-        int         userId FK
-        int         postId FK
+    postFeedback{
+        int         userId PK
+        int         postId PK
         int         rate
         dateTime    createdAt
     }
- 
-    category{
-        int         categoryId PK
-        string      name
-    }
 
-    post_category{
-        int         postId FK
-        int         categoryId FK
+    commentFeedback{
+        int         userId PK
+        int         commentId PK
+        int         rate
+        dateTime    createdAt
     }
 
     accountType{
@@ -86,12 +104,16 @@ erDiagram
 
     session }o--|| user : "initiates"
     accountType ||--o{ user : "assigned"
-    user ||--o{ post : "creates or comments"
-    user ||--o{ feedback : "provides"
     category ||--o{ post_category : "under"
     post_category }|--|| post : "linked to"
-    post |o--o{ post : "receives"
-    post ||--o{ feedback : "receives"
+    user ||--o{ post : "creates"
+    post ||--o{ comment : "receives"
+    post ||--o{ postFeedback : "receives"
+    user ||--o{ comment : "makes"
+    comment |o--o{ comment : "receives"
+    comment ||--o{ commentFeedback : "receives"
+    user ||--o{ postFeedback : "provides"
+    user ||--o{ commentFeedback : "provides"
 ```
 
 ### pages
@@ -121,6 +143,7 @@ erDiagram
     - restriction for multiple feedback for same post by one user
     - sorting
 - backend logic
+    - decide structs for data and user? for page data
     - handler for home page (filtering)
     - handler for login (sessioId with UUID)
     - handler for registration (bycrpt)
@@ -138,4 +161,6 @@ erDiagram
 - deleting user, post, comment
 - logging?
 - share
-
+- image
+- limit number of replies to replies
+- profile page for change of user details/settings
