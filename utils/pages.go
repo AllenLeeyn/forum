@@ -24,10 +24,7 @@ func InitializeHtml() {
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		fmt.Println("Now we're on the home page")
-		err := tmpl.ExecuteTemplate(w, "index.html", nil)
-		if err != nil {
-			log.Fatalf("Error executing template: %v", err)
-		}
+		CustomExecuteTemplate(w, "index.html", nil)
 	} else {
 		fmt.Println("Error 404")
 	}
@@ -36,19 +33,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 // Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the login page")
-	err := tmpl.ExecuteTemplate(w, "login.html", nil)
-	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
-	}
+	CustomExecuteTemplate(w, "login.html", nil)
 }
 
 // Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the register page")
-	err := tmpl.ExecuteTemplate(w, "register.html", nil)
-	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
-	}
+	CustomExecuteTemplate(w, "register.html", nil)
 }
 
 // Page for viewing posts
