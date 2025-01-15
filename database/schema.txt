@@ -1,87 +1,87 @@
-CREATE TABLE accountType (
-    typeId INT PRIMARY KEY,
+CREATE TABLE account_type (
+    id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    canCreatePost BOOLEAN NOT NULL,
-    canComment BOOLEAN NOT NULL,
-    canFeedback BOOLEAN NOT NULL,
-    canModerate BOOLEAN NOT NULL,
-    canBanUser BOOLEAN NOT NULL
+    can_create_post BOOLEAN NOT NULL,
+    can_comment BOOLEAN NOT NULL,
+    can_feedback BOOLEAN NOT NULL,
+    can_moderate BOOLEAN NOT NULL,
+    can_ban_user BOOLEAN NOT NULL
 );
 
-CREATE TABLE user (
-    userId INT PRIMARY KEY,
-    typeId INT NOT NULL,
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    type_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    passwordHash VARCHAR(255) NOT NULL,
-    registerDate DATE NOT NULL,
-    lastLogin DATETIME NOT NULL,
-    FOREIGN KEY (typeId) REFERENCES accountType(typeId)
+    email VARCHAR(255) NOT NULL UNIQUE,
+    pw_hash VARCHAR(255) NOT NULL,
+    reg_date DATE NOT NULL,
+    last_login DATETIME NOT NULL,
+    FOREIGN KEY (type_id) REFERENCES account_type(id)
 );
 
-CREATE TABLE session (
-    sessionId UUID PRIMARY KEY,
-    userId INT NOT NULL,
-    isActive BOOLEAN NOT NULL,
-    startedAt DATETIME NOT NULL,
-    expiredAt DATETIME NOT NULL,
-    lastAccessed DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES user(userId)
+CREATE TABLE sessions (
+    id UUID PRIMARY KEY,
+    user_id INT NOT NULL,
+    is_active BOOLEAN NOT NULL,
+    start_time DATETIME NOT NULL,
+    expire_time DATETIME NOT NULL,
+    last_access DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE category (
-    categoryId INT PRIMARY KEY,
+CREATE TABLE categories (
+    id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE post (
-    postId INT PRIMARY KEY,
-    userId INT NOT NULL,
-    commentCount INT NOT NULL,
-    likeCount INT NOT NULL,
-    dislikeCount INT NOT NULL,
+CREATE TABLE posts (
+    id INT PRIMARY KEY,
+    user_id INT NOT NULL,
+    comment_count INT NOT NULL,
+    like_count INT NOT NULL,
+    dislike_count INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    createdAt DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES user(userId)
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE post_category (
-    postId INT NOT NULL,
-    categoryId INT NOT NULL,
-    PRIMARY KEY (postId, categoryId),
-    FOREIGN KEY (postId) REFERENCES post(postId),
-    FOREIGN KEY (categoryId) REFERENCES category(categoryId)
+CREATE TABLE post_categories (
+    post_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (post_id, category_id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
-CREATE TABLE comment (
-    commentId INT PRIMARY KEY,
-    userId INT NOT NULL,
-    postId INT NOT NULL,
-    parentId INT NULL,
+CREATE TABLE comments (
+    id INT PRIMARY KEY,
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    parent_id INT NULL,
     content TEXT NOT NULL,
-    createdAt DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES user(userId),
-    FOREIGN KEY (postId) REFERENCES post(postId),
-    FOREIGN KEY (parentId) REFERENCES comment(commentId)
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (parent_id) REFERENCES comments(id)
 );
 
-CREATE TABLE postFeedback (
-    userId INT NOT NULL,
-    postId INT NOT NULL,
-    rate INT NOT NULL,
-    createdAt DATETIME NOT NULL,
-    PRIMARY KEY (userId, postId),
-    FOREIGN KEY (userId) REFERENCES user(userId),
-    FOREIGN KEY (postId) REFERENCES post(postId)
+CREATE TABLE post_feedback (
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    rating INT NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
 );
 
-CREATE TABLE commentFeedback (
-    userId INT NOT NULL,
-    commentId INT NOT NULL,
-    rate INT NOT NULL,
-    createdAt DATETIME NOT NULL,
-    PRIMARY KEY (userId, commentId),
-    FOREIGN KEY (userId) REFERENCES user(userId),
-    FOREIGN KEY (commentId) REFERENCES comment(commentId)
+CREATE TABLE comment_feedback (
+    user_id INT NOT NULL,
+    comment_id INT NOT NULL,
+    rating INT NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (user_id, comment_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(id)
 );
