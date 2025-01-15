@@ -32,14 +32,24 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 // Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Now we're on the login page")
-	CustomExecuteTemplate(w, "login.html", nil)
+	if r.Method == http.MethodGet {
+		CustomExecuteTemplate(w, "login.html", nil)
+	} else if r.Method == http.MethodPost {
+		//	Trying to log in, check if credentials are valid and check if they already exist in database
+	} else {
+		//	Error wrong method
+	}
 }
 
 // Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Now we're on the register page")
-	CustomExecuteTemplate(w, "register.html", nil)
+	if r.Method == http.MethodGet {
+		CustomExecuteTemplate(w, "register.html", nil)
+	} else if r.Method == http.MethodPost {
+		//	Trying to register, check if credentials are valid and check if they already exist in database
+	} else {
+		//	Error wrong method
+	}
 }
 
 // Page for viewing posts
