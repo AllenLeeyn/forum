@@ -14,7 +14,7 @@ var tmpl *template.Template
 // Initializes all html files in templates folder
 func InitializeHtml() {
 	var err error
-	tmpl, err = template.ParseGlob("templates/*.html")
+	tmpl, err = template.ParseGlob("template/*.html")
 	if err != nil {
 		log.Fatalf("Error parsing templates: %v", err)
 	}

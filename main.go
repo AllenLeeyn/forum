@@ -9,6 +9,8 @@ import (
 func main() {
 	fmt.Println("Starting Forum on http://localhost:8080/...")
 	utils.InitializeHtml()
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", fs)
 	http.HandleFunc("/", utils.HomePage)
 	http.HandleFunc("/login", utils.LoginPage)
 	http.HandleFunc("/register", utils.RegisterPage)

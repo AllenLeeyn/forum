@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  {{template "head"}} {{template "header"}}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/login.css"/>
+    <link rel="stylesheet" href="/static/header.css"/>
+    <title>Login</title>
+  </head>
+
+  {{template "header"}}
   <body>
-    <h2>Placeholder homepage copied from login html</h2>
+
     <div class="all-wrap">
-      <form action="/whatever we are going to name it" method="post">
+      <form action="/login" method="post" id="form">
         <h2>Login Here</h2>
         <div class="all-input">
           <label for="name">Username</label>
           <input
             type="text"
             name="name"
-            id="name"
+            id="name"ss
             placeholder="name"
             required
           />
@@ -28,7 +36,7 @@
           />
         </div>
 
-          <button type="submit">Log In</button>
+          <button id="submit" type="submit">Log In</button>
           <p class="register">
             Don't have an account?
             <a href="/register"
