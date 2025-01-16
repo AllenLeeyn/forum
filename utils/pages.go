@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 )
 
 //	Place for functions that executes different pages
@@ -33,6 +34,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 // Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
+		//	Going to the login page
 		CustomExecuteTemplate(w, "login.html", nil)
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
@@ -42,14 +44,14 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 			username: r.FormValue("name"),
 			password: r.FormValue("password"),
 		}
-		nameIsValid, _ := CheckValidity(loginData.username, "username")
-		passIsValid, _ := CheckValidity(loginData.password, "password")
+		nameIsValid, nameInvalidReason := CheckValidity(loginData.username, "username")
+		passIsValid, passInvalidReason := CheckValidity(loginData.password, "password")
 		if nameIsValid && passIsValid {
 			fmt.Println("Valid user, check if duplicate")
 		} else {
 			//	Placeholder:
-			fmt.Println("Invalid name, or pass.")
-			http.Error(w, "Invalid name, or pass.", http.StatusBadRequest)
+			reason := nameInvalidReason + "\n" + passInvalidReason
+			http.Error(w, reason, http.StatusBadRequest)
 		}
 	} else {
 		//	Error wrong method
@@ -74,15 +76,15 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 			password: r.FormValue("password"),
 			email:    r.FormValue("email"),
 		}
-		nameIsValid, _ := CheckValidity(registerData.username, "username")
-		passIsValid, _ := CheckValidity(registerData.password, "password")
-		emailIsValid, _ := CheckValidity(registerData.email, "email")
+		nameIsValid, nameInvalidReason := CheckValidity(registerData.username, "username")
+		passIsValid, passInvalidReason := CheckValidity(registerData.password, "password")
+		emailIsValid, emailInvalidReason := CheckValidity(registerData.email, "email")
 		if nameIsValid && passIsValid && emailIsValid {
 			fmt.Println("Valid user, check if duplicate")
 		} else {
 			//	Placeholder:
-			fmt.Println("Invalid name, pass, or email.")
-			http.Error(w, "Invalid name, pass, or email.", http.StatusBadRequest)
+			reason := nameInvalidReason + "\n" + passInvalidReason + "\n" + emailInvalidReason
+			http.Error(w, reason, http.StatusBadRequest)
 		}
 	} else {
 		//	Error wrong method
@@ -90,19 +92,37 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 }
 
 // Page for viewing posts
-/* func ViewPostPage(w http.ResponseWriter, r *http.Request) {
+func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the view posts page")
-	err := tmpl.ExecuteTemplate(w, "view-post.html", nil)
-	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
-	}
-} */
+	CustomExecuteTemplate(w, "view-post.html", nil)
+}
 
 // Page for making posts
-/* func PostPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Now we're on the post page")
-	err := tmpl.ExecuteTemplate(w, "post.html", nil)
-	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
+func PostPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		fmt.Println("Now we're on the post page")
+		CustomExecuteTemplate(w, "post.html", nil)
+	} else if r.Method == http.MethodPost {
+		if err := r.ParseForm(); err != nil {
+			//	Error parsing data
+		}
+		postData := Post{
+			Title:   r.FormValue("title"),
+			Content: r.FormValue("content"),
+			//UserID:    However we get the users ID,
+			//UserName: However we get the users Name,
+			CreatedAt: time.Now(),
+		}
+		titleIsValid, titleInvalidReason := CheckValidity(postData.Title, "postTitle")
+		contentIsValid, contentInvalidReason := CheckValidity(postData.Content, "postContent")
+		if titleIsValid && contentIsValid {
+			fmt.Println("Valid user, check if duplicate")
+		} else {
+			//	Placeholder:
+			reason := titleInvalidReason + "\n" + contentInvalidReason
+			http.Error(w, reason, http.StatusBadRequest)
+		}
+	} else {
+		//	Error wrong method
 	}
-} */
+}

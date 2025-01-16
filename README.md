@@ -17,11 +17,15 @@ user:
 
 post:
 - A post must have one and only one author
-- A post with no parent post is treated as a topic post
-- A post with parent is treated a comment post.
-- A post can have multiple comments (children) but only 1 parent.
+- A post must have a title and body
 - A post must have at least one category, but can have multiple categories.
-- A post can have multiple feedback.
+- A post keep tracks the number of comments and likes for easy query to get the information to display on homepage.
+
+comment:
+- A comment must have a postId.
+- A comment can have no or one parentId.
+- A comment without a parentId is a comment at root.
+- A comment with a parentId is a reply to a comment.
 
 feedback:
 - A feedback must have one and only one author.
@@ -65,7 +69,6 @@ erDiagram
         int         userId FK
         int         postId FK
         int         parentId(nullable) FK
-        string      title
         text        content
         dateTime    createdAt
     }
