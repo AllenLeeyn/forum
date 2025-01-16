@@ -27,7 +27,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Now we're on the home page")
 		CustomExecuteTemplate(w, "index.html", nil)
 	} else {
-		fmt.Println("Error 404")
+		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
 	}
 }
 
@@ -48,13 +48,14 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		passIsValid, passInvalidReason := CheckValidity(loginData.password, "password")
 		if nameIsValid && passIsValid {
 			fmt.Println("Valid user, check if duplicate")
+			http.Error(w, "placeholder successful login (check for if user exists in db first)", http.StatusMethodNotAllowed)
 		} else {
 			//	Placeholder:
 			reason := nameInvalidReason + "\n" + passInvalidReason
 			http.Error(w, reason, http.StatusBadRequest)
 		}
 	} else {
-		//	Error wrong method
+		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -81,13 +82,14 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 		emailIsValid, emailInvalidReason := CheckValidity(registerData.email, "email")
 		if nameIsValid && passIsValid && emailIsValid {
 			fmt.Println("Valid user, check if duplicate")
+			http.Error(w, "placeholder successful registration (check for if user exists in db first)", http.StatusMethodNotAllowed)
 		} else {
 			//	Placeholder:
 			reason := nameInvalidReason + "\n" + passInvalidReason + "\n" + emailInvalidReason
 			http.Error(w, reason, http.StatusBadRequest)
 		}
 	} else {
-		//	Error wrong method
+		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -123,6 +125,6 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, reason, http.StatusBadRequest)
 		}
 	} else {
-		//	Error wrong method
+		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
 }

@@ -1,50 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/login.css"/>
-    <link rel="stylesheet" href="/static/header.css"/>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/static/login.css" />
   </head>
-
-  {{template "header"}}
   <body>
-
-    <div class="all-wrap">
-      <form action="/login" method="post" id="form">
-        <h2>Login Here</h2>
-        <div class="all-input">
-          <label for="name">Username</label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder="username"
-            required
-          />
-        </div>
-
-        <div class="all-input">
-          <label for="password">Enter your password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="password"
-            required
-          />
-        </div>
-
-          <button id="submit" type="submit">Log In</button>
-          <p class="register">
-            Don't have an account?
-            <a href="/register"
-              >Register</a
-            >
-          </p>
-        </div>
-      </form>
+    <div class="wrapper">
+      <div class="form-wrapper sign-in">
+        <form action="/login" method="post" id="form">
+          <h2>Login</h2>
+          <div class="input-group">
+            <input type="text" name="username" required />
+            <label for="username">Username</label>
+          </div>
+          <div class="input-group">
+            <input type="password" name="password" required />
+            <label for="password">Password</label>
+          </div>
+          <div class="remember">
+            <label><input type="checkbox" /> Remember me</label>
+          </div>
+          <button type="submit">Login</button>
+          <div class="signUp-link">
+            <p>
+              Don't have an account?
+              <a href="/register">Sign Up</a>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   </body>
+  <script src="/script/registeration.js"></script>
 </html>
