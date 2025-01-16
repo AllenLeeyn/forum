@@ -3,14 +3,25 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// note: fields need to be validated before calling insert functions.
+// The variables in the struct are initialized with default value,
+// meaning they are not null when inserting to db.
+// This means the variables/fields will not be recognise as empty/null by sql.
+
+// dataBase struct comes with a set of functions.
+// This should be easier to reference the database and call its functions.
 type dataBase struct {
-	conn *sql.DB
+	conn       *sql.DB
+	categories []string
 }
 
+// openDB() opens a sql database with the driver and dataSource given.
 func openDB(driver, dataSource string) (*dataBase, error) {
 	db, err := sql.Open(driver, dataSource)
 	if err != nil {
@@ -19,58 +30,43 @@ func openDB(driver, dataSource string) (*dataBase, error) {
 	return &dataBase{conn: db}, nil
 }
 
-func (db *dataBase) selectUserEmails() ([]string, error) {
-	rows, err := db.conn.Query("SELECT email FROM users")
+// check for no results
+func checkErrNoRows(err error) error {
+	if err == sql.ErrNoRows {
+		return nil
+	}
+	return err
+}
+
+// db.selectFieldFromTable() is a generic function to grab a column of data from a table.
+func (db *dataBase) selectFieldFromTable(field, table string) ([]string, error) {
+	rows, err := db.conn.Query("SELECT " + field + " FROM " + table)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var emails []string
+	var values []string
 	for rows.Next() {
-		var email string
-		if err := rows.Scan(&email); err != nil {
+		var value string
+		if err := rows.Scan(&value); err != nil {
 			return nil, err
 		}
-		emails = append(emails, email)
+		values = append(values, value)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, checkErrNoRows(err)
 	}
-	return emails, nil
+	return values, nil
 }
 
-func (db *dataBase) insertNewUser(u *user) error {
-	if (u.typeID < 1 || u.typeID > 3) ||
-		u.name == "" ||
-		u.email == "" ||
-		u.pwHash == "" ||
-		u.regDate.IsZero() ||
-		u.lastLogin.IsZero() {
-		return fmt.Errorf("ERROR: invalid data")
-	}
-	query := `INSERT INTO users (type_id, name, email, pw_hash, reg_date, last_login) 
-		VALUES ( ?, ?, ?, ?, ?, ?)`
-	_, err := db.conn.Exec(query,
-		u.typeID,
-		u.name,
-		u.email,
-		u.pwHash,
-		u.regDate,
-		u.lastLogin)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
+// db.selectUserByEmail(). If no results found, user is not registered/ wrong email.
 func (db *dataBase) selectUserByEmail(email string) (*user, error) {
-	query := `SELECT type_id, name, email, pw_hash, reg_date, last_login 
-		FROM users 
-		WHERE email = ?`
-
+	qry := `SELECT type_id, name, email, pw_hash, reg_date, last_login 
+			FROM users 
+			WHERE email = ?`
 	var u user
-	err := db.conn.QueryRow(query, email).Scan(
+	err := db.conn.QueryRow(qry, email).Scan(
 		&u.typeID,
 		&u.name,
 		&u.email,
@@ -78,17 +74,36 @@ func (db *dataBase) selectUserByEmail(email string) (*user, error) {
 		&u.regDate,
 		&u.lastLogin)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query user by email: %v", err)
+		return nil, checkErrNoRows(err)
 	}
 	return &u, nil
 }
 
-func (db *dataBase) selectActiveSessionByUserID(userID int) (*session, error) {
+// db.inserUser() insert a user into the database
+func (db *dataBase) insertUser(u *user) error {
+	qry := `INSERT INTO users 
+			(type_id, name, email, pw_hash, reg_date, last_login) 
+			VALUES ( ?, ?, ?, ?, ?, ?)`
+	_, err := db.conn.Exec(qry,
+		u.typeID,
+		u.name,
+		u.email,
+		u.pwHash,
+		u.regDate,
+		u.lastLogin)
+	return err
+}
+
+// db.selectActiveSessionBy() id or user_id
+func (db *dataBase) selectActiveSessionBy(field string, id interface{}) (*session, error) {
+	if field != "id" && field != "user_id" {
+		return nil, fmt.Errorf("invalid field")
+	}
 	var s session
-	query := `SELECT id, user_id, is_active, start_time, expire_time, last_access 
-		FROM sessions 
-		WHERE user_id = ? AND is_active = 1`
-	err := db.conn.QueryRow(query, userID).Scan(
+	qry := `SELECT id, user_id, is_active, start_time, expire_time, last_access 
+			FROM sessions 
+			WHERE ` + field + ` = ? AND is_active = 1`
+	err := db.conn.QueryRow(qry, id).Scan(
 		&s.id,
 		&s.userID,
 		&s.isActive,
@@ -96,28 +111,58 @@ func (db *dataBase) selectActiveSessionByUserID(userID int) (*session, error) {
 		&s.expireTime,
 		&s.lastAccess)
 	if err != nil {
-		return nil, err
+		return nil, checkErrNoRows(err)
 	}
-	return &s, err
+	return &s, nil
 }
 
-func (db *dataBase) selectPosts() (*posts, error) {
-	query := `SELECT p.id, p.user_id, u.name AS user_name, 
-			p.comment_count, p.like_count, p.dislike_count, 
-			p.title, p.content,p.created_at 
-		FROM posts p
-		INNER JOIN users u ON p.user_id = u.id`
+// db.insertSession() when user login is successful
+func (db *dataBase) insertSession(s *session) error {
+	qry := `INSERT INTO session
+			(id, user_id, is_active, start_time, expire_time, last_access)
+			VALUES ( ?, ?, ?, ?, ?, ?)`
+	_, err := db.conn.Exec(qry,
+		s.id,
+		s.userID,
+		s.isActive,
+		s.startTime,
+		s.expireTime,
+		s.lastAccess)
+	return err
+}
 
-	rows, err := db.conn.Query(query)
+// db.updateSession() for when session is expired or refreshed
+func (db *dataBase) updateSession(s *session) error {
+	qry := `UPDATE session
+			SET is_active = ?, expire_time = ?, last_access= ?
+			WHERE id = ?`
+	_, err := db.conn.Exec(qry,
+		s.isActive,
+		s.expireTime,
+		s.lastAccess,
+		s.id)
+	return err
+}
+
+func getPostsQuery(filterBy, sortBy string, catID int) string {
+	qry := `SELECT * FROM v_posts`
+	return qry
+}
+
+// filter by categories, created posts and liked posts
+// order by newest/oldest, comment count, like count
+func (db *dataBase) selectPosts(filterBy, sortBy string, catID int) (*posts, error) {
+	qry := getPostsQuery(filterBy, sortBy, catID)
+	rows, err := db.conn.Query(qry)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var posts posts
-
 	for rows.Next() {
 		var p post
+		var catIDs string
 		err := rows.Scan(
 			&p.ID,
 			&p.UserID,
@@ -127,25 +172,45 @@ func (db *dataBase) selectPosts() (*posts, error) {
 			&p.DislikeCount,
 			&p.Title,
 			&p.Content,
-			&p.CreatedAt)
+			&p.CreatedAt,
+			&catIDs)
+		if err != nil {
+			return nil, err
+		}
+		p.categories, err = splitCategoryIDs(catIDs)
 		if err != nil {
 			return nil, err
 		}
 		posts.index = append(posts.index, p)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, checkErrNoRows(err)
 	}
 	return &posts, nil
 }
 
+func splitCategoryIDs(catIDs string) ([]int, error) {
+	if catIDs == "" {
+		return nil, fmt.Errorf("empty string")
+	}
+	var result []int
+	categories := strings.Split(catIDs, ",")
+	for _, idStr := range categories {
+		if id, err := strconv.Atoi(idStr); err == nil {
+			result = append(result, id)
+		} else {
+			return nil, err
+		}
+	}
+	return result, nil
+}
+
+// needs categories
 func (db *dataBase) insertPost(p post) error {
-	query := `
-		INSERT INTO posts (user_id, comment_count, like_count, dislike_count, title, content, created_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`
-	_, err := db.conn.Exec(
-		query,
+	qry := `INSERT INTO posts 
+			(user_id, comment_count, like_count, dislike_count, title, content, created_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?)`
+	_, err := db.conn.Exec(qry,
 		p.UserID,
 		p.CommentCount,
 		p.LikeCount,
@@ -153,17 +218,11 @@ func (db *dataBase) insertPost(p post) error {
 		p.Title,
 		p.Content,
 		p.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (db *dataBase) deleteAllUsers() error {
 	query := "DELETE FROM users"
 	_, err := db.conn.Exec(query)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

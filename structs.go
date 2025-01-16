@@ -30,6 +30,7 @@ type post struct {
 	Title        string
 	Content      string
 	CreatedAt    time.Time
+	categories   []int
 }
 
 type posts struct {

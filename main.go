@@ -16,10 +16,13 @@ func init() {
 	}
 	db.conn.Exec("PRAGMA foreign_keys = ON;")
 	db.deleteAllUsers()
+
+	db.categories, _ = db.selectFieldFromTable("name", "categories")
+	fmt.Println(db.categories)
 }
 
 func main() {
-	err := db.insertNewUser(&user{
+	err := db.insertUser(&user{
 		typeID:    3,
 		name:      "allen",
 		email:     "leeyn.shun@gmail.com",
@@ -30,7 +33,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	err = db.insertNewUser(&user{
+	err = db.insertUser(&user{
 		typeID:    3,
 		name:      "bruceWayne",
 		email:     "bat.man@bat.cave",
@@ -41,8 +44,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(db.selectUserEmails())
-	user, err := db.selectUserByEmail("bat.man@bat.cave")
+	//fmt.Println(db.selectUserEmails())
+	user, _ := db.selectUserByEmail("bat.man@bat.cave")
 	fmt.Println(user)
 	fmt.Println(user.lastLogin)
 }
