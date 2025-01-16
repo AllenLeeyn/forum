@@ -31,11 +31,13 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 // Login page
 func LoginPage(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Now we're on the login page")
 	CustomExecuteTemplate(w, "login.html", nil)
 }
 
 // Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Now we're on the register page")
 	CustomExecuteTemplate(w, "register.html", nil)
 }
 
