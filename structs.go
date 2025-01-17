@@ -3,6 +3,7 @@ package main
 import "time"
 
 type user struct {
+	id        int
 	typeID    int
 	name      string
 	email     string

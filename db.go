@@ -23,11 +23,12 @@ type dataBase struct {
 
 // openDB() opens a sql database with the driver and dataSource given.
 func openDB(driver, dataSource string) (*dataBase, error) {
-	db, err := sql.Open(driver, dataSource)
+	conn, err := sql.Open(driver, dataSource)
 	if err != nil {
 		return nil, err
 	}
-	return &dataBase{conn: db}, nil
+	conn.Exec("PRAGMA foreign_keys = ON;")
+	return &dataBase{conn: conn}, nil
 }
 
 // check for no results
@@ -62,11 +63,12 @@ func (db *dataBase) selectFieldFromTable(field, table string) ([]string, error) 
 
 // db.selectUserByEmail(). If no results found, user is not registered/ wrong email.
 func (db *dataBase) selectUserByEmail(email string) (*user, error) {
-	qry := `SELECT type_id, name, email, pw_hash, reg_date, last_login 
+	qry := `SELECT id, type_id, name, email, pw_hash, reg_date, last_login 
 			FROM users 
 			WHERE email = ?`
 	var u user
 	err := db.conn.QueryRow(qry, email).Scan(
+		&u.id,
 		&u.typeID,
 		&u.name,
 		&u.email,
@@ -90,6 +92,17 @@ func (db *dataBase) insertUser(u *user) error {
 		u.email,
 		u.pwHash,
 		u.regDate,
+		u.lastLogin)
+	return err
+}
+
+func (db *dataBase) updateUser(u *user) error {
+	qry := `UPDATE users
+			name = ?, pw_hash = ?, last_login = ?
+			WHERE id = ?`
+	_, err := db.conn.Exec(qry,
+		u.name,
+		u.pwHash,
 		u.lastLogin)
 	return err
 }
@@ -118,7 +131,7 @@ func (db *dataBase) selectActiveSessionBy(field string, id interface{}) (*sessio
 
 // db.insertSession() when user login is successful
 func (db *dataBase) insertSession(s *session) error {
-	qry := `INSERT INTO session
+	qry := `INSERT INTO sessions
 			(id, user_id, is_active, start_time, expire_time, last_access)
 			VALUES ( ?, ?, ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
@@ -223,6 +236,20 @@ func (db *dataBase) insertPost(p post) error {
 
 func (db *dataBase) deleteAllUsers() error {
 	query := "DELETE FROM users"
+	_, err := db.conn.Exec(query)
+	db.vacuumDB()
+	return err
+}
+
+func (db *dataBase) deleteAllSessions() error {
+	query := "DELETE FROM sessions"
+	_, err := db.conn.Exec(query)
+	db.vacuumDB()
+	return err
+}
+
+func (db *dataBase) vacuumDB() error {
+	query := "VACUUm"
 	_, err := db.conn.Exec(query)
 	return err
 }

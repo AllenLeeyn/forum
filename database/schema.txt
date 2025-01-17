@@ -1,6 +1,6 @@
 CREATE TABLE account_type (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     can_create_post BOOLEAN NOT NULL,
     can_comment BOOLEAN NOT NULL,
     can_feedback BOOLEAN NOT NULL,
@@ -9,11 +9,11 @@ CREATE TABLE account_type (
 );
 
 CREATE TABLE users (
-    id INT PRIMARY KEY,
-    type_id INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    pw_hash VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    pw_hash TEXT NOT NULL,
     reg_date DATE NOT NULL,
     last_login DATETIME NOT NULL,
     FOREIGN KEY (type_id) REFERENCES account_type(id)
@@ -21,7 +21,7 @@ CREATE TABLE users (
 
 CREATE TABLE sessions (
     id UUID PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id INTEGER NOT NULL,
     is_active BOOLEAN NOT NULL,
     start_time DATETIME NOT NULL,
     expire_time DATETIME NOT NULL,
@@ -30,35 +30,35 @@ CREATE TABLE sessions (
 );
 
 CREATE TABLE categories (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
 );
 
 CREATE TABLE posts (
-    id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    comment_count INT NOT NULL,
-    like_count INT NOT NULL,
-    dislike_count INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    comment_count INTEGER NOT NULL,
+    like_count INTEGER NOT NULL,
+    dislike_count INTEGER NOT NULL,
+    title TEXT NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE post_categories (
-    post_id INT NOT NULL,
-    category_id INT NOT NULL,
+    post_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
     PRIMARY KEY (post_id, category_id),
     FOREIGN KEY (post_id) REFERENCES posts(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE comments (
-    id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    post_id INT NOT NULL,
-    parent_id INT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    parent_id INTEGER NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -67,9 +67,9 @@ CREATE TABLE comments (
 );
 
 CREATE TABLE post_feedback (
-    user_id INT NOT NULL,
-    post_id INT NOT NULL,
-    rating INT NOT NULL,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
     PRIMARY KEY (user_id, post_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -77,9 +77,9 @@ CREATE TABLE post_feedback (
 );
 
 CREATE TABLE comment_feedback (
-    user_id INT NOT NULL,
-    comment_id INT NOT NULL,
-    rating INT NOT NULL,
+    user_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
     PRIMARY KEY (user_id, comment_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
