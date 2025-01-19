@@ -31,7 +31,7 @@ func openDB(driver, dataSource string) (*dataBase, error) {
 	return &dataBase{conn: conn}, nil
 }
 
-// check for no results
+// checkErrNoRows() checks if no result from sql query.
 func checkErrNoRows(err error) error {
 	if err == sql.ErrNoRows {
 		return nil
@@ -63,9 +63,7 @@ func (db *dataBase) selectFieldFromTable(field, table string) ([]string, error) 
 
 // db.selectUserByEmail(). If no results found, user is not registered/ wrong email.
 func (db *dataBase) selectUserByEmail(email string) (*user, error) {
-	qry := `SELECT id, type_id, name, email, pw_hash, reg_date, last_login 
-			FROM users 
-			WHERE email = ?`
+	qry := `SELECT * FROM users WHERE email = ?`
 	var u user
 	err := db.conn.QueryRow(qry, email).Scan(
 		&u.id,
@@ -96,14 +94,16 @@ func (db *dataBase) insertUser(u *user) error {
 	return err
 }
 
+// db.updateUser() info like name, pwHash and lastLogin
 func (db *dataBase) updateUser(u *user) error {
 	qry := `UPDATE users
-			name = ?, pw_hash = ?, last_login = ?
+			SET name = ?, pw_hash = ?, last_login = ?
 			WHERE id = ?`
 	_, err := db.conn.Exec(qry,
 		u.name,
 		u.pwHash,
-		u.lastLogin)
+		u.lastLogin,
+		u.id)
 	return err
 }
 
@@ -113,9 +113,7 @@ func (db *dataBase) selectActiveSessionBy(field string, id interface{}) (*sessio
 		return nil, fmt.Errorf("invalid field")
 	}
 	var s session
-	qry := `SELECT id, user_id, is_active, start_time, expire_time, last_access 
-			FROM sessions 
-			WHERE ` + field + ` = ? AND is_active = 1`
+	qry := `SELECT * FROM sessions WHERE ` + field + ` = ? AND is_active = 1`
 	err := db.conn.QueryRow(qry, id).Scan(
 		&s.id,
 		&s.userID,
@@ -144,9 +142,9 @@ func (db *dataBase) insertSession(s *session) error {
 	return err
 }
 
-// db.updateSession() for when session is expired or refreshed
+// db.updateSession() for when session is expired, logout or refreshed
 func (db *dataBase) updateSession(s *session) error {
-	qry := `UPDATE session
+	qry := `UPDATE sessions
 			SET is_active = ?, expire_time = ?, last_access= ?
 			WHERE id = ?`
 	_, err := db.conn.Exec(qry,
@@ -157,15 +155,85 @@ func (db *dataBase) updateSession(s *session) error {
 	return err
 }
 
-func getPostsQuery(filterBy, sortBy string, catID int) string {
-	qry := `SELECT * FROM v_posts`
-	return qry
+// db.isValidCategories*() check if given categories are valid with categories in db
+func (db *dataBase) isValidCategories(categories []int) error {
+	if len(categories) == 0 {
+		return fmt.Errorf("no categories")
+	}
+	for _, catID := range categories {
+		if catID == 0 || catID > len(db.categories)+1 {
+			return fmt.Errorf("invalid category")
+		}
+	}
+	return nil
 }
 
-// filter by categories, created posts and liked posts
-// order by newest/oldest, comment count, like count
-func (db *dataBase) selectPosts(filterBy, sortBy string, catID int) (*posts, error) {
-	qry := getPostsQuery(filterBy, sortBy, catID)
+// db.insetPost() into db and record the categories too
+func (db *dataBase) insertPost(p post) error {
+	if err := db.isValidCategories(p.categories); err != nil {
+		return err
+	}
+	qry := `INSERT INTO posts 
+			(user_id, comment_count, like_count, dislike_count, title, content, created_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?)`
+	res, err := db.conn.Exec(qry,
+		p.UserID,
+		p.CommentCount,
+		p.LikeCount,
+		p.DislikeCount,
+		p.Title,
+		p.Content,
+		p.CreatedAt)
+	if err != nil {
+		return err
+	}
+	postID, err := res.LastInsertId()
+	if err != nil {
+		return err
+	}
+	for _, catID := range p.categories {
+		_, err = db.conn.Exec(`INSERT INTO post_categories (post_id, category_id)
+								VALUES (?, ?)`, postID, catID)
+	}
+	return err
+}
+
+// getWhereQuery() for selectPosts() filterBy query
+func getWhereQuery(filterBy string, id int) string {
+	switch filterBy {
+	case "createdBy":
+		return fmt.Sprintf(` WHERE user_id = %v`, id)
+	case "catergory":
+		return fmt.Sprintf(` WHERE ',' || category_ids || ',' LIKE '%%,%v,%%'`, id)
+	case "likedBy":
+		return fmt.Sprintf(` INNER JOIN post_feedback pf ON pf.post_id = v_posts.id 
+							 WHERE pf.user_id = %v AND pf.rating = 1`, id)
+	}
+	return ``
+}
+
+// getOrderByQuery() for selectPosts() orderBy query
+func getOrderByQuery(orderBy string) string {
+	switch orderBy {
+	case "oldest":
+		return ` ORDER BY created_at ASC`
+	case "likeCount":
+		return ` ORDER BY like_count DESC`
+	case "commentCount":
+		return ` ORDER BY comment_count DESC`
+	}
+	return ` ORDER BY created_at DESC`
+}
+
+// db.selectPosts() with filter and order options.
+// by default, no filter and newest first are applied.
+// if invalid options or empty are given, default option is used.
+// valid filterBy: createdBy, catergory, likedBy
+// valid orderBy: oldest, likeCount, commentCount
+func (db *dataBase) selectPosts(filterBy, orderBy string, id int) (*posts, error) {
+	qry := `SELECT * FROM v_posts` +
+		getWhereQuery(filterBy, id) +
+		getOrderByQuery(orderBy)
 	rows, err := db.conn.Query(qry)
 	if err != nil {
 		return nil, err
@@ -202,6 +270,7 @@ func (db *dataBase) selectPosts(filterBy, sortBy string, catID int) (*posts, err
 	return &posts, nil
 }
 
+// splitCategoryIDs into []int to store in post struct
 func splitCategoryIDs(catIDs string) ([]int, error) {
 	if catIDs == "" {
 		return nil, fmt.Errorf("empty string")
@@ -218,22 +287,7 @@ func splitCategoryIDs(catIDs string) ([]int, error) {
 	return result, nil
 }
 
-// needs categories
-func (db *dataBase) insertPost(p post) error {
-	qry := `INSERT INTO posts 
-			(user_id, comment_count, like_count, dislike_count, title, content, created_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?)`
-	_, err := db.conn.Exec(qry,
-		p.UserID,
-		p.CommentCount,
-		p.LikeCount,
-		p.DislikeCount,
-		p.Title,
-		p.Content,
-		p.CreatedAt)
-	return err
-}
-
+// db.deleteAllusers() for testing purposes
 func (db *dataBase) deleteAllUsers() error {
 	query := "DELETE FROM users"
 	_, err := db.conn.Exec(query)
@@ -241,6 +295,7 @@ func (db *dataBase) deleteAllUsers() error {
 	return err
 }
 
+// db.deleteAllSessions() for testing purposes
 func (db *dataBase) deleteAllSessions() error {
 	query := "DELETE FROM sessions"
 	_, err := db.conn.Exec(query)
@@ -248,6 +303,15 @@ func (db *dataBase) deleteAllSessions() error {
 	return err
 }
 
+// db.deleteAllPosts() for testing purposes
+func (db *dataBase) deleteAllPosts() error {
+	query := "DELETE FROM posts"
+	_, err := db.conn.Exec(query)
+	db.vacuumDB()
+	return err
+}
+
+// db.vacuumDB) for testing purposes
 func (db *dataBase) vacuumDB() error {
 	query := "VACUUm"
 	_, err := db.conn.Exec(query)

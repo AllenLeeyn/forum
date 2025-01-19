@@ -18,7 +18,6 @@ func init() {
 	db.deleteAllUsers()
 
 	db.categories, _ = db.selectFieldFromTable("name", "categories")
-	fmt.Println(db.categories)
 }
 
 func main() {
