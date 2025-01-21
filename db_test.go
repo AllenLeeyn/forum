@@ -1,17 +1,18 @@
 package main
 
 import (
-	"forum/structs"
+	"forum/dbTools"
 	"testing"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
-type user = structs.User
-type session = structs.Session
-type post = structs.Post
-type feedback = structs.Feedback
+type user = dbTools.User
+type session = dbTools.Session
+type post = dbTools.Post
+type feedback = dbTools.Feedback
+type comment = dbTools.Comment
 
 func isEqualStringSlice(a []string, b []string) bool {
 	if len(a) != len(b) {
@@ -219,7 +220,7 @@ func TestSelectActiveSessionBy(t *testing.T) {
 		{"id", "0012", "nil"},               // select by sessionID
 		{"user_id", u.ID, "nil"},            // select by userID
 		{"user_id", -100, "empty"},          // invalid userID
-		{"Email", u.Email, "invalid field"}, //invalid field
+		{"Email", u.Email, "invalid field"}, // invalid field
 	}
 	for i, tc := range testCases {
 		s, err := db.SelectActiveSessionBy(tc.field, tc.id)
@@ -309,10 +310,95 @@ func TestInsertPost(t *testing.T) {
 	}
 }
 
+func TestInsertComment(t *testing.T) {
+	s, _ := db.SelectActiveSessionBy("id", "0013")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	posts, _ := db.SelectPosts("", "oldest", 0)
+
+	testCases := []struct {
+		c        comment
+		expected string
+	}{
+		{ // valid comment in first post
+			comment{
+				UserID:    s.UserID,
+				PostID:    posts[0].ID,
+				Content:   "Why can't be more trustful of us?",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+		{ // valid comment in first post
+			comment{
+				UserID:    u.ID,
+				PostID:    posts[0].ID,
+				Content:   "Not to be xenophobic... but you are not from around here",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+		{ // invalid comment to first post
+			comment{
+				UserID:    -100,
+				PostID:    posts[0].ID,
+				Content:   "he just so serious all the time",
+				CreatedAt: time.Now(),
+			}, "FOREIGN KEY constraint failed",
+		},
+		{ // valid comment in third post
+			comment{
+				UserID:    s.UserID,
+				PostID:    posts[2].ID,
+				Content:   "You can always move faster. Oh! You can't travel at the speed of light.",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+		{ // valid comment in third post
+			comment{
+				UserID:    u.ID,
+				PostID:    posts[2].ID,
+				Content:   "At least I don't get defeated by some rocks.",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+		{ // valid comment in third post
+			comment{
+				UserID:    s.UserID,
+				PostID:    posts[2].ID,
+				Content:   "Humans get affected by radioactive materials too.",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+		{ // valid comment in third post
+			comment{
+				UserID:    s.UserID,
+				PostID:    posts[2].ID,
+				Content:   "So we both bleed...",
+				CreatedAt: time.Now(),
+			}, "nil",
+		},
+	}
+	db.DeleteAllComments()
+
+	for i, tc := range testCases {
+		err := db.InsertComment(tc.c)
+		result := "nil"
+		if err != nil {
+			result = err.Error()
+		}
+		if result != tc.expected {
+			t.Errorf("Case %d: expected %v, got %v\n", i, tc.expected, result)
+		}
+	}
+
+}
 func TestInsertFeedback(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
 	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	posts, err := db.SelectPosts("", "", 0)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	comments, err := db.SelectComments(posts[0].ID, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -326,7 +412,7 @@ func TestInsertFeedback(t *testing.T) {
 			"post",
 			feedback{
 				UserID:    s.UserID,
-				ParentID:  (*posts)[1].ID,
+				ParentID:  posts[1].ID,
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "nil"},
@@ -334,7 +420,7 @@ func TestInsertFeedback(t *testing.T) {
 			"post",
 			feedback{
 				UserID:    s.UserID,
-				ParentID:  (*posts)[1].ID,
+				ParentID:  posts[1].ID,
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "UNIQUE constraint failed: post_feedback.user_id, post_feedback.parent_id"},
@@ -342,7 +428,7 @@ func TestInsertFeedback(t *testing.T) {
 			"post",
 			feedback{
 				UserID:    u.ID,
-				ParentID:  (*posts)[1].ID,
+				ParentID:  posts[1].ID,
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "nil"},
@@ -350,7 +436,7 @@ func TestInsertFeedback(t *testing.T) {
 			"post",
 			feedback{
 				UserID:    u.ID,
-				ParentID:  (*posts)[0].ID,
+				ParentID:  posts[0].ID,
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "nil"},
@@ -358,7 +444,7 @@ func TestInsertFeedback(t *testing.T) {
 			"post",
 			feedback{
 				UserID:    s.UserID,
-				ParentID:  (*posts)[2].ID,
+				ParentID:  posts[2].ID,
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "nil"},
@@ -370,6 +456,46 @@ func TestInsertFeedback(t *testing.T) {
 				Rating:    1,
 				CreatedAt: time.Now(),
 			}, "FOREIGN KEY constraint failed"},
+		{ // like invalid comment
+			"comment",
+			feedback{
+				UserID:    s.UserID,
+				ParentID:  -100,
+				Rating:    1,
+				CreatedAt: time.Now(),
+			}, "FOREIGN KEY constraint failed"},
+		{ // like comment
+			"comment",
+			feedback{
+				UserID:    s.UserID,
+				ParentID:  comments[0].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
+			}, "nil"},
+		{ // like comment again
+			"comment",
+			feedback{
+				UserID:    s.UserID,
+				ParentID:  comments[0].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
+			}, "UNIQUE constraint failed: comment_feedback.user_id, comment_feedback.parent_id"},
+		{ // like comment by different user
+			"comment",
+			feedback{
+				UserID:    u.ID,
+				ParentID:  comments[0].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
+			}, "nil"},
+		{ // like a different comment
+			"comment",
+			feedback{
+				UserID:    u.ID,
+				ParentID:  comments[1].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
+			}, "nil"},
 	}
 	for i, tc := range testCases {
 		err := db.InsertFeedback(tc.tgt, tc.fb)
@@ -383,18 +509,18 @@ func TestInsertFeedback(t *testing.T) {
 	}
 }
 
-func TestSelectUpdateFeedback(t *testing.T) {
+func TestSelectUpdateFeedbacks(t *testing.T) {
 	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	// selectFeedback made in posts by user
-	feedbacks, err := db.SelectFeedback("post", u.ID)
+	feedbacks, err := db.SelectFeedbacks("post", u.ID)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	// change and update feedback on a post by user
 	// this change should reflect in the results of TestSelectPosts
-	(*feedbacks)[0].Rating = 0
-	err = db.UpdateFeedback("post", (*feedbacks)[0])
+	feedbacks[0].Rating = 0
+	err = db.UpdateFeedback("post", *feedbacks[0])
 	if err != nil {
 		t.Error(err)
 	}
@@ -442,6 +568,11 @@ func TestSelectPosts(t *testing.T) {
 		{"likedBy", "likeCount", u.ID, []time.Time{ //likedBy batman
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
+		{"", "commentCount", -1, []time.Time{ //sortBy comment_count
+			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
+			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
+		}},
 	}
 
 	for i, tc := range testCase {
@@ -451,10 +582,10 @@ func TestSelectPosts(t *testing.T) {
 			continue
 		}
 		result := true
-		if len(tc.expected) != len(*posts) {
+		if len(tc.expected) != len(posts) {
 			result = false
 		} else {
-			for i, p := range *posts {
+			for i, p := range posts {
 				if p.CreatedAt != tc.expected[i] {
 					result = false
 					break
@@ -466,10 +597,8 @@ func TestSelectPosts(t *testing.T) {
 		} else {
 			t.Logf("Case %d: passed\n", i)
 		}
-		if posts != nil {
-			for _, p := range *posts {
-				t.Log(p)
-			}
+		for _, p := range posts {
+			t.Log(p)
 		}
 	}
 }
