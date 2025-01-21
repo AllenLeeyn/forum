@@ -34,6 +34,9 @@ type post struct {
 	categories   []int
 }
 
-type posts struct {
-	index []post
+type feedback struct {
+	userID    int
+	parentID  int
+	rating    int
+	createdAt time.Time
 }

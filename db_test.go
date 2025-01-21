@@ -303,6 +303,97 @@ func TestInsertPost(t *testing.T) {
 	}
 }
 
+func TestInsertFeedback(t *testing.T) {
+	s, _ := db.selectActiveSessionBy("id", "0013")
+	u, _ := db.selectUserByEmail("batman@gotham.city")
+	posts, err := db.selectPosts("", "", 0)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	testCases := []struct {
+		tgt      string
+		fb       feedback
+		expected string
+	}{
+		{ // first like
+			"post",
+			feedback{
+				userID:    s.userID,
+				parentID:  (*posts)[1].ID,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "nil"},
+		{ // second like by same user
+			"post",
+			feedback{
+				userID:    s.userID,
+				parentID:  (*posts)[1].ID,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "UNIQUE constraint failed: post_feedback.user_id, post_feedback.parent_id"},
+		{ // second like by different user
+			"post",
+			feedback{
+				userID:    u.id,
+				parentID:  (*posts)[1].ID,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "nil"},
+		{ // like a different post
+			"post",
+			feedback{
+				userID:    u.id,
+				parentID:  (*posts)[0].ID,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "nil"},
+		{ // like a different post
+			"post",
+			feedback{
+				userID:    s.userID,
+				parentID:  (*posts)[2].ID,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "nil"},
+		{ // invalid postID
+			"post",
+			feedback{
+				userID:    s.userID,
+				parentID:  -100,
+				rating:    1,
+				createdAt: time.Now(),
+			}, "FOREIGN KEY constraint failed"},
+	}
+	for i, tc := range testCases {
+		err := db.insertFeedback(tc.tgt, tc.fb)
+		result := "nil"
+		if err != nil {
+			result = err.Error()
+		}
+		if result != tc.expected {
+			t.Errorf("Case %d: expected %v, got %v\n", i, tc.expected, result)
+		}
+	}
+}
+
+func TestSelectUpdateFeedback(t *testing.T) {
+	u, _ := db.selectUserByEmail("batman@gotham.city")
+	// selectFeedback made in posts by user
+	feedbacks, err := db.selectFeedback("post", u.id)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	// change and update feedback on a post by user
+	// this change should reflect in the results of TestSelectPosts
+	(*feedbacks)[0].rating = 0
+	err = db.updateFeedback("post", (*feedbacks)[0])
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestSelectPosts(t *testing.T) {
 	s, _ := db.selectActiveSessionBy("id", "0013")
 	u, _ := db.selectUserByEmail("batman@gotham.city")
@@ -337,8 +428,14 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
-		{"catergory", "", 3, []time.Time{}},  // empty result
-		{"likedBy", "", u.id, []time.Time{}}, // empty result
+		{"catergory", "", 3, []time.Time{}}, // empty result
+		{"likedBy", "likeCount", s.userID, []time.Time{ //likedBy superman
+			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
+		}},
+		{"likedBy", "likeCount", u.id, []time.Time{ //likedBy batman
+			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
+		}},
 	}
 
 	for i, tc := range testCase {
@@ -348,10 +445,10 @@ func TestSelectPosts(t *testing.T) {
 			continue
 		}
 		result := true
-		if len(tc.expected) != len(posts.index) {
+		if len(tc.expected) != len(*posts) {
 			result = false
 		} else {
-			for i, p := range posts.index {
+			for i, p := range *posts {
 				if p.CreatedAt != tc.expected[i] {
 					result = false
 					break
@@ -362,7 +459,9 @@ func TestSelectPosts(t *testing.T) {
 			t.Errorf("Case %d: expected %v, got %v\n", i, tc.expected, result)
 		} else {
 			t.Logf("Case %d: passed\n", i)
-			for _, p := range posts.index {
+		}
+		if posts != nil {
+			for _, p := range *posts {
 				t.Log(p)
 			}
 		}
