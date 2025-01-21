@@ -4,6 +4,7 @@ SCHEMA_FILE = schema.txt
 ACCOUNT_TYPE_FILE = accountType.txt
 CATEGORY_FILE = category.txt
 VIEW_FILE = view.txt
+TRIGGER_FILE = trigger.txt
 
 # Default target
 all: $(DB_FILE)
@@ -22,6 +23,9 @@ $(DB_FILE): $(SCHEMA_FILE) $(ACCOUNT_TYPE_FILE) $(CATEGORY_FILE) $(VIEW_FILE)
 	# Create view
 	@echo "Creating view..."
 	sqlite3 $@ < $(VIEW_FILE)
+	# Create trigger
+	@echo "Creating trigger..."
+	sqlite3 $@ < $(TRIGGER_FILE)
 
 # Clean target to remove the database file
 clean:

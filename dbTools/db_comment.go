@@ -60,21 +60,6 @@ func (db *DBContainer) InsertComment(c Comment) error {
 		c.LikeCount,
 		c.DislikeCount,
 		c.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return db.updateCommentCount(c.PostID)
-}
-
-// db.UpdateCommentCount() when a comment is make
-func (db *DBContainer) updateCommentCount(id int) error {
-	qry := `UPDATE posts
-    	   SET comment_count = (
-        	   SELECT COUNT(*)
-        	   FROM comments
-        	   WHERE post_id = ?)
-		   WHERE id = ?`
-	_, err := db.conn.Exec(qry, id, id)
 	return err
 }
 

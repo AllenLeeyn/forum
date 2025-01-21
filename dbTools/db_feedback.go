@@ -52,10 +52,7 @@ func (db *DBContainer) InsertFeedback(tgt string, fb Feedback) error {
 		fb.ParentID,
 		fb.Rating,
 		fb.CreatedAt)
-	if err != nil {
-		return err
-	}
-	return db.updateFeedbackCount(tgt, fb.ParentID)
+	return err
 }
 
 // db.updateFeedback() updates Feedback in tgt table. for when User unlike.
@@ -72,20 +69,5 @@ func (db *DBContainer) UpdateFeedback(tgt string, fb Feedback) error {
 		fb.CreatedAt,
 		fb.UserID,
 		fb.ParentID)
-	if err != nil {
-		return err
-	}
-	return db.updateFeedbackCount(tgt, fb.ParentID)
-}
-
-// db.updateFeedback() updates like_count and dislike_count
-func (db *DBContainer) updateFeedbackCount(tgt string, id int) error {
-	qry := `UPDATE ` + tgt + `s
-    	   SET like_count = (
-        	   SELECT COUNT(*)
-        	   FROM ` + tgt + `_feedback
-        	   WHERE parent_id = ? AND rating = 1)
-		   WHERE id = ?`
-	_, err := db.conn.Exec(qry, id, id)
 	return err
 }
