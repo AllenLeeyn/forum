@@ -1,11 +1,11 @@
-package main
+package dbTools
 
 import "fmt"
 
 // db.selectFeedback() select a list of feedback that user has given.
 // can be use to identify if user like a post/ comment and call insert/uodate accordingly.
 // valid tgt: "post", "comment"
-func (db *dataBase) selectFeedback(tgt string, userID int) (*[]feedback, error) {
+func (db *DBContainer) SelectFeedback(tgt string, userID int) (*[]feedback, error) {
 	if tgt != "post" && tgt != "comment" {
 		return nil, fmt.Errorf("invalid target")
 	}
@@ -20,10 +20,10 @@ func (db *dataBase) selectFeedback(tgt string, userID int) (*[]feedback, error) 
 	for rows.Next() {
 		var fb feedback
 		err := rows.Scan(
-			&fb.userID,
-			&fb.parentID,
-			&fb.rating,
-			&fb.createdAt)
+			&fb.UserID,
+			&fb.ParentID,
+			&fb.Rating,
+			&fb.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -37,7 +37,7 @@ func (db *dataBase) selectFeedback(tgt string, userID int) (*[]feedback, error) 
 
 // db.insertFeedback() inserts feedback into tgt table.
 // valid tgt: "post", "comment"
-func (db *dataBase) insertFeedback(tgt string, fb feedback) error {
+func (db *DBContainer) InsertFeedback(tgt string, fb feedback) error {
 	if tgt != "post" && tgt != "comment" {
 		return fmt.Errorf("invalid target")
 	}
@@ -45,19 +45,19 @@ func (db *dataBase) insertFeedback(tgt string, fb feedback) error {
 			(user_id, parent_id, rating, created_at) 
 			VALUES ( ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
-		fb.userID,
-		fb.parentID,
-		fb.rating,
-		fb.createdAt)
+		fb.UserID,
+		fb.ParentID,
+		fb.Rating,
+		fb.CreatedAt)
 	if err != nil {
 		return err
 	}
-	return db.updateFeedbackCount(tgt, fb.parentID)
+	return db.updateFeedbackCount(tgt, fb.ParentID)
 }
 
 // db.updateFeedback() updates feedback in tgt table. for when user unlike.
 // valid tgt: "post", "comment"
-func (db *dataBase) updateFeedback(tgt string, fb feedback) error {
+func (db *DBContainer) UpdateFeedback(tgt string, fb feedback) error {
 	if tgt != "post" && tgt != "comment" {
 		return fmt.Errorf("invalid target")
 	}
@@ -65,18 +65,18 @@ func (db *dataBase) updateFeedback(tgt string, fb feedback) error {
 			SET rating = ?, created_at = ? 
 			WHERE user_id = ? AND parent_id = ?`
 	_, err := db.conn.Exec(qry,
-		fb.rating,
-		fb.createdAt,
-		fb.userID,
-		fb.parentID)
+		fb.Rating,
+		fb.CreatedAt,
+		fb.UserID,
+		fb.ParentID)
 	if err != nil {
 		return err
 	}
-	return db.updateFeedbackCount(tgt, fb.parentID)
+	return db.updateFeedbackCount(tgt, fb.ParentID)
 }
 
 // db.updateFeedback() updates like_count and dislike_count
-func (db *dataBase) updateFeedbackCount(tgt string, id int) error {
+func (db *DBContainer) updateFeedbackCount(tgt string, id int) error {
 	qry := `UPDATE ` + tgt + `s
     	   SET like_count = (
         	   SELECT COUNT(*)

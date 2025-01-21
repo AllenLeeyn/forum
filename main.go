@@ -1,20 +1,21 @@
 package main
 
 import (
+	"forum/dbTools"
 	"log"
 )
 
-var db *dataBase
+var db *dbTools.DBContainer
 
 func init() {
 	var err error
-	db, err = openDB("sqlite3", "./database/forum.db")
+	db, err = dbTools.OpenDB("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Fatal("Error opening database: ", err)
 	}
-	db.deleteAllUsers()
+	db.DeleteAllUsers()
 
-	db.categories, _ = db.selectFieldFromTable("name", "categories")
+	db.Categories, _ = db.SelectFieldFromTable("name", "categories")
 }
 
 func main() {

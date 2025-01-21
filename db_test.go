@@ -1,11 +1,17 @@
 package main
 
 import (
+	"forum/structs"
 	"testing"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
+
+type user = structs.User
+type session = structs.Session
+type post = structs.Post
+type feedback = structs.Feedback
 
 func isEqualStringSlice(a []string, b []string) bool {
 	if len(a) != len(b) {
@@ -26,41 +32,41 @@ func TestInsertUser(t *testing.T) {
 		expected string
 	}{
 		{&user{
-			typeID:    3,
-			name:      "BATMAN",
-			email:     "batman@gotham.city",
-			pwHash:    "bruc3W47N3",
-			regDate:   fixedTime,
-			lastLogin: fixedTime},
+			TypeID:    3,
+			Name:      "BATMAN",
+			Email:     "batman@gotham.city",
+			PwHash:    "bruc3W47N3",
+			RegDate:   fixedTime,
+			LastLogin: fixedTime},
 			"nil"},
-		{&user{ // duplicate user email
-			typeID:    3,
-			name:      "BATMAN",
-			email:     "batman@gotham.city",
-			pwHash:    "dickGrayson",
-			regDate:   fixedTime,
-			lastLogin: fixedTime},
+		{&user{ // duplicate user Email
+			TypeID:    3,
+			Name:      "BATMAN",
+			Email:     "batman@gotham.city",
+			PwHash:    "dickGrayson",
+			RegDate:   fixedTime,
+			LastLogin: fixedTime},
 			"UNIQUE constraint failed: users.email"},
-		{&user{ // invalid typeID
-			typeID:    666,
-			name:      "JOKER",
-			email:     "j0k3r@gotham.city",
-			pwHash:    "alfredPennyless",
-			regDate:   fixedTime,
-			lastLogin: fixedTime},
+		{&user{ // invalid TypeID
+			TypeID:    666,
+			Name:      "JOKER",
+			Email:     "j0k3r@gotham.city",
+			PwHash:    "alfredPennyless",
+			RegDate:   fixedTime,
+			LastLogin: fixedTime},
 			"FOREIGN KEY constraint failed"},
 		{&user{
-			typeID:    1,
-			name:      "Superman",
-			email:     "superman@metropolis.city",
-			pwHash:    "clarkKent",
-			regDate:   fixedTime,
-			lastLogin: fixedTime},
+			TypeID:    1,
+			Name:      "Superman",
+			Email:     "superman@metropolis.city",
+			PwHash:    "clarkKent",
+			RegDate:   fixedTime,
+			LastLogin: fixedTime},
 			"nil"},
 	}
-	db.deleteAllUsers()
+	db.DeleteAllUsers()
 	for i, tc := range testCases {
-		err := db.insertUser(tc.u)
+		err := db.InsertUser(tc.u)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -73,8 +79,8 @@ func TestInsertUser(t *testing.T) {
 
 func TestSelectUserByEmail(t *testing.T) {
 	testCases := []struct {
-		email    string
-		name     string
+		Email    string
+		Name     string
 		expected string
 	}{
 		{"j0k3r@gotham.city", //not registered
@@ -88,7 +94,7 @@ func TestSelectUserByEmail(t *testing.T) {
 			"nil"},
 	}
 	for i, tc := range testCases {
-		u, err := db.selectUserByEmail(tc.email)
+		u, err := db.SelectUserByEmail(tc.Email)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -108,10 +114,10 @@ func TestSelectFieldFromTable(t *testing.T) {
 		table    string
 		expected []string
 	}{
-		{"name", // check categories
+		{"Name", // check categories
 			"categories",
 			[]string{"General", "golang", "html", "css", "sqlite3"}},
-		{"email", // check user emails
+		{"Email", // check user Emails
 			"users",
 			[]string{"batman@gotham.city", "superman@metropolis.city"}},
 		{"title", // empty result
@@ -119,7 +125,7 @@ func TestSelectFieldFromTable(t *testing.T) {
 			[]string{}},
 	}
 	for i, tc := range testCases {
-		results, err := db.selectFieldFromTable(tc.field, tc.table)
+		results, err := db.SelectFieldFromTable(tc.field, tc.table)
 		if !isEqualStringSlice(results, tc.expected) && err == nil {
 			t.Errorf("case%v: failed. %v\n", i, results)
 		} else {
@@ -129,21 +135,21 @@ func TestSelectFieldFromTable(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	u, _ := db.selectUserByEmail("superman@metropolis.city")
+	u, _ := db.SelectUserByEmail("superman@metropolis.city")
 	fixedTime := time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC)
-	u.name = "Ultimate Superman"
-	u.pwHash = "kalEl"
-	u.lastLogin = fixedTime
+	u.Name = "Ultimate Superman"
+	u.PwHash = "kalEl"
+	u.LastLogin = fixedTime
 
-	err := db.updateUser(u)
+	err := db.UpdateUser(u)
 	if err != nil {
 		t.Errorf("Case: updateUser() failed.%s\n", err)
 		return
 	}
-	u2, err2 := db.selectUserByEmail(u.email)
+	u2, err2 := db.SelectUserByEmail(u.Email)
 	if (err2 != nil || u2 == nil) &&
-		u.name != u2.name &&
-		u2.lastLogin == fixedTime {
+		u.Name != u2.Name &&
+		u2.LastLogin == fixedTime {
 		t.Errorf("Case: failed.\n")
 	} else {
 		t.Log(u2)
@@ -151,48 +157,48 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestInsertSession(t *testing.T) {
-	u, _ := db.selectUserByEmail("batman@gotham.city")
-	u2, _ := db.selectUserByEmail("superman@metropolis.city")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u2, _ := db.SelectUserByEmail("superman@metropolis.city")
 	testCases := []struct {
 		s        *session
 		expected string
 	}{
 		{&session{ // insert valid session
-			"0012",
-			u.id,
-			true,
-			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
+			ID:         "0012",
+			UserID:     u.ID,
+			IsActive:   true,
+			StartTime:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			ExpireTime: time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
+			LastAccess: time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
 		}, "nil"},
 		{&session{ // insert valid session
-			"0013",
-			u2.id,
-			true,
-			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
+			ID:         "0013",
+			UserID:     u2.ID,
+			IsActive:   true,
+			StartTime:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			ExpireTime: time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
+			LastAccess: time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
 		}, "nil"},
 		{&session{ // duplicated session id
-			"0012",
-			1,
-			true,
-			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
+			ID:         "0012",
+			UserID:     1,
+			IsActive:   true,
+			StartTime:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			ExpireTime: time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
+			LastAccess: time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
 		}, "UNIQUE constraint failed: sessions.id"},
 		{&session{ // invlaid user id
-			"0015",
-			-100,
-			true,
-			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
-			time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
+			ID:         "0015",
+			UserID:     -100,
+			IsActive:   true,
+			StartTime:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+			ExpireTime: time.Date(2025, 1, 17, 13, 11, 59, 0, time.UTC),
+			LastAccess: time.Date(2025, 1, 17, 13, 00, 30, 0, time.UTC),
 		}, "FOREIGN KEY constraint failed"},
 	}
-	db.deleteAllSessions()
+	db.DeleteAllSessions()
 	for i, tc := range testCases {
-		err := db.insertSession(tc.s)
+		err := db.InsertSession(tc.s)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -204,19 +210,19 @@ func TestInsertSession(t *testing.T) {
 }
 
 func TestSelectActiveSessionBy(t *testing.T) {
-	u, _ := db.selectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	testCases := []struct {
 		field    string
 		id       interface{}
 		expected string
 	}{
 		{"id", "0012", "nil"},               // select by sessionID
-		{"user_id", u.id, "nil"},            // select by userID
+		{"user_id", u.ID, "nil"},            // select by userID
 		{"user_id", -100, "empty"},          // invalid userID
-		{"email", u.email, "invalid field"}, //invalid field
+		{"Email", u.Email, "invalid field"}, //invalid field
 	}
 	for i, tc := range testCases {
-		s, err := db.selectActiveSessionBy(tc.field, tc.id)
+		s, err := db.SelectActiveSessionBy(tc.field, tc.id)
 
 		result := "nil"
 		if err != nil {
@@ -234,11 +240,11 @@ func TestSelectActiveSessionBy(t *testing.T) {
 }
 
 func TestUpdateSession(t *testing.T) {
-	s, _ := db.selectActiveSessionBy("id", "0012")
-	s.isActive = false
+	s, _ := db.SelectActiveSessionBy("id", "0012")
+	s.IsActive = false
 
-	err := db.updateSession(s)
-	s, _ = db.selectActiveSessionBy("id", "0012")
+	err := db.UpdateSession(s)
+	s, _ = db.SelectActiveSessionBy("id", "0012")
 	if err != nil {
 		t.Errorf("Case: expected %v, got %v\n", "nil", err)
 	} else {
@@ -247,52 +253,52 @@ func TestUpdateSession(t *testing.T) {
 }
 
 func TestInsertPost(t *testing.T) {
-	s, _ := db.selectActiveSessionBy("id", "0013")
-	u, _ := db.selectUserByEmail("batman@gotham.city")
+	s, _ := db.SelectActiveSessionBy("id", "0013")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	testCases := []struct {
 		p        post
 		expected string
 	}{
 		{post{ // valid entry
-			UserID:     s.userID,
+			UserID:     s.UserID,
 			Title:      "Why is Batman so parnoid?",
 			Content:    "He got way too much contigencies...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			categories: []int{1, 2},
+			Categories: []int{1, 2},
 		}, "nil"},
 		{post{ // invalid userID
 			UserID:     -100,
 			Title:      "Why is Batman so serious?",
 			Content:    "He can even take a joke...",
 			CreatedAt:  time.Now(),
-			categories: []int{1},
+			Categories: []int{1},
 		}, "FOREIGN KEY constraint failed"},
 		{post{ // invalid category
-			UserID:     s.userID,
-			Title:      "How many mothers are named Martha?",
-			Content:    "Is it a common mother name?",
+			UserID:     s.UserID,
+			Title:      "How many mothers are Named Martha?",
+			Content:    "Is it a common mother Name?",
 			CreatedAt:  time.Now(),
-			categories: []int{10},
+			Categories: []int{10},
 		}, "invalid category"},
 		{post{ // valid entry
-			UserID:     u.id,
+			UserID:     u.ID,
 			Title:      "Having 72 hours at day",
 			Content:    "Here is how you train, invent, investigate and more...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
-			categories: []int{1, 2, 4, 5},
+			Categories: []int{1, 2, 4, 5},
 		}, "nil"},
 		{post{ // valid entry
-			UserID:     u.id,
+			UserID:     u.ID,
 			Title:      "Why are there more and more supervillians?",
 			Content:    "Is there a deep societal problems that creates supervillians?",
 			CreatedAt:  time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
-			categories: []int{4, 5},
+			Categories: []int{4, 5},
 		}, "nil"},
 	}
-	db.deleteAllPosts()
+	db.DeleteAllPosts()
 
 	for i, tc := range testCases {
-		err := db.insertPost(tc.p)
+		err := db.InsertPost(tc.p)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -304,9 +310,9 @@ func TestInsertPost(t *testing.T) {
 }
 
 func TestInsertFeedback(t *testing.T) {
-	s, _ := db.selectActiveSessionBy("id", "0013")
-	u, _ := db.selectUserByEmail("batman@gotham.city")
-	posts, err := db.selectPosts("", "", 0)
+	s, _ := db.SelectActiveSessionBy("id", "0013")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	posts, err := db.SelectPosts("", "", 0)
 	if err != nil {
 		t.Error(err)
 		return
@@ -319,54 +325,54 @@ func TestInsertFeedback(t *testing.T) {
 		{ // first like
 			"post",
 			feedback{
-				userID:    s.userID,
-				parentID:  (*posts)[1].ID,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    s.UserID,
+				ParentID:  (*posts)[1].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "nil"},
 		{ // second like by same user
 			"post",
 			feedback{
-				userID:    s.userID,
-				parentID:  (*posts)[1].ID,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    s.UserID,
+				ParentID:  (*posts)[1].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "UNIQUE constraint failed: post_feedback.user_id, post_feedback.parent_id"},
 		{ // second like by different user
 			"post",
 			feedback{
-				userID:    u.id,
-				parentID:  (*posts)[1].ID,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    u.ID,
+				ParentID:  (*posts)[1].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "nil"},
 		{ // like a different post
 			"post",
 			feedback{
-				userID:    u.id,
-				parentID:  (*posts)[0].ID,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    u.ID,
+				ParentID:  (*posts)[0].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "nil"},
 		{ // like a different post
 			"post",
 			feedback{
-				userID:    s.userID,
-				parentID:  (*posts)[2].ID,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    s.UserID,
+				ParentID:  (*posts)[2].ID,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "nil"},
 		{ // invalid postID
 			"post",
 			feedback{
-				userID:    s.userID,
-				parentID:  -100,
-				rating:    1,
-				createdAt: time.Now(),
+				UserID:    s.UserID,
+				ParentID:  -100,
+				Rating:    1,
+				CreatedAt: time.Now(),
 			}, "FOREIGN KEY constraint failed"},
 	}
 	for i, tc := range testCases {
-		err := db.insertFeedback(tc.tgt, tc.fb)
+		err := db.InsertFeedback(tc.tgt, tc.fb)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -378,25 +384,25 @@ func TestInsertFeedback(t *testing.T) {
 }
 
 func TestSelectUpdateFeedback(t *testing.T) {
-	u, _ := db.selectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	// selectFeedback made in posts by user
-	feedbacks, err := db.selectFeedback("post", u.id)
+	feedbacks, err := db.SelectFeedback("post", u.ID)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	// change and update feedback on a post by user
 	// this change should reflect in the results of TestSelectPosts
-	(*feedbacks)[0].rating = 0
-	err = db.updateFeedback("post", (*feedbacks)[0])
+	(*feedbacks)[0].Rating = 0
+	err = db.UpdateFeedback("post", (*feedbacks)[0])
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestSelectPosts(t *testing.T) {
-	s, _ := db.selectActiveSessionBy("id", "0013")
-	u, _ := db.selectUserByEmail("batman@gotham.city")
+	s, _ := db.SelectActiveSessionBy("id", "0013")
+	u, _ := db.SelectUserByEmail("batman@gotham.city")
 	testCase := []struct {
 		filterBy string
 		orderBy  string
@@ -413,10 +419,10 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
-		{"createdBy", "", s.userID, []time.Time{ // filterBy superman
+		{"createdBy", "", s.UserID, []time.Time{ // filterBy superman
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 		}},
-		{"createdBy", "", u.id, []time.Time{ // filterBy batman
+		{"createdBy", "", u.ID, []time.Time{ // filterBy batman
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 		}},
@@ -429,17 +435,17 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
 		{"catergory", "", 3, []time.Time{}}, // empty result
-		{"likedBy", "likeCount", s.userID, []time.Time{ //likedBy superman
+		{"likedBy", "likeCount", s.UserID, []time.Time{ //likedBy superman
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 		}},
-		{"likedBy", "likeCount", u.id, []time.Time{ //likedBy batman
+		{"likedBy", "likeCount", u.ID, []time.Time{ //likedBy batman
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
 	}
 
 	for i, tc := range testCase {
-		posts, err := db.selectPosts(tc.filterBy, tc.orderBy, tc.catID)
+		posts, err := db.SelectPosts(tc.filterBy, tc.orderBy, tc.catID)
 		if err != nil {
 			t.Errorf("Case %d: expected %v, got %v\n", i, tc.expected, err)
 			continue

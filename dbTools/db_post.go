@@ -1,4 +1,4 @@
-package main
+package dbTools
 
 import (
 	"fmt"
@@ -55,7 +55,7 @@ func splitCategoryIDs(catIDs string) ([]int, error) {
 // if invalid options or empty are given, default option is used.
 // valid filterBy: createdBy, catergory, likedBy
 // valid orderBy: oldest, likeCount, commentCount
-func (db *dataBase) selectPosts(filterBy, orderBy string, id int) (*[]post, error) {
+func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) (*[]post, error) {
 	qry := `SELECT id, puser_id, user_name, 
 			comment_count, like_count, dislike_count,
 			title, content, pcreated_at, category_ids
@@ -86,7 +86,7 @@ func (db *dataBase) selectPosts(filterBy, orderBy string, id int) (*[]post, erro
 		if err != nil {
 			return nil, err
 		}
-		p.categories, err = splitCategoryIDs(catIDs)
+		p.Categories, err = splitCategoryIDs(catIDs)
 		if err != nil {
 			return nil, err
 		}
@@ -99,8 +99,8 @@ func (db *dataBase) selectPosts(filterBy, orderBy string, id int) (*[]post, erro
 }
 
 // db.insetPost() into db and record the categories too
-func (db *dataBase) insertPost(p post) error {
-	if err := db.isValidCategories(p.categories); err != nil {
+func (db *DBContainer) InsertPost(p post) error {
+	if err := db.isValidCategories(p.Categories); err != nil {
 		return err
 	}
 	qry := `INSERT INTO posts 
@@ -121,7 +121,7 @@ func (db *dataBase) insertPost(p post) error {
 	if err != nil {
 		return err
 	}
-	for _, catID := range p.categories {
+	for _, catID := range p.Categories {
 		_, err = db.conn.Exec(`INSERT INTO post_categories (post_id, category_id)
 								VALUES (?, ?)`, postID, catID)
 	}
