@@ -1,6 +1,9 @@
-package structs
+package dbTools
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
 	ID        int
@@ -32,6 +35,17 @@ type Post struct {
 	Content      string
 	CreatedAt    time.Time
 	Categories   []int
+}
+
+type Comment struct {
+	ID           int
+	UserID       int
+	ParentID     sql.NullInt64
+	PostID       int
+	Content      string
+	LikeCount    int
+	DislikeCount int
+	CreatedAt    time.Time
 }
 
 type Feedback struct {
