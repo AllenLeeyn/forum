@@ -2,10 +2,13 @@ package dbTools
 
 import "fmt"
 
-// db.selectFeedback() select a list of feedback that user has given.
-// can be use to identify if user like a post/ comment and call insert/uodate accordingly.
-// valid tgt: "post", "comment"
-func (db *DBContainer) SelectFeedback(tgt string, userID int) (*[]feedback, error) {
+/*
+	db.SelectFeedback() selects a list of Feedback that User has given.
+
+Use to identify if User like a Post/ Comment and call insert/uodate accordingly.
+Valid tgt: "Post", "Comment".
+*/
+func (db *DBContainer) SelectFeedbacks(tgt string, userID int) ([]*Feedback, error) {
 	if tgt != "post" && tgt != "comment" {
 		return nil, fmt.Errorf("invalid target")
 	}
@@ -16,9 +19,9 @@ func (db *DBContainer) SelectFeedback(tgt string, userID int) (*[]feedback, erro
 	}
 	defer rows.Close()
 
-	var feedbacks []feedback
+	var feedbacks []*Feedback
 	for rows.Next() {
-		var fb feedback
+		var fb Feedback
 		err := rows.Scan(
 			&fb.UserID,
 			&fb.ParentID,
@@ -27,17 +30,17 @@ func (db *DBContainer) SelectFeedback(tgt string, userID int) (*[]feedback, erro
 		if err != nil {
 			return nil, err
 		}
-		feedbacks = append(feedbacks, fb)
+		feedbacks = append(feedbacks, &fb)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)
 	}
-	return &feedbacks, nil
+	return feedbacks, nil
 }
 
-// db.insertFeedback() inserts feedback into tgt table.
-// valid tgt: "post", "comment"
-func (db *DBContainer) InsertFeedback(tgt string, fb feedback) error {
+// db.insertFeedback() inserts Feedback into tgt table.
+// valid tgt: "Post", "Comment"
+func (db *DBContainer) InsertFeedback(tgt string, fb Feedback) error {
 	if tgt != "post" && tgt != "comment" {
 		return fmt.Errorf("invalid target")
 	}
@@ -55,9 +58,9 @@ func (db *DBContainer) InsertFeedback(tgt string, fb feedback) error {
 	return db.updateFeedbackCount(tgt, fb.ParentID)
 }
 
-// db.updateFeedback() updates feedback in tgt table. for when user unlike.
-// valid tgt: "post", "comment"
-func (db *DBContainer) UpdateFeedback(tgt string, fb feedback) error {
+// db.updateFeedback() updates Feedback in tgt table. for when User unlike.
+// valid tgt: "Post", "Comment"
+func (db *DBContainer) UpdateFeedback(tgt string, fb Feedback) error {
 	if tgt != "post" && tgt != "comment" {
 		return fmt.Errorf("invalid target")
 	}

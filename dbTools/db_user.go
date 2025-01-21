@@ -1,9 +1,9 @@
 package dbTools
 
-// db.selectUserByEmail(). If no results found, user is not registered/ wrong email.
-func (db *DBContainer) SelectUserByEmail(email string) (*user, error) {
+// db.SelectUserByEmail(). If no results found, User is not registered/ wrong email.
+func (db *DBContainer) SelectUserByEmail(email string) (*User, error) {
 	qry := `SELECT * FROM users WHERE email = ?`
-	var u user
+	var u User
 	err := db.conn.QueryRow(qry, email).Scan(
 		&u.ID,
 		&u.TypeID,
@@ -18,8 +18,8 @@ func (db *DBContainer) SelectUserByEmail(email string) (*user, error) {
 	return &u, nil
 }
 
-// db.inserUser() insert a user into the database
-func (db *DBContainer) InsertUser(u *user) error {
+// db.InserUser() insert a User into the database
+func (db *DBContainer) InsertUser(u *User) error {
 	qry := `INSERT INTO users 
 			(type_id, name, email, pw_hash, reg_date, last_login) 
 			VALUES ( ?, ?, ?, ?, ?, ?)`
@@ -33,8 +33,8 @@ func (db *DBContainer) InsertUser(u *user) error {
 	return err
 }
 
-// db.updateUser() info like name, pwHash and lastLogin
-func (db *DBContainer) UpdateUser(u *user) error {
+// db.UpdateUser() info like name, pwHash and lastLogin
+func (db *DBContainer) UpdateUser(u *User) error {
 	qry := `UPDATE users
 			SET name = ?, pw_hash = ?, last_login = ?
 			WHERE id = ?`

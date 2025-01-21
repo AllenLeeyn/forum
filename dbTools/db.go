@@ -3,26 +3,23 @@ package dbTools
 import (
 	"database/sql"
 	"fmt"
-	"forum/structs"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-type user = structs.User
-type session = structs.Session
-type post = structs.Post
-type feedback = structs.Feedback
 
 // note: fields need to be validated before calling insert functions.
 // The variables in the struct are initialized with default value,
 // meaning they are not null when inserting to db.
 // This means the variables/fields will not be recognise as empty/null by sql.
 
-// dataBase struct comes with a set of functions.
-// This should be easier to reference the database and call its functions.
+/*
+	DBContainer struct that comes with a set of functions.
+
+This should be easier to reference the database and call its functions.
+*/
 type DBContainer struct {
 	conn       *sql.DB
-	Categories []string
+	Categories []string // stores categories recorded in db.
 }
 
 // openDB() opens a sql database with the driver and dataSource given.
@@ -89,6 +86,14 @@ func (db *DBContainer) DeleteAllUsers() error {
 // db.deleteAllSessions() for testing purposes
 func (db *DBContainer) DeleteAllSessions() error {
 	query := "DELETE FROM sessions"
+	_, err := db.conn.Exec(query)
+	db.vacuumDB()
+	return err
+}
+
+// db.deleteAllPosts() for testing purposes
+func (db *DBContainer) DeleteAllComments() error {
+	query := "DELETE FROM comments"
 	_, err := db.conn.Exec(query)
 	db.vacuumDB()
 	return err

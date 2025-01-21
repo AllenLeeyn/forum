@@ -33,7 +33,7 @@ func getOrderByQuery(orderBy string) string {
 	return ` ORDER BY pcreated_at DESC`
 }
 
-// splitCategoryIDs into []int to store in post struct
+// splitCategoryIDs() into []int to store in Post struct
 func splitCategoryIDs(catIDs string) ([]int, error) {
 	if catIDs == "" {
 		return nil, fmt.Errorf("empty string")
@@ -50,12 +50,16 @@ func splitCategoryIDs(catIDs string) ([]int, error) {
 	return result, nil
 }
 
-// db.selectPosts() with filter and order options.
-// by default, no filter and newest first are applied.
-// if invalid options or empty are given, default option is used.
-// valid filterBy: createdBy, catergory, likedBy
-// valid orderBy: oldest, likeCount, commentCount
-func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) (*[]post, error) {
+/*
+	db.SelectPosts() returns a list of posts.
+
+By default, no filter and newest first are applied.
+If invalid options or empty are given, default option is used.
+
+Valid filterBy: createdBy, catergory, likedBy.
+Valid orderBy: oldest, likeCount, commentCount.
+*/
+func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]*Post, error) {
 	qry := `SELECT id, puser_id, user_name, 
 			comment_count, like_count, dislike_count,
 			title, content, pcreated_at, category_ids
@@ -68,9 +72,9 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) (*[]post, e
 	}
 	defer rows.Close()
 
-	var posts []post
+	var posts []*Post
 	for rows.Next() {
-		var p post
+		var p Post
 		var catIDs string
 		err := rows.Scan(
 			&p.ID,
@@ -90,16 +94,16 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) (*[]post, e
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, p)
+		posts = append(posts, &p)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)
 	}
-	return &posts, nil
+	return posts, nil
 }
 
-// db.insetPost() into db and record the categories too
-func (db *DBContainer) InsertPost(p post) error {
+// db.InsetPost() into db and record the categories too
+func (db *DBContainer) InsertPost(p Post) error {
 	if err := db.isValidCategories(p.Categories); err != nil {
 		return err
 	}
@@ -123,7 +127,28 @@ func (db *DBContainer) InsertPost(p post) error {
 	}
 	for _, catID := range p.Categories {
 		_, err = db.conn.Exec(`INSERT INTO post_categories (post_id, category_id)
-								VALUES (?, ?)`, postID, catID)
+							   VALUES (?, ?)`, postID, catID)
+	}
+	return err
+}
+
+// db.UpdatePost() for updating post when user make changes
+func (db *DBContainer) UpdatePost(p Post) error {
+	qry := `UPDATE posts SET title = ?, content = ?	WHERE id = ?`
+	_, err := db.conn.Exec(qry,
+		p.Title,
+		p.Content, p.ID)
+	if err != nil {
+		return err
+	}
+	qry = `DELETE FROM post_categories WHERE post_id = ?`
+	_, err = db.conn.Exec(qry, p.ID)
+	if err != nil {
+		return err
+	}
+	for _, catID := range p.Categories {
+		_, err = db.conn.Exec(`INSERT INTO post_categories (post_id, category_id)
+							   VALUES (?, ?)`, p.ID, catID)
 	}
 	return err
 }
