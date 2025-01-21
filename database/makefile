@@ -15,10 +15,10 @@ $(DB_FILE): $(SCHEMA_FILE) $(ACCOUNT_TYPE_FILE) $(CATEGORY_FILE) $(VIEW_FILE)
 	sqlite3 $@ < $(SCHEMA_FILE)
 	# Insert account types
 	@echo "Inserting account types..."
-	sqlite3 $@ ".mode csv" ".import $(ACCOUNT_TYPE_FILE) accountType"
+	sqlite3 $@ < $(ACCOUNT_TYPE_FILE)
 	# Insert categories
 	@echo "Inserting categories..."
-	sqlite3 $@ ".mode csv" ".import $(CATEGORY_FILE) category"
+	sqlite3 $@ < $(CATEGORY_FILE)
 	# Create view
 	@echo "Creating view..."
 	sqlite3 $@ < $(VIEW_FILE)
