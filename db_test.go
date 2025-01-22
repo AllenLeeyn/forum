@@ -1,18 +1,11 @@
 package main
 
 import (
-	"forum/dbTools"
 	"testing"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
-
-type user = dbTools.User
-type session = dbTools.Session
-type post = dbTools.Post
-type feedback = dbTools.Feedback
-type comment = dbTools.Comment
 
 func isEqualStringSlice(a []string, b []string) bool {
 	if len(a) != len(b) {

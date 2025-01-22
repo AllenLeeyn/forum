@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"forum/dbTools"
 	"log"
 	"net/http"
 	"text/template"
@@ -11,24 +12,45 @@ import (
 //	Place for functions that executes different pages
 
 var tmpl *template.Template
+var db *dbTools.DBContainer
+
+type user = dbTools.User
+type session = dbTools.Session
+type post = dbTools.Post
+type feedback = dbTools.Feedback
+type comment = dbTools.Comment
+
+type postList struct {
+	Posts     []post
+	sessionID int
+}
 
 // Initializes all html files in templates folder
-func InitializeHtml() {
+func Init(dbMain *dbTools.DBContainer) {
 	var err error
 	tmpl, err = template.ParseGlob("template/*.html")
 	if err != nil {
 		log.Fatalf("Error parsing templates: %v", err)
 	}
+	db = dbMain
 }
 
 // Home page
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/" {
-		fmt.Println("Now we're on the home page")
-		CustomExecuteTemplate(w, "index.html", nil)
-	} else {
+	if r.URL.Path != "/" {
 		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
+		return
 	}
+	posts, err := db.SelectPosts("", "", -1)
+	if err != nil {
+		fmt.Println(err)
+		// something went wrong
+	}
+	fmt.Println(posts)
+	PostList := postList{
+		Posts: posts,
+	}
+	CustomExecuteTemplate(w, "homepage.html", PostList)
 }
 
 // Login page

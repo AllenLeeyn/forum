@@ -59,7 +59,7 @@ If invalid options or empty are given, default option is used.
 Valid filterBy: createdBy, catergory, likedBy.
 Valid orderBy: oldest, likeCount, commentCount.
 */
-func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]*Post, error) {
+func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, error) {
 	qry := `SELECT id, puser_id, user_name, 
 			comment_count, like_count, dislike_count,
 			title, content, pcreated_at, category_ids
@@ -72,7 +72,7 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]*Post, e
 	}
 	defer rows.Close()
 
-	var posts []*Post
+	var posts []Post
 	for rows.Next() {
 		var p Post
 		var catIDs string
@@ -94,7 +94,7 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]*Post, e
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, &p)
+		posts = append(posts, p)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)

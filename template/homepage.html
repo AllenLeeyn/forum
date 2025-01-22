@@ -18,17 +18,16 @@
     <div class="post-list">
       <button class="button" onclick="openPopup()">Create New Post</button>
 
+      {{range .Posts}}
       <div class="post">
-        <h2>Sample Post Title 1</h2>
-        <p>This is a sample post body.</p>
-        <div class="popular-comment">Popular Comment: "This is amazing!"</div>
+        <h2>{{.Title}}</h2>
+        <p>{{.Content}}</p>
+        <p>Like: {{.LikeCount}} Number of Comments: {{.CommentCount}}</p>
+        <p>Author: {{.UserName}} Created at: {{.CreatedAt}}</p>
+        <p>Categories: {{.Categories}}</p>
       </div>
 
-      <div class="post">
-        <h2>Sample Post Title 2</h2>
-        <p>Another post example body content here.</p>
-        <div class="popular-comment">Popular Comment: "Loved this post!"</div>
-      </div>
+      {{end}}
     </div>
 
     <div class="popup-overlay" id="popupOverlay"></div>
@@ -50,6 +49,6 @@
       </form>
     </div>
 
-    <script src="/script/homepage.js"></script>
+    <script src="/static/script/homepage.js"></script>
   </body>
 </html>
