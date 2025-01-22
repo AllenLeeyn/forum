@@ -9,37 +9,100 @@
   </head>
   <body>
     <div class="wrapper">
-      <div class="form-wrapper sign-up" id="form">
-        <form action="/signup" method="post">
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <h1>Welcome to Our Forum!</h1>
+        <p>
+          Join our community. Share your thoughts, discover new ideas, and make
+          amazing connections.
+        </p>
+      </div>
+
+      <!-- Sign-Up Form Section -->
+      <div class="form-wrapper sign-up">
+        <form action="/signup" method="post" id="form">
           <h2>Sign Up</h2>
+
+          <!-- Username -->
           <div class="input-group">
             <input type="text" name="username" required />
             <label for="username">Username</label>
           </div>
+
+          <!-- Email -->
           <div class="input-group">
             <input type="email" name="email" required />
             <label for="email">Email</label>
           </div>
+
+          <!-- Password -->
           <div class="input-group">
             <input type="password" name="password" required />
             <label for="password">Password</label>
           </div>
-          <div class="remember">
-            <label
-              ><input type="checkbox" /> I agree to the terms &
-              conditions</label
-            >
+
+          <!-- Confirm Password -->
+          <div class="input-group">
+            <input type="password" name="confirm-password" required />
+            <label for="confirm-password">Confirm Password</label>
           </div>
-          <button type="submit">Sign Up</button>
-          <div class="signUp-link">
+
+          <div class="terms">
             <p>
-              Already have an account?
-              <a href="/login">Sign In</a>
+              By signing up, you agree to our
+              <a href="terms"> terms</a>.
             </p>
+
+          <!-- Submit Button -->
+          <button type="submit">Sign Up</button>
+
+          <!-- Link to Login -->
+          <div class="signIn-link">
+            <p>Already have an account? <a href="/login">Login</a></p>
           </div>
         </form>
       </div>
     </div>
   </body>
-  <script src="/script/registeration.js"></script>
+  <script>
+    const usernameField = document.querySelector("input[name='username']");
+    const passwordField = document.querySelector("input[name='password']");
+    const form = document.getElementById("form");
+
+    let errorElement = document.createElement("div");
+    errorElement.setAttribute("id", "error");
+    errorElement.style.color = "#ff847c";
+    errorElement.style.marginTop = "10px";
+    errorElement.style.marginBottom = "10px";
+    form.appendChild(errorElement);
+
+    form.addEventListener("submit", (e) => {
+      let messages = [];
+
+      // Validate username
+      if (usernameField.value.trim() === "") {
+        messages.push("Username is required.");
+      } else if (usernameField.value.length > 25) {
+        messages.push("Username must be less than 25 characters.");
+      } else if (!/^[\u0000-\u007F]+$/.test(usernameField.value)) {
+        messages.push("Username must not contain non-ASCII characters.");
+      }
+
+      // Validate password
+      if (passwordField.value.trim() === "") {
+        messages.push("Password is required.");
+      } else if (passwordField.value.length <= 6) {
+        messages.push("Password must be longer than 6 characters.");
+      } else if (passwordField.value.length >= 20) {
+        messages.push("Password must be less than 20 characters.");
+      } else if (passwordField.value.toLowerCase() === "password") {
+        messages.push("Password cannot be 'password'.");
+      }
+
+      if (messages.length > 0) {
+        e.preventDefault();
+        errorElement.innerText = messages.join("\n");
+      }
+    });
+  </script>
 </html>

@@ -1,147 +1,372 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
 }
 
+/* General Styles */
 body {
-  background: #000;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
+  background-color: #faf3e0; /* Warm Pastels Theme: Cream */
+  color: #2c2c2c; /* Warm Pastels Theme: Dark Brown */
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 header {
-  width: 100%;
-  background-color: #333;
-  padding: 15px 20px;
+  background-color: #ff847c; /* Warm Pastels Theme: Peach */
+  color: #fff; /* White */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 10px #0ef;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-header h1 a {
-  color: #0ef;
-  text-decoration: none;
+header .logo a {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fff;
 }
 
-nav a {
-  color: #fff;
+header nav a {
+  color: #fff; /* White */
   text-decoration: none;
   margin-left: 15px;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  font-size: 16px;
 }
 
-nav a:hover {
-  color: #0ef;
+header nav a:hover {
+  color: #444;
 }
 
-.post-list {
-  width: 80%;
-  margin: 20px auto;
+.container {
+  display: flex;
+  margin: 20px;
+  flex-wrap: wrap;
 }
 
-.button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0ef;
-  color: #000;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 500;
-  text-align: center;
-  box-shadow: 0 0 10px #0ef;
-  transition: background-color 0.3s ease;
+/* Sidebar */
+.sidebar {
+  width: 20%;
+  background-color: #faf3e0; /* Cream */
+  color: #2c2c2c; /* Dark Brown */
+  padding: 15px;
+  border-right: 1px solid #99b898; /* Soft Green */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.button:hover {
-  background-color: #08c;
-}
-
-.post {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #0ef;
-  margin-bottom: 15px;
-}
-
-.post h2 {
-  margin-bottom: 10px;
-  color: #0ef;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.post p {
-  color: #bbb;
-}
-
-.popular-comment {
-  margin-top: 10px;
-  color: #999;
-  font-style: italic;
-}
-
-.popup-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 999;
-}
-
-.popup {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #333;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px #0ef;
-  z-index: 1000;
-}
-
-.popup h2 {
-  margin-bottom: 15px;
-  color: #0ef;
+.sidebar h2 {
   font-size: 18px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ff847c; /* Peach */
+  padding-bottom: 5px;
 }
 
-.popup form label {
-  font-weight: 500;
-  color: #fff;
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #2c2c2c; /* Dark Brown */
+  font-size: 16px;
+}
+
+.sidebar ul li a:hover {
+  color: #ff847c; /* Peach */
+}
+
+/* Right Sidebar */
+.right-sidebar {
+  width: 20%;
+  background-color: #faf3e0; /* Cream */
+  color: #2c2c2c; /* Dark Brown */
+  padding: 15px;
+  border-left: 1px solid #99b898; /* Soft Green */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-sidebar .widget {
+  background-color: #faf3e0; /* Cream */
+  padding: 15px;
+  border: 1px solid #99b898; /* Soft Green */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-sidebar h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.right-sidebar p {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.right-sidebar .start-thread-btn {
   display: block;
-  margin: 10px 0 5px;
-}
-
-.popup form input,
-.popup form textarea {
-  width: 100%;
+  text-decoration: none;
+  color: #2c2c2c; /* Dark Brown */
+  font-size: 16px;
   padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #555;
-  background: #222;
-  color: #fff;
-  outline: none;
+  background-color: #fff; /* White */
+  border: none; /* Removed border to prevent the line */
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.popup form button {
-  margin-top: 10px;
-  display: inline-block;
+.right-sidebar .start-thread-btn:hover {
+  background-color: #ff847c; /* Peach */
+  color: #fff; /* White */
+}
+
+/* Main Content */
+.content {
+  width: 60%;
+  padding: 15px;
+}
+
+.content h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.post-block {
+  padding: 15px;
+  margin: 20px 0;
+  background: transparent;
+  border-top: 1px solid #ddd; /* top line */
+  border-bottom: 1px solid #ddd; /* bottom line */
+  box-shadow: none; /* Removed box shadow */
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.post-title a {
+  text-decoration: none;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.post-title a:hover {
+  color: #ff847c; /* Peach */
+}
+
+.post-body {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2c2c2c; /* Dark Brown */
+}
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-button {
+  background-color: #99b898; /* Soft Green */
+  color: #fff; /* White */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.icon-button:hover {
+  background-color: #ff847c; /* Peach */
+}
+
+/* Filter Section */
+.filter-section {
+  margin-top: 20px;
+  background-color: #faf3e0; /* Cream */
+  padding: 15px;
+  border: 1px solid #99b898; /* Soft Green */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section h4 {
+  font-size: 18px;
+  color: #2c2c2c; /* Dark Brown */
+  margin-bottom: 10px;
+}
+
+.filter-section label {
+  font-size: 16px;
+  color: #2c2c2c; /* Dark Brown */
+  display: block;
+  margin-bottom: 5px;
+}
+
+.filter-section select,
+.filter-section input[type="text"] {
+  font-size: 16px;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #99b898; /* Soft Green */
+}
+
+.filter-section button {
+  background-color: #ff847c; /* Peach */
+  color: #fff; /* White */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+}
+
+.filter-section button:hover {
+  background-color: #ff5e5b; /* Slightly darker peach */
+}
+
+/* Dark Mode Styles */
+
+/* Body */
+body.dark-mode {
+  background-color: #1f1f1f; /* Dark background */
+  color: #fff; /* Light text */
+}
+
+/* Header */
+body.dark-mode header {
+  background-color: #333333; /* Dark background */
+}
+
+body.dark-mode header .logo {
+  color: #e0e0e0; /* Light text */
+}
+
+body.dark-mode header nav a {
+  color: #e0e0e0; /* Light text */
+}
+
+body.dark-mode header nav a:hover {
+  color: #ff847c; /* Peach */
+}
+
+/* Sidebar */
+body.dark-mode .sidebar {
+  background-color: #2c2c2c; /* Dark sidebar */
+  color: #e0e0e0; /* Light text */
+  border-right: 1px solid #444444; /* Darker border */
+}
+
+/* Sidebar links */
+body.dark-mode .sidebar ul li a {
+  color: #e0e0e0; /* Light text */
+}
+
+body.dark-mode .sidebar ul li a:hover {
+  color: #ff847c; /* Peach */
+}
+
+/* Right Sidebar */
+body.dark-mode .right-sidebar {
+  background-color: #2c2c2c; /* Dark sidebar */
+  color: #e0e0e0; /* Light text */
+  border-left: 1px solid #444444; /* Darker border */
+}
+
+body.dark-mode .right-sidebar .widget {
+  border: 1px solid #99b898; /* Soft Green */
+
+  background-color: #444; /* Dark background for widgets */
+  color: #e0e0e0; /* Light text */
+  border: 1px solid #444444; /* Darker border */
+}
+
+/* Post Block */
+body.dark-mode .post-block {
+  background-color: #333333; /* Dark background for posts */
+  color: #e0e0e0; /* Light text */
+  border-top: 1px solid #444444; /* Darker top border */
+  border-bottom: 1px solid #444444; /* Darker bottom border */
+}
+
+body.dark-mode .post-body {
+  color: #e0e0e0; /* Light text */
+}
+
+/* Icon Buttons */
+body.dark-mode .icon-button {
+  background-color: #99b898; /* Soft Green */
+  /* Dark button background */
+  color: #e0e0e0; /* Light text */
+}
+
+body.dark-mode .icon-button:hover {
+  background-color: #ff847c; /* Peach on hover */
+}
+
+/* Right Sidebar */
+body.dark-mode .right-sidebar {
+  background-color: #2c2c2c; /* Dark sidebar */
+  color: #e0e0e0; /* Light text */
+  border-left: 1px solid #444444; /* Darker border */
+}
+
+/* Dark Mode Toggle Icon */
+/* Icon Button Styling for Header */
+header .dark-mode-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+header .dark-mode-toggle i {
+  color: #fff;
+}
+
+body.dark-mode .dark-mode-toggle i {
+  color: #e0e0e0;
+}
+
+body.dark-mode .dark-mode-toggle:hover i {
+  color: #ff847c; /* Peach */
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+  background-color: transparent;
+}
+
+body.dark-mode a {
+  color: #fff;
+}
+
+body.dark-mode h2 {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .sidebar,
+  .right-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .content {
+    width: 100%;
+  }
 }
