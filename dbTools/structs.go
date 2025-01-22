@@ -10,7 +10,7 @@ type User struct {
 	TypeID    int
 	Name      string
 	Email     string
-	PwHash    string
+	PwHash    []byte
 	RegDate   time.Time
 	LastLogin time.Time
 }
