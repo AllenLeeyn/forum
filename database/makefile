@@ -1,10 +1,10 @@
 # Variables
 DB_FILE = forum.db
-SCHEMA_FILE = schema.txt
-ACCOUNT_TYPE_FILE = accountType.txt
-CATEGORY_FILE = category.txt
-VIEW_FILE = view.txt
-TRIGGER_FILE = trigger.txt
+SCHEMA_FILE = schema.sql
+ACCOUNT_TYPE_FILE = accountType.sql
+CATEGORY_FILE = category.sql
+VIEW_FILE = view.sql
+TRIGGER_FILE = trigger.sql
 
 # Default target
 all: $(DB_FILE)

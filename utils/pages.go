@@ -20,11 +20,6 @@ type post = dbTools.Post
 type feedback = dbTools.Feedback
 type comment = dbTools.Comment
 
-type postList struct {
-	Posts     []post
-	sessionID int
-}
-
 // Initializes all html files in templates folder
 func Init(dbMain *dbTools.DBContainer) {
 	var err error
@@ -41,16 +36,22 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
 		return
 	}
-	posts, err := db.SelectPosts("", "", -1)
+	// check session from cookie
+	/* 	sID := r.Cookies()
+	   	session, err := db.SelectActiveSessionBy("id", sID)
+	   	if err != nil {
+	   		// something went wrong
+	   	}
+	   	if session.IsActive {
+	   		// login user
+	   	} */
+	Posts, err := db.SelectPosts("", "", -1)
 	if err != nil {
 		fmt.Println(err)
 		// something went wrong
 	}
-	fmt.Println(posts)
-	PostList := postList{
-		Posts: posts,
-	}
-	CustomExecuteTemplate(w, "homepage.html", PostList)
+	fmt.Println(Posts)
+	CustomExecuteTemplate(w, "homepage.html", Posts)
 }
 
 // Login page
