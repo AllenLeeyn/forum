@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start a Thread</title>
+    <link rel="stylesheet" href="/static/start-thread.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo"><a href="/">Forum</a></div>
+      <nav>
+        <a href="#">Articles</a>
+        <a href="#">Social</a>
+        <a href="/login">Login</a>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </nav>
+    </header>
+
+    <div class="wrapper">
+      <div class="start-thread-container">
+        <!-- Left Sidebar (User Info) -->
+        <div class="user-info">
+          <h2>User Info</h2>
+          <p><strong>Username:</strong> milli</p>
+          <p><strong>Member Since:</strong> Jan 2025</p>
+          <p><strong>Posts:</strong> 10</p>
+          <p><strong>Reputation:</strong> 200</p>
+        </div>
+
+        <!-- Right Sidebar (Thread Post) -->
+        <div class="thread-post">
+          <h2>Start a New Thread</h2>
+          <form action="/post-thread" method="post" id="post-thread-form">
+            <div class="input-group">
+              <input
+                type="text"
+                name="threadTitle"
+                placeholder="Thread Title"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <textarea
+                name="threadContent"
+                placeholder="Write your thread content here..."
+                rows="10"
+                required
+              ></textarea>
+            </div>
+            <div class="input-group">
+              <button type="submit">Post Thread</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+      }
+    </script>
+  </body>
+</html>

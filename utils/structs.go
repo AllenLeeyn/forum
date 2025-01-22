@@ -47,3 +47,8 @@ type Post struct {
 type Posts struct {
 	index []Post
 }
+
+type ErrorData struct {
+	ErrorMessage string
+	ErrorCode    int
+}

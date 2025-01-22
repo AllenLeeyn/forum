@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"forum/dbTools"
 	"log"
 	"net/http"
 	"text/template"
@@ -11,24 +12,45 @@ import (
 //	Place for functions that executes different pages
 
 var tmpl *template.Template
+var db *dbTools.DBContainer
+
+type user = dbTools.User
+type session = dbTools.Session
+type post = dbTools.Post
+type feedback = dbTools.Feedback
+type comment = dbTools.Comment
+
+type postList struct {
+	Posts     []post
+	sessionID int
+}
 
 // Initializes all html files in templates folder
-func InitializeHtml() {
+func Init(dbMain *dbTools.DBContainer) {
 	var err error
 	tmpl, err = template.ParseGlob("template/*.html")
 	if err != nil {
 		log.Fatalf("Error parsing templates: %v", err)
 	}
+	db = dbMain
 }
 
 // Home page
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/" {
-		fmt.Println("Now we're on the home page")
-		CustomExecuteTemplate(w, "index.html", nil)
-	} else {
-		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
+	if r.URL.Path != "/" {
+		ExecuteError(w, http.StatusNotFound, "Page Not Found")
+		return
 	}
+	posts, err := db.SelectPosts("", "", -1)
+	if err != nil {
+		fmt.Println(err)
+		// something went wrong
+	}
+	fmt.Println(posts)
+	PostList := postList{
+		Posts: posts,
+	}
+	CustomExecuteTemplate(w, "homepage.html", PostList)
 }
 
 // Login page
@@ -62,7 +84,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 // Register page
 func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		CustomExecuteTemplate(w, "register.html", nil)
+		CustomExecuteTemplate(w, "signup.html", nil)
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
 			//	Error parsing data
@@ -127,4 +149,13 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
+}
+
+// Terms page
+func TermsPage(w http.ResponseWriter, r *http.Request) {
+	CustomExecuteTemplate(w, "terms.html", nil)
+}
+
+func StartThread(w http.ResponseWriter, r *http.Request) {
+	CustomExecuteTemplate(w, "start-thread.html", nil)
 }

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -44,6 +45,19 @@ func CustomExecuteTemplate(w http.ResponseWriter, name string, data interface{})
 	err := tmpl.ExecuteTemplate(w, name, data)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
+	}
+}
+
+// Execute error page if possible, otherwise use inbuilt http error
+func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
+	errorData := ErrorData{
+		ErrorCode:    errorStatus,
+		ErrorMessage: errorMessage,
+	}
+	err := tmpl.ExecuteTemplate(w, "error.html", errorData)
+	if err != nil {
+		message := fmt.Sprintf("Error %d\n%s", errorStatus, errorMessage)
+		http.Error(w, message, http.StatusNotFound)
 	}
 }
 
