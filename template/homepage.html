@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GG</title>
+    <link rel="stylesheet" href="/static/homepage.css" />
+  </head>
+  <body>
+    <header>
+      <h1><a href="localhost:8080/">Grit:Gossip</a></h1>
+      <nav>
+        <a href="/login" id="logIn">Log In</a>
+        <a href="/signup" id="signUp">Sign Up</a>
+      </nav>
+    </header>
+
+    <div class="post-list">
+      <button class="button" onclick="openPopup()">Create New Post</button>
+
+      <div class="post">
+        <h2>Sample Post Title 1</h2>
+        <p>This is a sample post body.</p>
+        <div class="popular-comment">Popular Comment: "This is amazing!"</div>
+      </div>
+
+      <div class="post">
+        <h2>Sample Post Title 2</h2>
+        <p>Another post example body content here.</p>
+        <div class="popular-comment">Popular Comment: "Loved this post!"</div>
+      </div>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+
+    <div class="popup" id="popup">
+      <h2>Create New Post</h2>
+      <form>
+        <label for="title">Title:</label><br />
+        <input type="text" id="title" name="title" required /><br /><br />
+
+        <label for="body">Body:</label><br />
+        <textarea id="body" name="body" rows="4" required></textarea
+        ><br /><br />
+
+        <button type="submit" class="button">Post</button>
+        <button type="button" class="button" onclick="closePopup()">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <script src="/script/homepage.js"></script>
+  </body>
+</html>

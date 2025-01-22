@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="/static/signup.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="form-wrapper sign-up" id="form">
+        <form action="/register" method="post">
+          <h2>Sign Up</h2>
+          <div class="input-group">
+            <input type="text" name="username" required />
+            <label for="username">Username</label>
+          </div>
+          <div class="input-group">
+            <input type="email" name="email" required />
+            <label for="email">Email</label>
+          </div>
+          <div class="input-group">
+            <input type="password" name="password" required />
+            <label for="password">Password</label>
+          </div>
+          <div class="remember">
+            <label
+              ><input type="checkbox" /> I agree to the terms &
+              conditions</label
+            >
+          </div>
+          <button type="submit">Sign Up</button>
+          <div class="signUp-link">
+            <p>
+              Already have an account?
+              <a href="/login">Sign In</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="/script/registeration.js"></script>
+</html>

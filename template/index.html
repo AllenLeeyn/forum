@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/static/home.css"/>
+    <link rel="stylesheet" href="/static/header.css"/>
+
+    <title>Homepage</title>
+  </head>
+  <body>
+    <header>
+      <div id="header-container">
+
+        <a href="http://localhost:8080/"><div id="logo">Grit:Gossip</div></a>
+        <nav id="desktop-nav">
+            <ul id="desktop-nav-list">
+                <a href="http://localhost:8080/login"><div class="nav-item">sign in</div></a>
+                <a href="http://localhost:8080/register"><div class="nav-item">register</div></a>
+            </ul>
+        </nav>
+      
+    </header>
+    <div class="container">
+      <div class="search-box">
+        <div>
+          <select name="" id="">
+            <option value="everything">Everything</option>
+            <option value="everything">Created</option>
+            <option value="everything">Newest</option>
+            <option value="everything">Most Liked</option>
+          </select>
+        </div>
+      </div>
+      <div class="forum-body">
+        <div class="forum-title">
+          <h1>Grit:Information</h1>
+        </div>
+
+        <div class="forum-row">
+          <div class="forum-icon forum-column">
+            <i class="bi bi-chat-square-dots-fill">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-chat-square-dots-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"
+                />
+              </svg>
+            </i>
+          </div>
+
+          <div class="forum-description/overview forum-column">
+            <h1><a href="">Grit:Description (Title)</a></h1>
+            <p>
+              Grit:Description:Content: just type anything here to see the
+              newest gossip to the most famous project discuusiom
+            </p>
+          </div>
+
+          <div class="forum-statistics forum-column">
+            <span> 30 Posts | 15 Topics </span>
+          </div>
+
+          <div class="forum-info forum-column">
+            <b><a href="">Last Post</a></b> by <a href="">Allen</a>
+            <br />
+            on 2 Jan 2025
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
