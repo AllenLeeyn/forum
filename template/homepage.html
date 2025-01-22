@@ -3,55 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<<<<<<< HEAD
-    <title>GG</title>
-    <link rel="stylesheet" href="/static/homepage.css" />
-  </head>
-  <body>
-    <header>
-      <h1><a href="localhost:8080/">Grit:Gossip</a></h1>
-      <nav>
-        <a href="/login" id="logIn">Log In</a>
-        <a href="/signup" id="signUp">Sign Up</a>
-      </nav>
-    </header>
-
-    <div class="post-list">
-      <button class="button" onclick="openPopup()">Create New Post</button>
-
-      {{range .}}
-      <div class="post">
-        <h2>{{.Title}}</h2>
-        <p>{{.Content}}</p>
-        <p>Like: {{.LikeCount}} Number of Comments: {{.CommentCount}}</p>
-        <p>Author: {{.UserName}} Created at: {{.CreatedAt}}</p>
-        <p>Categories: {{.Categories}}</p>
-      </div>
-
-      {{end}}
-    </div>
-
-    <div class="popup-overlay" id="popupOverlay"></div>
-
-    <div class="popup" id="popup">
-      <h2>Create New Post</h2>
-      <form>
-        <label for="title">Title:</label><br />
-        <input type="text" id="title" name="title" required /><br /><br />
-
-        <label for="body">Body:</label><br />
-        <textarea id="body" name="body" rows="4" required></textarea
-        ><br /><br />
-
-        <button type="submit" class="button">Post</button>
-        <button type="button" class="button" onclick="closePopup()">
-          Cancel
-        </button>
-      </form>
-    </div>
-
-    <script src="/static/script/homepage.js"></script>
-=======
     <title>Forum Topics</title>
     <link rel="stylesheet" href="/static/homepage.css" />
     <link
@@ -95,47 +46,26 @@
         <section id="general">
           <h2>General Discussion</h2>
           <!-- Post Block -->
+           {{range .}}
           <div class="post-block">
             <h3 class="post-title">
-              <a href="#"> Allen invasion and they happen to be Pineapples</a>
+              <a href="#"> {{.Title}}</a>
             </h3>
             <p class="post-body">
-              <span style="color: brown">ANANAS</span> , the pineapple King
-              insists humans to call him "Your Highness"<br />
-              for its RICH HARD flavour. MILLIons of people refuse to do so and
-              ...read more
+              {{.Content}}
             </p>
 
             
             <div class="post-actions">
               <button class="icon-button">
-                <i class="fas fa-heart"></i> <span>3</span>
+                <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
               </button>
               <button class="icon-button">
-                <i class="fas fa-comment"></i> <span>5</span>
+                <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
               </button>
             </div>
           </div>
-          <!-- Post Block -->
-          <div class="post-block">
-            <h3 class="post-title">
-              <a href="#"> Man UGhhhhhhhhhhhhhhhhhhhh</a>
-            </h3>
-            <p class="post-body">
-              A group of men rejecting my project cause apparently it's too
-              <span style="color: pink"> PINK!!!</span>
-            </p>
-
-            
-            <div class="post-actions">
-              <button class="icon-button">
-                <i class="fas fa-heart"></i> <span>7</span>
-              </button>
-              <button class="icon-button">
-                <i class="fas fa-comment"></i> <span>12</span>
-              </button>
-            </div>
-          </div>
+          {{end}}
         </section>
       </div>
 
@@ -171,6 +101,5 @@
         document.body.classList.toggle("dark-mode");
       }
     </script>
->>>>>>> milli
   </body>
 </html>

@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
-
+/* General Styles */
 * {
   margin: 0;
   padding: 0;
@@ -12,30 +11,41 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #000;
+  background-color: #faf3e0; /* Cream */
+  color: #2c2c2c; /* Dark Brown */
 }
 
+/* Wrapper */
 .wrapper {
-  position: relative;
-  width: 400px;
-  height: 500px;
-  background: #000;
-  box-shadow: 0 0 50px #0ef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 800px; /* Adjusted width for both sections */
+  height: 500px; /* Adjusted height */
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   padding: 40px;
   overflow: hidden;
+  gap: 30px; /* Space between sections */
 }
 
-h2 {
-  font-size: 30px;
-  color: #fff;
+/* Form Wrapper */
+.form-wrapper {
+  width: 45%;
+}
+
+.form-wrapper h2 {
+  font-size: 24px;
+  color: #2c2c2c; /* Dark Brown */
   text-align: center;
 }
 
+/* Input Group */
 .input-group {
   position: relative;
-  margin: 30px 0;
-  border-bottom: 2px solid #fff;
+  margin: 20px 0;
+  border-bottom: 2px solid #99b898; /* Soft Green */
 }
 
 .input-group label {
@@ -44,16 +54,16 @@ h2 {
   left: 5px;
   transform: translateY(-50%);
   font-size: 16px;
-  color: #fff;
+  color: #2c2c2c;
   pointer-events: none;
   transition: 0.5s;
 }
 
 .input-group input {
-  width: 320px;
+  width: 100%;
   height: 40px;
   font-size: 16px;
-  color: #fff;
+  color: #2c2c2c;
   padding: 0 5px;
   background: transparent;
   border: none;
@@ -63,29 +73,32 @@ h2 {
 .input-group input:focus ~ label,
 .input-group input:valid ~ label {
   top: -5px;
+  font-size: 12px;
+  color: #ff847c; /* Peach */
 }
 
+/* Remember Checkbox */
 .remember {
   margin: -5px 0 15px 5px;
 }
 
 .remember label {
-  color: #fff;
+  color: #2c2c2c; /* Dark Brown */
   font-size: 14px;
 }
 
 .remember label input {
-  accent-color: #0ef;
+  accent-color: #99b898; /* Soft Green */
 }
 
+/* Button */
 button {
   position: relative;
   width: 100%;
   height: 40px;
-  background: #0ef;
-  box-shadow: 0 0 10px #0ef;
+  background: #ff847c;
   font-size: 16px;
-  color: #000;
+  color: #fff;
   font-weight: 500;
   cursor: pointer;
   border-radius: 30px;
@@ -93,6 +106,11 @@ button {
   outline: none;
 }
 
+button:hover {
+  background: #e97164;
+}
+
+/* Sign-Up Link */
 .signUp-link {
   font-size: 14px;
   text-align: center;
@@ -100,15 +118,63 @@ button {
 }
 
 .signUp-link p {
-  color: #fff;
+  color: #2c2c2c;
 }
 
 .signUp-link p a {
-  color: #0ef;
+  color: #ff847c;
   text-decoration: none;
   font-weight: 500;
 }
 
 .signUp-link p a:hover {
   text-decoration: underline;
+}
+
+/* Welcome Section */
+.welcome-section {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.welcome-section h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.welcome-section p {
+  font-size: 16px;
+  color: #2c2c2c;
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.welcome-section {
+  animation: fadeIn 1s ease-out;
+}
+
+.form-wrapper {
+  animation: slideInLeft 1s ease-out;
 }

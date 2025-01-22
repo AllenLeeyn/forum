@@ -1,7 +1,6 @@
 package utils
 
 import (
-<<<<<<< HEAD
 	"fmt"
 	"forum/dbTools"
 	"log"
@@ -14,12 +13,6 @@ import (
 
 var tmpl *template.Template
 var db *dbTools.DBContainer
-
-type user = dbTools.User
-type session = dbTools.Session
-type post = dbTools.Post
-type feedback = dbTools.Feedback
-type comment = dbTools.Comment
 
 // Initializes all html files in templates folder
 func Init(dbMain *dbTools.DBContainer) {
@@ -51,7 +44,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		// something went wrong
 	}
-	fmt.Println(Posts)
 	CustomExecuteTemplate(w, "homepage.html", Posts)
 }
 
@@ -152,48 +144,3 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
-=======
-	"html/template"
-	"log"
-	"net/http"
-)
-
-var tpl *template.Template
-
-
-func InitializeHtml() {
-	var err error
-	tpl, err = template.ParseGlob("template/*.html") // adjust path based on folder structure
-	if err != nil {
-		log.Fatal("Error parsing templates: ", err)
-	}
-}
-
-// LoginPage handler
-func LoginPage(w http.ResponseWriter, r *http.Request) {
-
-
-	err := tpl.ExecuteTemplate(w, "login.html", nil)
-	if err != nil {
-		log.Fatal("error executing login page ")
-	}
-}
-
-func SignUpPage(w http.ResponseWriter, r *http.Request) {
-
-	err := tpl.ExecuteTemplate(w, "signup.html", nil)
-	if err != nil {
-		log.Fatal("Error executing login page: ", err)
-	}
-}
-
-
-func HomePage(w http.ResponseWriter, r *http.Request) {
-
-	err := tpl.ExecuteTemplate(w, "homepage.html", nil)
-	if err != nil {
-		log.Fatal("error executing home page ")
-	}
-}
-
->>>>>>> milli
