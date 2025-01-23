@@ -18,8 +18,9 @@ type homepageData struct {
 }
 
 type postpageData struct {
-	Post     post
-	Comments []comment
+	Post          post
+	Comments      []comment
+	SessionCookie *http.Cookie
 }
 
 // Place structs and any global variables/data in here

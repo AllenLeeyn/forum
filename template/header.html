@@ -5,7 +5,12 @@
   <nav>
     <a href="#">Articles</a>
     <a href="#">Social</a>
-    <a href="/login">Login</a>
+    {{if .SessionCookie}}
+      <a href="/profile-page">Profile</a>
+      <a href="/logout">Log Out</a>
+    {{else}}
+      <a href="/login">Login</a>
+    {{end}}
     <!-- Dark mode toggle button -->
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">
       <i class="fas fa-moon"></i>
