@@ -1,7 +1,7 @@
 package dbTools
 
 // db.SelectComments() select all comments made in a post.
-func (db *DBContainer) SelectComments(id int, orderBy string) ([]*Comment, error) {
+func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error) {
 	qry := `SELECT * FROM comments WHERE post_id = ?`
 	orderByQry := ` ORDER BY created_at DESC`
 	switch orderBy {
@@ -17,7 +17,7 @@ func (db *DBContainer) SelectComments(id int, orderBy string) ([]*Comment, error
 		return nil, err
 	}
 	defer rows.Close()
-	var comments []*Comment
+	var comments []Comment
 	for rows.Next() {
 		var c Comment
 		err := rows.Scan(
@@ -32,7 +32,7 @@ func (db *DBContainer) SelectComments(id int, orderBy string) ([]*Comment, error
 		if err != nil {
 			return nil, err
 		}
-		comments = append(comments, &c)
+		comments = append(comments, c)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)

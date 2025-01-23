@@ -68,7 +68,7 @@ func (db *DBContainer) isValidCategories(categories []int) error {
 		return fmt.Errorf("no categories")
 	}
 	for _, catID := range categories {
-		if catID == 0 || catID > len(db.Categories)+1 {
+		if catID > len(db.Categories) {
 			return fmt.Errorf("invalid category")
 		}
 	}

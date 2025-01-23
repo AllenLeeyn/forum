@@ -1,12 +1,16 @@
 {{define "header"}}
 
 <header>
-  <div id="header-container">
-    <a href="http://localhost:8080/">
-      <div id="logo">Logo</div>
-    </a>
-
-    <nav id="web-nav">Sign up</nav>
-  </div>
+  <div class="logo"> <a href="/">Forum</a></div>
+  <nav>
+    <a href="#">Articles</a>
+    <a href="#">Social</a>
+    <a href="/login">Login</a>
+    <!-- Dark mode toggle button -->
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+      <i class="fas fa-moon"></i>
+      <!-- Dark mode icon -->
+    </button>
+  </nav>
 </header>
 {{end}}

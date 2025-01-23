@@ -34,20 +34,22 @@ func getOrderByQuery(orderBy string) string {
 }
 
 // splitCategoryIDs() into []int to store in Post struct
-func splitCategoryIDs(catIDs string) ([]int, error) {
+func (db *DBContainer) splitCategoryIDs(catIDs string) ([]int, string, error) {
 	if catIDs == "" {
-		return nil, fmt.Errorf("empty string")
+		return nil, "", fmt.Errorf("empty string")
 	}
 	var result []int
+	var resultNames string
 	categories := strings.Split(catIDs, ",")
 	for _, idStr := range categories {
 		if id, err := strconv.Atoi(idStr); err == nil {
 			result = append(result, id)
+			resultNames = resultNames + db.Categories[id] + ", "
 		} else {
-			return nil, err
+			return nil, "", err
 		}
 	}
-	return result, nil
+	return result, resultNames[:len(resultNames)-2], nil
 }
 
 /*
@@ -90,9 +92,12 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, er
 		if err != nil {
 			return nil, err
 		}
-		p.Categories, err = splitCategoryIDs(catIDs)
+		p.Categories, p.CatNames, err = db.splitCategoryIDs(catIDs)
 		if err != nil {
 			return nil, err
+		}
+		if len(p.Content) > 50 {
+			p.Content = p.Content[:50] + "..."
 		}
 		posts = append(posts, p)
 	}
@@ -100,6 +105,36 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, er
 		return nil, checkErrNoRows(err)
 	}
 	return posts, nil
+}
+
+func (db *DBContainer) SelectPost(id int) (*Post, error) {
+	qry := `SELECT id, puser_id, user_name, 
+			comment_count, like_count, dislike_count,
+			title, content, pcreated_at, category_ids
+			FROM v_posts
+			WHERE id = ?`
+	var p Post
+	var catIDs string
+	err := db.conn.QueryRow(qry, id).Scan(
+		&p.ID,
+		&p.UserID,
+		&p.UserName,
+		&p.CommentCount,
+		&p.LikeCount,
+		&p.DislikeCount,
+		&p.Title,
+		&p.Content,
+		&p.CreatedAt,
+		&catIDs)
+
+	if err != nil {
+		return nil, checkErrNoRows(err)
+	}
+	p.Categories, p.CatNames, err = db.splitCategoryIDs(catIDs)
+	if err != nil {
+		return nil, err
+	}
+	return &p, err
 }
 
 // db.InsetPost() into db and record the categories too

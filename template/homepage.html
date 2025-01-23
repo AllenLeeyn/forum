@@ -29,14 +29,12 @@
       <div class="sidebar move">
         <h2>Categories</h2>
         <ul>
-          <li><a href="#general">General Discussion</a></li>
-          <li><a href="#tech">Tech and Development</a></li>
-          <li><a href="#gaming">Gaming</a></li>
-          <li><a href="#entertainment">Entertainment and Media</a></li>
-          <li><a href="#lifestyle">Lifestyle and Health</a></li>
-          <li><a href="#creative">Creative Corner</a></li>
-          <li><a href="#debate">Controversial and Debate</a></li>
-          <li><a href="#humor">Humor and Fun</a></li>
+          <li><a href="/">All</a></li>
+          <li><a href="?filterBy=createdBy">My posts</a></li>
+          <li><a href="?filterBy=likedBy">Liked posts</a></li>
+          {{range $index, $cat := .Categories}}
+          <li><a href="?filterBy=catergory&id={{$index}}">{{$cat}}</a></li>
+          {{end}}
         </ul>
       </div>
 
@@ -46,14 +44,12 @@
         <section id="general">
           <h2>General Discussion</h2>
           <!-- Post Block -->
-           {{range .}}
+           {{range .Posts}}
           <div class="post-block">
             <h3 class="post-title">
-              <a href="#"> {{.Title}}</a>
+              <a href="/post?id={{.ID}}">[{{.UserName}}] {{.Title}}</a>
             </h3>
-            <p class="post-body">
-              {{.Content}}
-            </p>
+            <pre class="post-body">{{.Content}}</pre>
 
             
             <div class="post-actions">
@@ -63,7 +59,16 @@
               <button class="icon-button">
                 <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
               </button>
+              <button class="icon-button">
+                <i class="fas fa-comment"></i> <span>{{.CatNames}}</span>
+              </button>
             </div>
+          </div>
+          {{else}}
+          <div class="post-block">
+            <h3 class="post-title">
+              No post found
+            </h3>
           </div>
           {{end}}
         </section>

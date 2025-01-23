@@ -5,6 +5,7 @@ ACCOUNT_TYPE_FILE = accountType.sql
 CATEGORY_FILE = category.sql
 VIEW_FILE = view.sql
 TRIGGER_FILE = trigger.sql
+WELCOME_FILE = welcomeMsg.sql
 
 # Default target
 all: $(DB_FILE)
@@ -26,6 +27,8 @@ $(DB_FILE): $(SCHEMA_FILE) $(ACCOUNT_TYPE_FILE) $(CATEGORY_FILE) $(VIEW_FILE)
 	# Create trigger
 	@echo "Creating trigger..."
 	sqlite3 $@ < $(TRIGGER_FILE)
+	@echo "Creating welcome..."
+	sqlite3 $@ < $(WELCOME_FILE)
 
 # Clean target to remove the database file
 clean:

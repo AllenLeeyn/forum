@@ -258,14 +258,14 @@ func TestInsertPost(t *testing.T) {
 			Title:      "Why is Batman so parnoid?",
 			Content:    "He got way too much contigencies...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
-			Categories: []int{1, 2},
+			Categories: []int{0, 1},
 		}, "nil"},
 		{post{ // invalid userID
 			UserID:     -100,
 			Title:      "Why is Batman so serious?",
 			Content:    "He can even take a joke...",
 			CreatedAt:  time.Now(),
-			Categories: []int{1},
+			Categories: []int{0},
 		}, "FOREIGN KEY constraint failed"},
 		{post{ // invalid category
 			UserID:     s.UserID,
@@ -279,14 +279,14 @@ func TestInsertPost(t *testing.T) {
 			Title:      "Having 72 hours at day",
 			Content:    "Here is how you train, invent, investigate and more...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
-			Categories: []int{1, 2, 4, 5},
+			Categories: []int{0, 1, 3, 4},
 		}, "nil"},
 		{post{ // valid entry
 			UserID:     u.ID,
 			Title:      "Why are there more and more supervillians?",
 			Content:    "Is there a deep societal problems that creates supervillians?",
 			CreatedAt:  time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
-			Categories: []int{4, 5},
+			Categories: []int{3, 4},
 		}, "nil"},
 	}
 	db.DeleteAllPosts()
@@ -545,7 +545,7 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 		}},
-		{"catergory", "", 1, []time.Time{ // filterBy batman
+		{"catergory", "", 0, []time.Time{ // filterBy batman
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 		}},
@@ -553,7 +553,7 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
-		{"catergory", "", 3, []time.Time{}}, // empty result
+		{"catergory", "", 2, []time.Time{}}, // empty result
 		{"likedBy", "likeCount", s.UserID, []time.Time{ //likedBy superman
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),

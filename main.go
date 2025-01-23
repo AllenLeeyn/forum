@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"forum/dbTools"
-	"forum/utils"
+	"forum/handlers"
 	"log"
 	"net/http"
 )
@@ -24,17 +24,17 @@ func init() {
 	}
 
 	db.Categories, _ = db.SelectFieldFromTable("name", "categories")
-	utils.Init(db)
+	handlers.Init(db)
 }
 
 func main() {
 	http.Handle("/static/", http.FileServer(http.Dir("assets/")))
 
-	http.HandleFunc("/", utils.HomePage)
-	// http.HandleFunc("/login", utils.LoginPage)
-	// http.HandleFunc("/register", utils.RegisterPage)
-	// http.HandleFunc("/post", utils.PostPage)
-	// http.HandleFunc("/view-post", utils.ViewPostPage)
+	http.HandleFunc("/", handlers.HomePage)
+	http.HandleFunc("/login", handlers.LoginPage)
+	http.HandleFunc("/signup", handlers.SignupPage)
+	http.HandleFunc("/post", handlers.PostPage)
+	http.HandleFunc("/view-post", handlers.ViewPostPage)
 
 	fmt.Println("Starting Forum on http://localhost:8080/...")
 	http.ListenAndServe(":8080", nil)

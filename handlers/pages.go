@@ -1,12 +1,12 @@
-package utils
+package handlers
 
 import (
 	"fmt"
 	"forum/dbTools"
 	"log"
 	"net/http"
+	"strconv"
 	"text/template"
-	"time"
 )
 
 //	Place for functions that executes different pages
@@ -31,20 +31,23 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// check session from cookie
-	/* 	sID := r.Cookies()
-	   	session, err := db.SelectActiveSessionBy("id", sID)
-	   	if err != nil {
-	   		// something went wrong
-	   	}
-	   	if session.IsActive {
-	   		// login user
-	   	} */
-	Posts, err := db.SelectPosts("", "", -1)
+
+	// get Queries. No sorting implemented yet
+	filterBy := r.URL.Query().Get("filterBy")
+	// orderBy := r.URL.Query().Get("orderBy")
+
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id > len(db.Categories) {
+		id = -1
+	}
+
+	posts, err := db.SelectPosts(filterBy, "", id)
 	if err != nil {
 		fmt.Println(err)
 		// something went wrong
 	}
-	CustomExecuteTemplate(w, "homepage.html", Posts)
+	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories})
 }
 
 // Login page
@@ -76,9 +79,9 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register page
-func RegisterPage(w http.ResponseWriter, r *http.Request) {
+func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		CustomExecuteTemplate(w, "register.html", nil)
+		CustomExecuteTemplate(w, "signup.html", nil)
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
 			//	Error parsing data
@@ -118,18 +121,33 @@ func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 // Page for making posts
 func PostPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		fmt.Println("Now we're on the post page")
-		CustomExecuteTemplate(w, "post.html", nil)
+
+		idStr := r.URL.Query().Get("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			fmt.Println("something went wrong with post_id")
+		}
+
+		post, err := db.SelectPost(id)
+		if err != nil || post == nil {
+			fmt.Println("something went wrong with getting post or nothing found")
+		}
+
+		comments, err := db.SelectComments(id, "")
+		if err != nil {
+			fmt.Println("something went wrong with grabbing comments")
+		}
+		CustomExecuteTemplate(w, "post.html", postpageData{*post, comments})
+
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
 			//	Error parsing data
 		}
-		postData := Post{
+		postData := post{
 			Title:   r.FormValue("title"),
 			Content: r.FormValue("content"),
 			//UserID:    However we get the users ID,
-			//UserName: However we get the users Name,
-			CreatedAt: time.Now(),
+			//UserName: However we get the users Name,+
 		}
 		titleIsValid, titleInvalidReason := CheckValidity(postData.Title, "postTitle")
 		contentIsValid, contentInvalidReason := CheckValidity(postData.Content, "postContent")
