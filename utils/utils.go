@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 //	Place for helper/util functions
