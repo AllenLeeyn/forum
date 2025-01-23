@@ -32,15 +32,13 @@ func (db *DBContainer) SelectActiveSessionBy(field string, id interface{}) (*Ses
 // db.InsertSession() when User login is successful
 func (db *DBContainer) InsertSession(s *Session) error {
 	qry := `INSERT INTO sessions
-			(id, user_id, is_active, start_time, expire_time, last_access)
+			(id, user_id, is_active, expire_time)
 			VALUES ( ?, ?, ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
 		s.ID,
 		s.UserID,
 		s.IsActive,
-		s.StartTime,
-		s.ExpireTime,
-		s.LastAccess)
+		s.ExpireTime)
 	return err
 }
 
