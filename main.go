@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"forum/dbTools"
 	"log"
+	"net/http"
 )
 
 var db *dbTools.DBContainer
@@ -19,4 +21,9 @@ func init() {
 }
 
 func main() {
+	http.HandleFunc("/login", login)
+	http.HandleFunc("/signup", signup)
+
+	fmt.Println("server started")
+	http.ListenAndServe(":8080", nil)
 }

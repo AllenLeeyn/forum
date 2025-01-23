@@ -1,7 +1,5 @@
 package dbTools
 
-import "strings"
-
 // db.SelectUserByEmail(). If no results found, User is not registered/ wrong email.
 func (db *DBContainer) SelectUserByEmail(email string) (*User, error) {
 	qry := `SELECT * FROM users WHERE email = ?`
@@ -20,19 +18,7 @@ func (db *DBContainer) SelectUserByEmail(email string) (*User, error) {
 	return &u, nil
 }
 
-func GetSubstringBeforeChar(input, char string) string {
-	index := strings.Index(input, char)
-	if index == -1 {
-		return input
-	}
-	return input[:index]
-}
-
-// field example: "email:abc@def.gh"
-// field example: "name:Bob"
-func (db *DBContainer) SelectUserByField(field string) (*User, error) {
-	fieldName := GetSubstringBeforeChar(field, ":")
-	fieldValue := field[len(fieldName)+1:]
+func (db *DBContainer) SelectUserByField(fieldName, fieldValue string) (*User, error) {
 	qry := `SELECT * FROM users WHERE ` + fieldName + ` = ?`
 	var u User
 	err := db.conn.QueryRow(qry, fieldValue).Scan(

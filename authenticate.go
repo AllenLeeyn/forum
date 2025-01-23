@@ -1,33 +1,43 @@
 package main
 
 import (
+	"errors"
 	"forum/dbTools"
 	"log"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var idCount int
+var idCount int = 0
 
 func signup(w http.ResponseWriter, r *http.Request) {
-	name, email, passwdHash, _ := getCredentials(r)
+	name, email, passwd, e := getCredentials(r, true)
 
 	// check that credentials are valid
-	if _, e := db.SelectUserByField("email:" + email); e == nil {
+	if e != nil {
+		http.Error(w, e.Error(), 400)
+		return
+	}
+	if user, _ := db.SelectUserByField("email", email); user != nil {
 		http.Error(w, "email is already used", 400)
 		return
 	}
-	if _, e := db.SelectUserByField("name:" + name); e == nil {
+	if user, _ := db.SelectUserByField("name", name); user != nil {
 		http.Error(w, "name is already used", 400)
 		return
 	}
 
+	passwdHash, err := bcrypt.GenerateFromPassword([]byte(passwd), 0)
+	checkErr(err)
+
 	// add the user to the database
+	idCount++
 	user := &dbTools.User{
-		ID:        idCount + 1,
+		ID:        idCount,
 		TypeID:    1,
 		Name:      name,
 		Email:     email,
@@ -56,12 +66,17 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	_, email, passwdHash, _ := getCredentials(r)
+	username, _, passwd, e := getCredentials(r, false)
+
+	if e != nil {
+		http.Error(w, e.Error(), 400)
+		return
+	}
 
 	// check that credentials are valid
-	user, e := db.SelectUserByField("email:" + email)
-	if e != nil || string(user.PwHash) != string(passwdHash) {
-		http.Error(w, "incorrect email and/or password", 400)
+	user, _ := db.SelectUserByField("name", username)
+	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
+		http.Error(w, "incorrect username and/or password X", 400)
 		return
 	}
 
@@ -83,19 +98,47 @@ func login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func getCredentials(r *http.Request) (string, string, []byte, error) {
+func getCredentials(r *http.Request, isSignup bool) (string, string, string, error) {
 	username := r.FormValue("name")
 	email := r.FormValue("email")
-	passwdHash, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("password")), 0)
-	checkErr(err)
+	passwd := r.FormValue("password")
 
-	//
+	emailRegex := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	usernameRegex := `^[a-zA-Z0-9_-]{3,16}$`
 
-	return username, email, passwdHash, nil
+	if r.Method != "POST" {
+		return "", "", "", errors.New("invalid method")
+	}
+	if !validRegex(username, usernameRegex) || !validPsswrd(passwd) {
+		return "", "", "", errors.New("invalid username and/or password Y")
+	}
+	if isSignup && !validRegex(email, emailRegex) {
+		return "", "", "", errors.New("invalid email")
+	}
+	return username, email, passwd, nil
 }
 
 func checkErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func validRegex(input, pattern string) bool {
+	re := regexp.MustCompile(pattern)
+	return re.MatchString(input)
+}
+
+func validPsswrd(password string) bool {
+	hasLowercase := regexp.MustCompile(`[a-z]`).MatchString
+	hasUppercase := regexp.MustCompile(`[A-Z]`).MatchString
+	hasDigit := regexp.MustCompile(`\d`).MatchString
+	hasSpecial := regexp.MustCompile(`[@$!%*?&]`).MatchString
+	isValidLength := len(password) >= 8
+
+	return hasLowercase(password) &&
+		hasUppercase(password) &&
+		hasDigit(password) &&
+		hasSpecial(password) &&
+		isValidLength
 }
