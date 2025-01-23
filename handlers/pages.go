@@ -97,8 +97,6 @@ func TermsPage(w http.ResponseWriter, r *http.Request) {
 func StartThread(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		CustomExecuteTemplate(w, "start-thread.html", nil)
-		/* 	} else if r.Method == http.MethodPost {
-		 */
 	} else {
 		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
 	}
@@ -110,41 +108,51 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 		title := query.Get("threadTitle")
 		content := query.Get("threadContent")
-		reason := ""
 		titleIsValid, titleInvalidReason := CheckValidity(title, "postTitle")
 		contentIsValid, contentInvalidReason := CheckValidity(content, "postContent")
 		if titleIsValid && contentIsValid {
-			fmt.Println("Valid user, check if duplicate")
+			fmt.Println("Valid post, check if duplicate")
 		} else {
 			//	Placeholder:
-			reason = titleInvalidReason + "\n" + contentInvalidReason
-		}
-		if !titleIsValid && !contentIsValid {
 			errData := ErrorData{
-				ErrorMessage: reason,
+				ErrorMessage: titleInvalidReason + "\n" + contentInvalidReason,
 			}
 			CustomExecuteTemplate(w, "start-thread.html", errData)
-		} else {
-			categories := []int{1, 2, 3}
-			post := dbTools.Post{
-				ID:           0,
-				UserID:       0,
-				UserName:     "Me",
-				CommentCount: 0,
-				LikeCount:    0,
-				DislikeCount: 0,
-				Title:        title,
-				Content:      content,
-				//	Placeholder:
-				Categories: categories,
-			}
-			fmt.Println(post)
-			err := db.InsertPost(post)
-			if err != nil {
-				fmt.Println(err)
-			}
-			UpdateAndExecuteHome(w, r)
+			return
 		}
+		cookie, err := r.Cookie("session-id")
+		if err != nil {
+			http.Error(w, "Session not found", http.StatusInternalServerError)
+			return
+		}
+		session, err := db.SelectActiveSessionBy("id", cookie.Value)
+		if err != nil {
+			http.Error(w, "Invalid session", http.StatusUnauthorized)
+			return
+		}
+		fmt.Println("No error getting user by ID1")
+		//	Placeholder:
+		categories := []int{1, 2, 3}
+		fmt.Println("No error getting user by ID2")
+		post := dbTools.Post{
+			UserID:       session.UserID,
+			CommentCount: 0,
+			LikeCount:    0,
+			DislikeCount: 0,
+			Title:        title,
+			Content:      content,
+			Categories:   categories,
+		}
+		fmt.Println("No error getting user by ID3")
+		fmt.Println(post)
+		fmt.Println("No error getting user by ID4")
+		err = db.InsertPost(post)
+		fmt.Println("No error getting user by ID5")
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("No error getting user by ID")
+		UpdateAndExecuteHome(w, r)
 	} else {
 		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
 	}
