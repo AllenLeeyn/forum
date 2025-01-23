@@ -138,18 +138,23 @@ func (db *DBContainer) SelectPost(id int) (*Post, error) {
 }
 
 // db.InsetPost() into db and record the categories too
+// include created at for testing for now
 func (db *DBContainer) InsertPost(p Post) error {
 	if err := db.isValidCategories(p.Categories); err != nil {
 		return err
 	}
 	qry := `INSERT INTO posts 
-			(user_id, comment_count, like_count, dislike_count, title, content, created_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?)`
+			(user_id, title, content, created_at)
+			VALUES (?, ?, ?, ?)`
+
+	if p.CreatedAt.IsZero() {
+		qry = `INSERT INTO posts 
+			(user_id, title, content)
+			VALUES (?, ?, ?)`
+	}
+
 	res, err := db.conn.Exec(qry,
 		p.UserID,
-		p.CommentCount,
-		p.LikeCount,
-		p.DislikeCount,
 		p.Title,
 		p.Content,
 		p.CreatedAt)

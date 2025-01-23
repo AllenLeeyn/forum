@@ -33,7 +33,7 @@ func (db *DBContainer) SelectActiveSessionBy(field string, id interface{}) (*Ses
 func (db *DBContainer) InsertSession(s *Session) error {
 	qry := `INSERT INTO sessions
 			(id, user_id, is_active, expire_time)
-			VALUES ( ?, ?, ?, ?, ?, ?)`
+			VALUES ( ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
 		s.ID,
 		s.UserID,

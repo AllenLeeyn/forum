@@ -21,15 +21,13 @@ func (db *DBContainer) SelectUserByEmail(email string) (*User, error) {
 // db.InserUser() insert a User into the database
 func (db *DBContainer) InsertUser(u *User) error {
 	qry := `INSERT INTO users 
-			(type_id, name, email, pw_hash, reg_date, last_login) 
-			VALUES ( ?, ?, ?, ?, ?, ?)`
+			(type_id, name, email, pw_hash) 
+			VALUES ( ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
 		u.TypeID,
 		u.Name,
 		u.Email,
-		u.PwHash,
-		u.RegDate,
-		u.LastLogin)
+		u.PwHash)
 	return err
 }
 
