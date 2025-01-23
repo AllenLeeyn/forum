@@ -314,58 +314,51 @@ func TestInsertComment(t *testing.T) {
 	}{
 		{ // valid comment in first post
 			comment{
-				UserID:    s.UserID,
-				PostID:    posts[0].ID,
-				Content:   "Why can't be more trustful of us?",
-				CreatedAt: time.Now(),
+				UserID:  s.UserID,
+				PostID:  posts[0].ID,
+				Content: "Why can't be more trustful of us?",
 			}, "nil",
 		},
 		{ // valid comment in first post
 			comment{
-				UserID:    u.ID,
-				PostID:    posts[0].ID,
-				Content:   "Not to be xenophobic... but you are not from around here",
-				CreatedAt: time.Now(),
+				UserID:  u.ID,
+				PostID:  posts[0].ID,
+				Content: "Not to be xenophobic... but you are not from around here",
 			}, "nil",
 		},
 		{ // invalid comment to first post
 			comment{
-				UserID:    -100,
-				PostID:    posts[0].ID,
-				Content:   "he just so serious all the time",
-				CreatedAt: time.Now(),
+				UserID:  -100,
+				PostID:  posts[0].ID,
+				Content: "he just so serious all the time",
 			}, "FOREIGN KEY constraint failed",
 		},
 		{ // valid comment in third post
 			comment{
-				UserID:    s.UserID,
-				PostID:    posts[2].ID,
-				Content:   "You can always move faster. Oh! You can't travel at the speed of light.",
-				CreatedAt: time.Now(),
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "You can always move faster. Oh! You can't travel at the speed of light.",
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
-				UserID:    u.ID,
-				PostID:    posts[2].ID,
-				Content:   "At least I don't get defeated by some rocks.",
-				CreatedAt: time.Now(),
+				UserID:  u.ID,
+				PostID:  posts[2].ID,
+				Content: "At least I don't get defeated by some rocks.",
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
-				UserID:    s.UserID,
-				PostID:    posts[2].ID,
-				Content:   "Humans get affected by radioactive materials too.",
-				CreatedAt: time.Now(),
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "Humans get affected by radioactive materials too.",
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
-				UserID:    s.UserID,
-				PostID:    posts[2].ID,
-				Content:   "So we both bleed...",
-				CreatedAt: time.Now(),
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "So we both bleed...",
 			}, "nil",
 		},
 	}

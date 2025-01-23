@@ -2,7 +2,11 @@ package dbTools
 
 // db.SelectComments() select all comments made in a post.
 func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error) {
-	qry := `SELECT * FROM comments WHERE post_id = ?`
+	qry := `SELECT c.id, u.id, u.name, c.post_id, c.parent_id, c.content, 
+				   c.like_count, c.dislike_count, c.created_at
+			FROM comments c
+			INNER JOIN users u ON c.user_id = u.id
+			WHERE post_id = ?`
 	orderByQry := ` ORDER BY created_at DESC`
 	switch orderBy {
 	case "oldest":
@@ -23,6 +27,7 @@ func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error)
 		err := rows.Scan(
 			&c.ID,
 			&c.UserID,
+			&c.UserName,
 			&c.PostID,
 			&c.ParentID,
 			&c.Content,

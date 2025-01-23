@@ -41,6 +41,7 @@ type Post struct {
 type Comment struct {
 	ID           int
 	UserID       int
+	UserName     string
 	ParentID     sql.NullInt64
 	PostID       int
 	Content      string

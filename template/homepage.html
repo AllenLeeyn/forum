@@ -11,24 +11,7 @@
     />
   </head>
   <body>
-    <header>
-      <div class="logo"> <a href="/">Forum</a></div>
-      <nav>
-        <a href="#">Articles</a>
-        <a href="#">Social</a>
-        {{if .SessionCookie}}
-          <a href="/profile-page">Profile</a>
-          <a href="/logout">Log Out</a>
-        {{else}}
-          <a href="/login">Login</a>
-        {{end}}
-        <!-- Dark mode toggle button -->
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-          <i class="fas fa-moon"></i>
-          <!-- Dark mode icon -->
-        </button>
-      </nav>
-    </header>
+    {{template "header"}}
     <div class="container">
       <!-- Sidebar -->
       <div class="sidebar move">
@@ -51,12 +34,12 @@
           <!-- Post Block -->
            {{range .Posts}}
           <div class="post-block">
+            <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
             <h3 class="post-title">
-              <a href="/post?id={{.ID}}">[{{.UserName}}] {{.Title}}</a>
+              <a href="/post?id={{.ID}}"> {{.Title}}</a>
             </h3>
             <pre class="post-body">{{.Content}}</pre>
 
-            
             <div class="post-actions">
               <button class="icon-button">
                 <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
@@ -64,9 +47,9 @@
               <button class="icon-button">
                 <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
               </button>
-              <button class="icon-button">
-                <i class="fas fa-comment"></i> <span>{{.CatNames}}</span>
-              </button>
+              <p class="icon-button">
+                <span>{{.CatNames}}</span>
+              </p>
             </div>
           </div>
           {{else}}
