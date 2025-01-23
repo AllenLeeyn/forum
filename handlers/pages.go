@@ -30,25 +30,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
 		return
 	}
-	// check session from cookie
-
-	// get Queries. No sorting implemented yet
-	filterBy := r.URL.Query().Get("filterBy")
-	// orderBy := r.URL.Query().Get("orderBy")
-
-	idStr := r.URL.Query().Get("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil || id > len(db.Categories) {
-		id = -1
-	}
-
-	posts, err := db.SelectPosts(filterBy, "", id)
-	if err != nil {
-		fmt.Println(err)
-		// something went wrong
-	}
-	cookie, _ := r.Cookie("session-id")
-	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
+	UpdateAndExecuteHome(w, r)
 }
 
 // Page for viewing posts
@@ -100,5 +82,70 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+// Terms page
+func TermsPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		CustomExecuteTemplate(w, "terms.html", nil)
+	} else {
+		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+	}
+}
+
+func StartThread(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		CustomExecuteTemplate(w, "start-thread.html", nil)
+		/* 	} else if r.Method == http.MethodPost {
+		 */
+	} else {
+		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+	}
+}
+
+// Page for making posts
+func PostThread(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		query := r.URL.Query()
+		title := query.Get("threadTitle")
+		content := query.Get("threadContent")
+		reason := ""
+		titleIsValid, titleInvalidReason := CheckValidity(title, "postTitle")
+		contentIsValid, contentInvalidReason := CheckValidity(content, "postContent")
+		if titleIsValid && contentIsValid {
+			fmt.Println("Valid user, check if duplicate")
+		} else {
+			//	Placeholder:
+			reason = titleInvalidReason + "\n" + contentInvalidReason
+		}
+		if !titleIsValid && !contentIsValid {
+			errData := ErrorData{
+				ErrorMessage: reason,
+			}
+			CustomExecuteTemplate(w, "start-thread.html", errData)
+		} else {
+			categories := []int{1, 2, 3}
+			post := dbTools.Post{
+				ID:           0,
+				UserID:       0,
+				UserName:     "Me",
+				CommentCount: 0,
+				LikeCount:    0,
+				DislikeCount: 0,
+				Title:        title,
+				Content:      content,
+				//	Placeholder:
+				Categories: categories,
+			}
+			fmt.Println(post)
+			err := db.InsertPost(post)
+			if err != nil {
+				fmt.Println(err)
+			}
+			UpdateAndExecuteHome(w, r)
+		}
+	} else {
+		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
 	}
 }

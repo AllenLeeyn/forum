@@ -1,43 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 //	Place for helper/util functions
-
-/*
-	 func PageHandler(w http.ResponseWriter, r *http.Request) {
-		switch strings.ToLower(r.URL.Path) {
-
-		case "/":
-			IsError(w, r, http.MethodGet, "Incorrect User Method", http.StatusMethodNotAllowed, "method")
-			HomePage(w, r)
-
-		case "/login":
-			IsError(w, r, http.MethodGet, "Incorrect User Method", http.StatusMethodNotAllowed, "method")
-			LoginPage(w, r)
-
-		case "/register":
-			IsError(w, r, http.MethodGet, "Incorrect User Method", http.StatusMethodNotAllowed, "method")
-			RegisterPage(w, r)
-
-		case "/view-post":
-			IsError(w, r, http.MethodGet, "Incorrect User Method", http.StatusMethodNotAllowed, "method")
-			ViewPostPage(w, r)
-
-		case "/post":
-			IsError(w, r, http.MethodGet, "Incorrect User Method", http.StatusMethodNotAllowed, "method")
-			PostPage(w, r)
-
-		default:
-			fmt.Println("Now we should throw an error.")
-
-		}
-	}
-*/
 
 // Custom execute template I wrote to both execute and check for error
 func CustomExecuteTemplate(w http.ResponseWriter, name string, data interface{}) {
@@ -75,4 +46,39 @@ func CheckValidity(input string, dataType string) (bool, string) {
 		}
 	}
 	return true, ""
+}
+
+// Execute error page if possible, otherwise use inbuilt http error
+func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
+	errorData := ErrorData{
+		ErrorCode:    errorStatus,
+		ErrorMessage: errorMessage,
+	}
+	err := tmpl.ExecuteTemplate(w, "error.html", errorData)
+	if err != nil {
+		message := fmt.Sprintf("Error %d\n%s", errorStatus, errorMessage)
+		http.Error(w, message, http.StatusNotFound)
+	}
+}
+
+func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
+	// check session from cookie
+
+	// get Queries. No sorting implemented yet
+	filterBy := r.URL.Query().Get("filterBy")
+	// orderBy := r.URL.Query().Get("orderBy")
+
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id > len(db.Categories) {
+		id = -1
+	}
+
+	posts, err := db.SelectPosts(filterBy, "", id)
+	if err != nil {
+		fmt.Println(err)
+		// something went wrong
+	}
+	cookie, _ := r.Cookie("session-id")
+	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
 }
