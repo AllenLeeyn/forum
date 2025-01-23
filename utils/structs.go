@@ -52,3 +52,7 @@ type ErrorData struct {
 	ErrorMessage string
 	ErrorCode    int
 }
+
+type PostError struct {
+	ErrorMessage string
+}

@@ -48,6 +48,18 @@ func CustomExecuteTemplate(w http.ResponseWriter, name string, data interface{})
 	}
 }
 
+func UpdateAndExecuteHome(w http.ResponseWriter) {
+	posts, err := db.SelectPosts("", "", -1)
+	if err != nil {
+		fmt.Println(err)
+		// something went wrong
+	}
+	PostList := postList{
+		Posts: posts,
+	}
+	CustomExecuteTemplate(w, "homepage.html", PostList)
+}
+
 // Execute error page if possible, otherwise use inbuilt http error
 func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
 	errorData := ErrorData{
@@ -76,13 +88,13 @@ func CheckValidity(input string, dataType string) (bool, string) {
 			return false, "*Invalid email"
 		}
 	} else if dataType == "postTitle" {
-		if len(input) < 10 {
+		if len(input) < 8 {
 			return false, "*Title too short"
-		} else if len(input) > 200 {
+		} else if len(input) > 80 {
 			return false, "*Title too long"
 		}
 	} else if dataType == "postContent" {
-		if len(input) < 10 {
+		if len(input) < 16 {
 			return false, "*Content too short"
 		} else if len(input) > 2000 {
 			return false, "*Content too long"

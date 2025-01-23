@@ -46,16 +46,12 @@
         <section id="general">
           <h2>General Discussion</h2>
           <!-- Post Block -->
+          {{range $index, $post := .Posts}}
           <div class="post-block">
             <h3 class="post-title">
-              <a href="#"> Allen invasion and they happen to be Pineapples</a>
+              <a href="#"> {{$post.Title}} </a>
             </h3>
-            <p class="post-body">
-              <span style="color: brown">ANANAS</span> , the pineapple King
-              insists humans to call him "Your Highness"<br />
-              for its RICH HARD flavour. MILLIons of people refuse to do so and
-              ...read more
-            </p>
+            <p class="post-body"> {{$post.Content}} </p>
 
             
             <div class="post-actions">
@@ -67,6 +63,7 @@
               </button>
             </div>
           </div>
+          {{end}}
           <!-- Post Block -->
           <div class="post-block">
             <h3 class="post-title">

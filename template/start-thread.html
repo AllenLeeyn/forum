@@ -37,7 +37,8 @@
         <!-- Right Sidebar (Thread Post) -->
         <div class="thread-post">
           <h2>Start a New Thread</h2>
-          <form action="/post-thread" method="post" id="post-thread-form">
+          <h4>{{.ErrorMessage}}</h4>
+          <form action="/post-thread" method="get" id="post-thread-form">
             <div class="input-group">
               <input
                 type="text"
