@@ -1,0 +1,89 @@
+CREATE TABLE account_type (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    can_create_post BOOLEAN NOT NULL,
+    can_comment BOOLEAN NOT NULL,
+    can_feedback BOOLEAN NOT NULL,
+    can_moderate BOOLEAN NOT NULL,
+    can_ban_user BOOLEAN NOT NULL
+);
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    pw_hash TEXT NOT NULL,
+    reg_date DATE NOT NULL,
+    last_login DATETIME NOT NULL,
+    FOREIGN KEY (type_id) REFERENCES account_type(id)
+);
+
+CREATE TABLE sessions (
+    id UUID PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    is_active BOOLEAN NOT NULL,
+    start_time DATETIME NOT NULL,
+    expire_time DATETIME NOT NULL,
+    last_access DATETIME NOT NULL,
+     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    comment_count INTEGER NOT NULL,
+    like_count INTEGER NOT NULL,
+    dislike_count INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE post_categories (
+    post_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (post_id, category_id),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    parent_id INTEGER NULL,
+    content TEXT NOT NULL,
+    like_count INTEGER NOT NULL,
+    dislike_count INTEGER NOT NULL,
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES comments(id)
+);
+
+CREATE TABLE post_feedback (
+    user_id INTEGER NOT NULL,
+    parent_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (user_id, parent_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comment_feedback (
+    user_id INTEGER NOT NULL,
+    parent_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (user_id, parent_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE
+);

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forum Topics</title>
+    <link rel="stylesheet" href="/static/homepage.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo"> <a href="/">Forum</a></div>
+      <nav>
+        <a href="#">Takes You Nowhere</a>
+        <a href="#">Takes You Nowhere Part 2</a>
+        <a href="/login">Login</a>
+        <!-- Dark mode toggle button -->
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+          <i class="fas fa-moon"></i>
+          <!-- Dark mode icon -->
+        </button>
+      </nav>
+    </header>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar move">
+        <h2>Categories</h2>
+        <ul>
+          <li><a href="#general">General Discussion</a></li>
+          <li><a href="#tech">Tech and Development</a></li>
+          <li><a href="#gaming">Gaming</a></li>
+          <li><a href="#entertainment">Entertainment and Media</a></li>
+          <li><a href="#lifestyle">Lifestyle and Health</a></li>
+          <li><a href="#creative">Creative Corner</a></li>
+          <li><a href="#debate">Controversial and Debate</a></li>
+          <li><a href="#humor">Humor and Fun</a></li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <!-- General Discussion -->
+        <section id="general">
+          <h2>General Discussion</h2>
+          <!-- Post Block -->
+          {{range $index, $post := .Posts}}
+          <div class="post-block">
+            <h3 class="post-title">
+              <a href="#"> {{$post.Title}} </a>
+            </h3>
+            <p class="post-body"> {{$post.Content}} </p>
+
+            
+            <div class="post-actions">
+              <button class="icon-button">
+                <i class="fas fa-heart"></i> <span>3</span>
+              </button>
+              <button class="icon-button">
+                <i class="fas fa-comment"></i> <span>5</span>
+              </button>
+            </div>
+          </div>
+          {{end}}
+          <!-- Post Block -->
+          <div class="post-block">
+            <h3 class="post-title">
+              <a href="#"> Man UGhhhhhhhhhhhhhhhhhhhh</a>
+            </h3>
+            <p class="post-body">
+              A group of men rejecting my project cause apparently it's too
+              <span style="color: pink"> PINK!!!</span>
+            </p>
+
+            
+            <div class="post-actions">
+              <button class="icon-button">
+                <i class="fas fa-heart"></i> <span>7</span>
+              </button>
+              <button class="icon-button">
+                <i class="fas fa-comment"></i> <span>12</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="right-sidebar">
+        <div class="start-thread">
+          <h3>Post a Thread</h3>
+          <p>Share your thoughts with the community!</p>
+          <a href="/start-thread" class="start-thread-btn">Start a Thread</a>
+        </div>
+      
+        <!-- Filter Section -->
+        <div class="filter-section">
+          <h4>Filter Threads</h4>
+          <label for="category">Category:</label>
+          <select id="category">
+            <option value="all">All</option>
+            <option value="tech">Technology</option>
+            <option value="life">Lifestyle</option>
+            <option value="science">Science</option>
+          </select>
+          
+          <label for="keyword">Keyword:</label>
+          <input type="text" id="keyword" placeholder="Search...">
+          
+          <button type="button">Apply Filters</button>
+        </div>
+      </div>
+      
+    
+    <script>
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+      }
+    </script>
+  </body>
+</html>

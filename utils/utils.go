@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -44,4 +45,22 @@ func CustomExecuteTemplate(w http.ResponseWriter, name string, data interface{})
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
 	}
+}
+
+func CheckValidity(input string, dataType string) (bool, string) {
+	//	Add to these conditions later, including special character check
+	if dataType == "username" {
+		if len(input) > 25 {
+			return false, "Name too long"
+		}
+	} else if dataType == "password" {
+		if len(input) < 6 {
+			return false, "Password too short"
+		}
+	} else if dataType == "email" {
+		if !strings.Contains(input, "@") {
+			return false, "Invalid email"
+		}
+	}
+	return true, ""
 }
