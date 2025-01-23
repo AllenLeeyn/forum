@@ -47,69 +47,8 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		// something went wrong
 	}
-	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories})
-}
-
-// Login page
-func LoginPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		//	Going to the login page
-		CustomExecuteTemplate(w, "login.html", nil)
-	} else if r.Method == http.MethodPost {
-		if err := r.ParseForm(); err != nil {
-			//	Error parsing data
-		}
-		loginData := LoginData{
-			username: r.FormValue("name"),
-			password: r.FormValue("password"),
-		}
-		nameIsValid, nameInvalidReason := CheckValidity(loginData.username, "username")
-		passIsValid, passInvalidReason := CheckValidity(loginData.password, "password")
-		if nameIsValid && passIsValid {
-			fmt.Println("Valid user, check if duplicate")
-			http.Error(w, "placeholder successful login (check for if user exists in db first)", http.StatusMethodNotAllowed)
-		} else {
-			//	Placeholder:
-			reason := nameInvalidReason + "\n" + passInvalidReason
-			http.Error(w, reason, http.StatusBadRequest)
-		}
-	} else {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
-// Register page
-func SignupPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		CustomExecuteTemplate(w, "signup.html", nil)
-	} else if r.Method == http.MethodPost {
-		if err := r.ParseForm(); err != nil {
-			//	Error parsing data
-		}
-		if r.FormValue("password") != r.FormValue("passwordConf") {
-			//	Placeholder:
-			fmt.Println("The two passwords given are different")
-			http.Error(w, "The two password are different.", http.StatusBadRequest)
-		}
-		registerData := RegisterData{
-			username: r.FormValue("name"),
-			password: r.FormValue("password"),
-			email:    r.FormValue("email"),
-		}
-		nameIsValid, nameInvalidReason := CheckValidity(registerData.username, "username")
-		passIsValid, passInvalidReason := CheckValidity(registerData.password, "password")
-		emailIsValid, emailInvalidReason := CheckValidity(registerData.email, "email")
-		if nameIsValid && passIsValid && emailIsValid {
-			fmt.Println("Valid user, check if duplicate")
-			http.Error(w, "placeholder successful registration (check for if user exists in db first)", http.StatusMethodNotAllowed)
-		} else {
-			//	Placeholder:
-			reason := nameInvalidReason + "\n" + passInvalidReason + "\n" + emailInvalidReason
-			http.Error(w, reason, http.StatusBadRequest)
-		}
-	} else {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
-	}
+	cookie, _ := r.Cookie("session-id")
+	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
 }
 
 // Page for viewing posts

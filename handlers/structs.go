@@ -1,6 +1,9 @@
 package handlers
 
-import "forum/dbTools"
+import (
+	"forum/dbTools"
+	"net/http"
+)
 
 type user = dbTools.User
 type session = dbTools.Session
@@ -9,8 +12,9 @@ type feedback = dbTools.Feedback
 type comment = dbTools.Comment
 
 type homepageData struct {
-	Posts      []post
-	Categories []string
+	Posts         []post
+	Categories    []string
+	SessionCookie *http.Cookie
 }
 
 type postpageData struct {

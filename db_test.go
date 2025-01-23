@@ -29,7 +29,7 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    3,
 			Name:      "BATMAN",
 			Email:     "batman@gotham.city",
-			PwHash:    "bruc3W47N3",
+			PwHash:    []byte("bruc3W47N3"),
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"nil"},
@@ -37,7 +37,7 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    3,
 			Name:      "BATMAN",
 			Email:     "batman@gotham.city",
-			PwHash:    "dickGrayson",
+			PwHash:    []byte("dickGrayson"),
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"UNIQUE constraint failed: users.email"},
@@ -45,7 +45,7 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    666,
 			Name:      "JOKER",
 			Email:     "j0k3r@gotham.city",
-			PwHash:    "alfredPennyless",
+			PwHash:    []byte("alfredPennyless"),
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"FOREIGN KEY constraint failed"},
@@ -53,7 +53,7 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    1,
 			Name:      "Superman",
 			Email:     "superman@metropolis.city",
-			PwHash:    "clarkKent",
+			PwHash:    []byte("clarkKent"),
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"nil"},
@@ -132,7 +132,7 @@ func TestUpdateUser(t *testing.T) {
 	u, _ := db.SelectUserByEmail("superman@metropolis.city")
 	fixedTime := time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC)
 	u.Name = "Ultimate Superman"
-	u.PwHash = "kalEl"
+	u.PwHash = []byte("kalEl")
 	u.LastLogin = fixedTime
 
 	err := db.UpdateUser(u)
