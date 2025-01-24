@@ -24,6 +24,13 @@ type postpageData struct {
 	SessionCookie *http.Cookie
 }
 
+type profilepageData struct {
+	Name          string
+	Email         string
+	Posts         []post
+	SessionCookie *http.Cookie
+}
+
 type ErrorData struct {
 	ErrorMessage string
 	ErrorCode    int

@@ -49,23 +49,26 @@ func CheckValidity(input string, dataType string) (bool, string) {
 	return true, ""
 }
 
-// Put together data into a post and return it
-func CreatePost(w http.ResponseWriter, r *http.Request, title string, content string, categoriesInt []int) dbTools.Post {
+func GetSessionAndCookie(w http.ResponseWriter, r *http.Request) (*dbTools.Session, *http.Cookie) {
 	cookie, err := r.Cookie("session-id")
 	if err != nil {
 		ExecuteError(w, "Session not found", http.StatusInternalServerError)
-		//	DislikeCount in the negatives indicates an error
-		post := dbTools.Post{
-			DislikeCount: -1,
-		}
-		return post
+		return nil, nil
 	}
 	session, err := db.SelectActiveSessionBy("id", cookie.Value)
 	if err != nil {
 		ExecuteError(w, "Invalid session", http.StatusUnauthorized)
-		//	DislikeCount in the negatives indicates an error
+		return nil, cookie
+	}
+	return session, cookie
+}
+
+// Put together data into a post and return it
+func CreatePost(w http.ResponseWriter, r *http.Request, title string, content string, categoriesInt []int) dbTools.Post {
+	session, _ := GetSessionAndCookie(w, r)
+	if session == nil {
 		post := dbTools.Post{
-			DislikeCount: -1,
+			LikeCount: -1,
 		}
 		return post
 	}
@@ -116,24 +119,44 @@ func ExecuteError(w http.ResponseWriter, errorMessage string, errorStatus int) {
 }
 
 func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
+	var posts []dbTools.Post
+	var err error
 	// check session from cookie
+	session, cookie := GetSessionAndCookie(w, r)
 
 	// get Queries. No sorting implemented yet
 	filterBy := r.URL.Query().Get("filterBy")
 	// orderBy := r.URL.Query().Get("orderBy")
 
-	idStr := r.URL.Query().Get("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil || id > len(db.Categories) {
-		id = -1
+	if strings.Contains(filterBy, "category") {
+		idStr := r.URL.Query().Get("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil || id > len(db.Categories) {
+			id = -1
+		}
+		posts, err = db.SelectPosts(filterBy, "", id)
+		if err != nil {
+			ExecuteError(w, "Filtering posts went wrong", http.StatusInternalServerError)
+			return
+		}
+	} else if strings.Contains(filterBy, "createdBy") {
+		posts, err = db.SelectPosts("createdBy", "", session.UserID)
+		if err != nil {
+			ExecuteError(w, "Error getting user posts", http.StatusInternalServerError)
+		}
+	} else if strings.Contains(filterBy, "likedBy") {
+		posts, err = db.SelectPosts("likedBy", "", session.UserID)
+		if err != nil {
+			ExecuteError(w, "Error getting user posts", http.StatusInternalServerError)
+		}
+	} else {
+		posts, err = db.SelectPosts(filterBy, "", -1)
+		if err != nil {
+			ExecuteError(w, "Getting all posts failed", http.StatusInternalServerError)
+			return
+		}
 	}
 
-	posts, err := db.SelectPosts(filterBy, "", id)
-	if err != nil {
-		fmt.Println(err)
-		// something went wrong
-	}
-	cookie, _ := r.Cookie("session-id")
 	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
 }
 

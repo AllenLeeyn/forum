@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="/static/profile.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    {{template "header" .}}
+
+    <div class="content">
+      <div class="profile-header">
+        <h2>{{.Name}}</h2>
+        <p>{{.Email}}</p>
+      </div>
+
+      <h3>User's Posts</h3>
+      {{range .Posts}}
+      <div class="post-block">
+        <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
+        <h3 class="post-title">
+          {{.Title}}
+        </h3>
+        <pre class="post-body">{{.Content}}</pre>
+
+        <div class="post-actions">
+          <button class="icon-button">
+            <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
+          </button>
+          <button class="icon-button">
+            <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+          </button>
+          <p class="icon-button">
+            <span>{{.CatNames}}</span>
+          </p>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </body>
+</html>

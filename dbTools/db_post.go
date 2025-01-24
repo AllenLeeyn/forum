@@ -11,7 +11,7 @@ func getWhereQuery(filterBy string, id int) string {
 	switch filterBy {
 	case "createdBy":
 		return fmt.Sprintf(` WHERE puser_id = %v`, id)
-	case "catergory":
+	case "category":
 		return fmt.Sprintf(` WHERE ',' || category_ids || ',' LIKE '%%,%v,%%'`, id)
 	case "likedBy":
 		return fmt.Sprintf(` INNER JOIN post_feedback pf ON pf.parent_id = v_posts.id 
@@ -58,7 +58,7 @@ func (db *DBContainer) splitCategoryIDs(catIDs string) ([]int, string, error) {
 By default, no filter and newest first are applied.
 If invalid options or empty are given, default option is used.
 
-Valid filterBy: createdBy, catergory, likedBy.
+Valid filterBy: createdBy, category, likedBy.
 Valid orderBy: oldest, likeCount, commentCount.
 */
 func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, error) {
