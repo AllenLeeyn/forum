@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"forum/dbTools"
 	"log"
 	"net/http"
 	"strconv"
@@ -46,6 +47,59 @@ func CheckValidity(input string, dataType string) (bool, string) {
 		}
 	}
 	return true, ""
+}
+
+// Put together data into a post and return it
+func CreatePost(w http.ResponseWriter, r *http.Request, title string, content string, categoriesInt []int) dbTools.Post {
+	cookie, err := r.Cookie("session-id")
+	if err != nil {
+		ExecuteError(w, "Session not found", http.StatusInternalServerError)
+		//	DislikeCount in the negatives indicates an error
+		post := dbTools.Post{
+			DislikeCount: -1,
+		}
+		return post
+	}
+	session, err := db.SelectActiveSessionBy("id", cookie.Value)
+	if err != nil {
+		ExecuteError(w, "Invalid session", http.StatusUnauthorized)
+		//	DislikeCount in the negatives indicates an error
+		post := dbTools.Post{
+			DislikeCount: -1,
+		}
+		return post
+	}
+	//	Placeholder:
+	post := dbTools.Post{
+		UserID:       session.UserID,
+		CommentCount: 0,
+		LikeCount:    0,
+		DislikeCount: 0,
+		Title:        title,
+		Content:      content,
+		Categories:   categoriesInt,
+	}
+	return post
+}
+
+func GetData(w http.ResponseWriter, r *http.Request) (title string, content string, categoriesInt []int) {
+	err := r.ParseForm()
+	if err != nil {
+		ExecuteError(w, "Error parsing form data", http.StatusBadRequest)
+		return "", "", nil
+	}
+	title = r.FormValue("threadTitle")
+	content = r.FormValue("threadContent")
+	categoriesStr := r.Form["category"]
+	for _, value := range categoriesStr {
+		intVal, err := strconv.Atoi(value)
+		if err != nil {
+			ExecuteError(w, "Error parsing categories", http.StatusBadRequest)
+			return "", "", nil
+		}
+		categoriesInt = append(categoriesInt, intVal)
+	}
+	return title, content, categoriesInt
 }
 
 // Execute error page if possible, otherwise use inbuilt http error

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"forum/dbTools"
+	"forum/handlers"
 	"log"
 	"net/http"
 	"regexp"
@@ -19,15 +20,15 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	// check that credentials are valid
 	if e != nil {
-		http.Error(w, e.Error(), 400)
+		handlers.ExecuteError(w, e.Error(), 400)
 		return
 	}
 	if user, _ := db.SelectUserByField("email", email); user != nil {
-		http.Error(w, "email is already used", 400)
+		handlers.ExecuteError(w, "Email has already been taken", 400)
 		return
 	}
 	if user, _ := db.SelectUserByField("name", name); user != nil {
-		http.Error(w, "name is already used", 400)
+		handlers.ExecuteError(w, "Name has already been taken", 400)
 		return
 	}
 
@@ -69,14 +70,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 	username, _, passwd, e := getCredentials(r, false)
 
 	if e != nil {
-		http.Error(w, e.Error(), 400)
+		handlers.ExecuteError(w, e.Error(), 400)
 		return
 	}
 
 	// check that credentials are valid
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
-		http.Error(w, "incorrect username and/or password X", 400)
+		handlers.ExecuteError(w, "incorrect username and/or password X", 400)
 		return
 	}
 

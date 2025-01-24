@@ -5,7 +5,6 @@ import (
 	"forum/dbTools"
 	"log"
 	"net/http"
-	"strconv"
 	"text/template"
 )
 
@@ -53,62 +52,32 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		CustomExecuteTemplate(w, "start-thread.html", nil)
 	} else if r.Method == http.MethodPost {
-		err := r.ParseForm()
-		if err != nil {
-			ExecuteError(w, "Error parsing form data", http.StatusBadRequest)
+		title, content, categoriesInt := GetData(w, r)
+		if title == "" && content == "" && categoriesInt == nil {
 			return
-		}
-		title := r.FormValue("threadTitle")
-		content := r.FormValue("threadContent")
-		categoriesStr := r.Form["category"]
-		var categoriesInt []int
-		for _, value := range categoriesStr {
-			intVal, err := strconv.Atoi(value)
-			if err != nil {
-				ExecuteError(w, "Error parsing categories", http.StatusBadRequest)
-				return
-			}
-			categoriesInt = append(categoriesInt, intVal)
 		}
 		fmt.Println(categoriesInt)
 		titleIsValid, titleInvalidReason := CheckValidity(title, "postTitle")
 		contentIsValid, contentInvalidReason := CheckValidity(content, "postContent")
-		if titleIsValid && contentIsValid {
-			fmt.Println("Valid post, check if duplicate")
-		} else {
-			//	Placeholder:
+		if !(titleIsValid && contentIsValid) {
 			errData := ErrorData{
 				ErrorMessage: titleInvalidReason + "\n" + contentInvalidReason,
 			}
 			CustomExecuteTemplate(w, "start-thread.html", errData)
 			return
 		}
-		cookie, err := r.Cookie("session-id")
-		if err != nil {
-			ExecuteError(w, "Session not found", http.StatusInternalServerError)
+		post := CreatePost(w, r, title, content, categoriesInt)
+		//	DislikeCount in the negatives indicates an error
+		if post.DislikeCount == -1 {
 			return
+		} else {
+			fmt.Println(post)
+			err := db.InsertPost(post)
+			if err != nil {
+				fmt.Println(err)
+			}
+			UpdateAndExecuteHome(w, r)
 		}
-		session, err := db.SelectActiveSessionBy("id", cookie.Value)
-		if err != nil {
-			ExecuteError(w, "Invalid session", http.StatusUnauthorized)
-			return
-		}
-		//	Placeholder:
-		post := dbTools.Post{
-			UserID:       session.UserID,
-			CommentCount: 0,
-			LikeCount:    0,
-			DislikeCount: 0,
-			Title:        title,
-			Content:      content,
-			Categories:   categoriesInt,
-		}
-		fmt.Println(post)
-		err = db.InsertPost(post)
-		if err != nil {
-			fmt.Println(err)
-		}
-		UpdateAndExecuteHome(w, r)
 	} else {
 		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
