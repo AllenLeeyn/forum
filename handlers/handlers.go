@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //	Place for helper/util functions
@@ -62,23 +63,56 @@ func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
 }
 
 func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
-	// check session from cookie
+	// check session from cookie to get feedback data
+	cookie, _ := r.Cookie("session-id")
+	userID := checkSessionValidity(cookie)
+	feedbacks, err := db.SelectFeedbacks("Post", userID)
+	if err != nil {
+		fmt.Println(err)
+		// something went wrong
+	}
 
 	// get Queries. No sorting implemented yet
 	filterBy := r.URL.Query().Get("filterBy")
-	// orderBy := r.URL.Query().Get("orderBy")
-
+	orderBy := r.URL.Query().Get("orderBy")
 	idStr := r.URL.Query().Get("id")
+
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id > len(db.Categories) {
 		id = -1
 	}
 
-	posts, err := db.SelectPosts(filterBy, "", id)
+	posts, err := db.SelectPosts(filterBy, orderBy, id)
 	if err != nil {
 		fmt.Println(err)
 		// something went wrong
 	}
-	cookie, _ := r.Cookie("session-id")
-	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
+	CustomExecuteTemplate(w, "homepage.html",
+		homepageData{
+			cookie,
+			db.Categories,
+			posts,
+			feedbacks,
+			filterBy,
+			orderBy,
+			id})
+}
+
+func checkSessionValidity(c *http.Cookie) int {
+	sessionID := c.Value
+	fmt.Println(c)
+	fmt.Println(sessionID)
+	s, err := db.SelectActiveSessionBy("id", sessionID)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	if s.ExpireTime.Before(time.Now()) {
+		s.IsActive = false
+		if err := db.UpdateSession(s); err != nil {
+			fmt.Println("update failed")
+		}
+		return -1
+	}
+	return s.UserID
 }

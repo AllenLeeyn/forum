@@ -16,6 +16,14 @@ import (
 var idCount int = 0
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
+	curCookie, _ := r.Cookie("session-id")
+	if userID := checkSessionValidity(curCookie); userID != -1 {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	} else {
+		fmt.Print(userID)
+	}
+
 	if r.Method == http.MethodGet {
 		//	Going to the login page
 		CustomExecuteTemplate(w, "signup.html", nil)
@@ -60,24 +68,30 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	// generate a uuid for the session and set it into a cookie
 	id, _ := uuid.NewV4()
 	cookie := &http.Cookie{
-		Name:  "session-id",
-		Value: id.String(),
+		Name:     "session-id",
+		Value:    id.String(),
+		MaxAge:   7200,
+		HttpOnly: true,
 	}
 	http.SetCookie(w, cookie)
 
 	db.InsertSession(&dbTools.Session{
-		ID:        id.String(),
-		UserID:    user.ID,
-		IsActive:  true,
-		StartTime: time.Now(),
-		// ExpireTime: 0,
-		LastAccess: time.Now(),
+		ID:         id.String(),
+		UserID:     user.ID,
+		IsActive:   true,
+		ExpireTime: time.Now().Add(2 * time.Hour),
 	})
 
 	http.Redirect(w, r, "./", http.StatusSeeOther)
 }
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
+	curCookie, _ := r.Cookie("session-id")
+	if userID := checkSessionValidity(curCookie); userID != -1 {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
 	if r.Method == http.MethodGet {
 		//	Going to the login page
 		CustomExecuteTemplate(w, "login.html", nil)
@@ -104,18 +118,18 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	// generate a uuid for the session and set it into a cookie
 	id, _ := uuid.NewV4()
 	cookie := &http.Cookie{
-		Name:  "session-id",
-		Value: id.String(),
+		Name:     "session-id",
+		Value:    id.String(),
+		MaxAge:   7200,
+		HttpOnly: true,
 	}
 	http.SetCookie(w, cookie)
 
 	db.InsertSession(&dbTools.Session{
-		ID:        id.String(),
-		UserID:    user.ID,
-		IsActive:  true,
-		StartTime: time.Now(),
-		// ExpireTime: 0,
-		LastAccess: time.Now(),
+		ID:         id.String(),
+		UserID:     user.ID,
+		IsActive:   true,
+		ExpireTime: time.Now().Add(2 * time.Hour),
 	})
 
 	http.Redirect(w, r, "./", http.StatusSeeOther)

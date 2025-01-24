@@ -8,7 +8,7 @@ import "fmt"
 Use to identify if User like a Post/ Comment and call insert/uodate accordingly.
 Valid tgt: "Post", "Comment".
 */
-func (db *DBContainer) SelectFeedbacks(tgt string, userID int) ([]*Feedback, error) {
+func (db *DBContainer) SelectFeedbacks(tgt string, userID int) ([]Feedback, error) {
 	if tgt != "post" && tgt != "comment" {
 		return nil, fmt.Errorf("invalid target")
 	}
@@ -19,7 +19,7 @@ func (db *DBContainer) SelectFeedbacks(tgt string, userID int) ([]*Feedback, err
 	}
 	defer rows.Close()
 
-	var feedbacks []*Feedback
+	var feedbacks []Feedback
 	for rows.Next() {
 		var fb Feedback
 		err := rows.Scan(
@@ -30,7 +30,7 @@ func (db *DBContainer) SelectFeedbacks(tgt string, userID int) ([]*Feedback, err
 		if err != nil {
 			return nil, err
 		}
-		feedbacks = append(feedbacks, &fb)
+		feedbacks = append(feedbacks, fb)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)

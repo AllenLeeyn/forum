@@ -210,10 +210,10 @@ func TestSelectActiveSessionBy(t *testing.T) {
 		id       interface{}
 		expected string
 	}{
-		{"id", "0012", "nil"},               // select by sessionID
-		{"user_id", u.ID, "nil"},            // select by userID
-		{"user_id", -100, "empty"},          // invalid userID
-		{"Email", u.Email, "invalid field"}, // invalid field
+		{"id", "0012", "nil"},                           // select by sessionID
+		{"user_id", u.ID, "nil"},                        // select by userID
+		{"user_id", -100, "sql: no rows in result set"}, // invalid userID
+		{"Email", u.Email, "invalid field"},             // invalid field
 	}
 	for i, tc := range testCases {
 		s, err := db.SelectActiveSessionBy(tc.field, tc.id)
@@ -506,7 +506,7 @@ func TestSelectUpdateFeedbacks(t *testing.T) {
 	// change and update feedback on a post by user
 	// this change should reflect in the results of TestSelectPosts
 	feedbacks[0].Rating = 0
-	err = db.UpdateFeedback("post", *feedbacks[0])
+	err = db.UpdateFeedback("post", feedbacks[0])
 	if err != nil {
 		t.Error(err)
 	}

@@ -59,7 +59,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("something went wrong with grabbing comments")
 		}
 		cookie, _ := r.Cookie("session-id")
-		CustomExecuteTemplate(w, "post.html", postpageData{*post, comments, cookie})
+		CustomExecuteTemplate(w, "post.html", postpageData{cookie, *post, comments})
 
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {

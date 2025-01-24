@@ -17,11 +17,11 @@
       <div class="sidebar move">
         <h2>Categories</h2>
         <ul>
-          <li><a href="/">All</a></li>
-          <li><a href="?filterBy=createdBy">My posts</a></li>
-          <li><a href="?filterBy=likedBy">Liked posts</a></li>
+          <li><a href="/" class="{{if not .FilterBy}}active{{end}}">All</a></li>
+          <li><a href="?filterBy=createdBy" class="{{if eq .FilterBy "createdBy"}}active{{end}}">My posts</a></li>
+          <li><a href="?filterBy=likedBy" class="{{if eq .FilterBy "likedBy"}}active{{end}}">Liked posts</a></li>
           {{range $index, $cat := .Categories}}
-          <li><a href="?filterBy=catergory&id={{$index}}">{{$cat}}</a></li>
+          <li><a href="?filterBy=catergory&id={{$index}}" class="{{if and (eq $.FilterBy "catergory") (eq $index $.Id)}}active{{end}}">{{$cat}}</a></li>
           {{end}}
         </ul>
       </div>
@@ -31,6 +31,7 @@
         <!-- General Discussion -->
         <section id="general">
           <h2>General Discussion</h2>
+          
           <!-- Post Block -->
            {{range .Posts}}
           <div class="post-block">
