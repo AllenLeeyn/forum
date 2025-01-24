@@ -49,7 +49,7 @@ func CheckValidity(input string, dataType string) (bool, string) {
 }
 
 // Execute error page if possible, otherwise use inbuilt http error
-func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
+func ExecuteError(w http.ResponseWriter, errorMessage string, errorStatus int) {
 	errorData := ErrorData{
 		ErrorCode:    errorStatus,
 		ErrorMessage: errorMessage,

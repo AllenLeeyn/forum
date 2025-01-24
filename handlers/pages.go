@@ -27,7 +27,7 @@ func Init(dbMain *dbTools.DBContainer) {
 // Home page
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
+		ExecuteError(w, "Error 404, Page not found", http.StatusNotFound)
 		return
 	}
 	UpdateAndExecuteHome(w, r)
@@ -39,71 +39,25 @@ func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	CustomExecuteTemplate(w, "view-post.html", nil)
 }
 
-// Page for making posts
-func PostPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-
-		idStr := r.URL.Query().Get("id")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			fmt.Println("something went wrong with post_id")
-		}
-
-		post, err := db.SelectPost(id)
-		if err != nil || post == nil {
-			fmt.Println("something went wrong with getting post or nothing found")
-		}
-
-		comments, err := db.SelectComments(id, "")
-		if err != nil {
-			fmt.Println("something went wrong with grabbing comments")
-		}
-		cookie, _ := r.Cookie("session-id")
-		CustomExecuteTemplate(w, "post.html", postpageData{*post, comments, cookie})
-
-	} else if r.Method == http.MethodPost {
-		if err := r.ParseForm(); err != nil {
-			//	Error parsing data
-
-		}
-		postData := post{
-			Title:   r.FormValue("title"),
-			Content: r.FormValue("content"),
-			//UserID:    However we get the users ID,
-			//UserName: However we get the users Name,+
-		}
-		titleIsValid, titleInvalidReason := CheckValidity(postData.Title, "postTitle")
-		contentIsValid, contentInvalidReason := CheckValidity(postData.Content, "postContent")
-		if titleIsValid && contentIsValid {
-			fmt.Println("Valid user, check if duplicate")
-		} else {
-			//	Placeholder:
-			reason := titleInvalidReason + "\n" + contentInvalidReason
-			http.Error(w, reason, http.StatusBadRequest)
-		}
-	} else {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
 // Terms page
 func TermsPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		CustomExecuteTemplate(w, "terms.html", nil)
 	} else {
-		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }
 
+// Page for user to draft their post
 func StartThread(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		CustomExecuteTemplate(w, "start-thread.html", nil)
 	} else {
-		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }
 
-// Page for making posts
+// Page that handles and uploads post made by user
 func PostThread(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		query := r.URL.Query()
@@ -114,7 +68,7 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		for _, value := range categoriesStr {
 			intVal, err := strconv.Atoi(value)
 			if err != nil {
-				http.Error(w, "Error parsing categories", http.StatusBadRequest)
+				ExecuteError(w, "Error parsing categories", http.StatusBadRequest)
 			}
 			categoriesInt = append(categoriesInt, intVal)
 		}
@@ -133,12 +87,12 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		}
 		cookie, err := r.Cookie("session-id")
 		if err != nil {
-			http.Error(w, "Session not found", http.StatusInternalServerError)
+			ExecuteError(w, "Session not found", http.StatusInternalServerError)
 			return
 		}
 		session, err := db.SelectActiveSessionBy("id", cookie.Value)
 		if err != nil {
-			http.Error(w, "Invalid session", http.StatusUnauthorized)
+			ExecuteError(w, "Invalid session", http.StatusUnauthorized)
 			return
 		}
 		//	Placeholder:
@@ -158,6 +112,6 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateAndExecuteHome(w, r)
 	} else {
-		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }
