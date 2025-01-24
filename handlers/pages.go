@@ -5,6 +5,7 @@ import (
 	"forum/dbTools"
 	"log"
 	"net/http"
+	"strconv"
 	"text/template"
 )
 
@@ -34,8 +35,32 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 // Page for viewing posts
 func ViewPostPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Now we're on the view posts page")
-	CustomExecuteTemplate(w, "view-post.html", nil)
+	if r.Method == http.MethodGet {
+		idStr := r.URL.Query().Get("id")
+		if idStr == "" {
+			ExecuteError(w, "Post ID is missing", http.StatusBadRequest)
+			return
+		}
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			ExecuteError(w, "Invalid Post ID", http.StatusBadRequest)
+			return
+		}
+		post, err := db.SelectPost(id)
+		if err != nil || post == nil {
+			ExecuteError(w, "Post not found", http.StatusNotFound)
+			return
+		}
+		comments, err := db.SelectComments(id, "")
+		if err != nil {
+			ExecuteError(w, "Failed to load comments", http.StatusInternalServerError)
+			return
+		}
+		cookie, _ := r.Cookie("session-id")
+		CustomExecuteTemplate(w, "post.html", postpageData{*post, comments, cookie})
+	} else {
+		ExecuteError(w, "Invalid Request Method", http.StatusMethodNotAllowed)
+	}
 }
 
 // Terms page
@@ -71,12 +96,12 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 		if post.DislikeCount == -1 {
 			return
 		} else {
-			fmt.Println(post)
-			err := db.InsertPost(post)
+			postNum, err := db.InsertPost(post)
 			if err != nil {
-				fmt.Println(err)
+				ExecuteError(w, "Failed to insert post into database", http.StatusInternalServerError)
 			}
-			UpdateAndExecuteHome(w, r)
+			postID := "/post?id=" + strconv.Itoa(postNum)
+			http.Redirect(w, r, postID, http.StatusSeeOther)
 		}
 	} else {
 		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)

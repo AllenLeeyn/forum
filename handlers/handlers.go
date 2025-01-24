@@ -136,3 +136,8 @@ func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 	cookie, _ := r.Cookie("session-id")
 	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
 }
+
+/* SendUserToPost() {
+	http.Redirect(w, r, "post", 200)
+	CustomExecuteTemplate()
+} */

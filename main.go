@@ -36,7 +36,7 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogOut)
 	http.HandleFunc("/terms", handlers.TermsPage)
 	http.HandleFunc("/start-thread", handlers.StartThread)
-	http.HandleFunc("/view-post", handlers.ViewPostPage)
+	http.HandleFunc("/post/", handlers.ViewPostPage)
 
 	fmt.Println("Starting Forum on http://localhost:8080/...")
 	http.ListenAndServe(":8080", nil)

@@ -139,9 +139,9 @@ func (db *DBContainer) SelectPost(id int) (*Post, error) {
 
 // db.InsetPost() into db and record the categories too
 // include created at for testing for now
-func (db *DBContainer) InsertPost(p Post) error {
+func (db *DBContainer) InsertPost(p Post) (int, error) {
 	if err := db.isValidCategories(p.Categories); err != nil {
-		return err
+		return -1, err
 	}
 	qry := `INSERT INTO posts 
 			(user_id, title, content, created_at)
@@ -159,17 +159,17 @@ func (db *DBContainer) InsertPost(p Post) error {
 		p.Content,
 		p.CreatedAt)
 	if err != nil {
-		return err
+		return -1, err
 	}
 	postID, err := res.LastInsertId()
 	if err != nil {
-		return err
+		return -1, err
 	}
 	for _, catID := range p.Categories {
 		_, err = db.conn.Exec(`INSERT INTO post_categories (post_id, category_id)
 							   VALUES (?, ?)`, postID, catID)
 	}
-	return err
+	return int(postID), err
 }
 
 // db.UpdatePost() for updating post when user make changes

@@ -292,7 +292,7 @@ func TestInsertPost(t *testing.T) {
 	db.DeleteAllPosts()
 
 	for i, tc := range testCases {
-		err := db.InsertPost(tc.p)
+		_, err := db.InsertPost(tc.p)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
