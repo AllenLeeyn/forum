@@ -10,6 +10,7 @@
 
 {{template "header"}}
   <body>
+<<<<<<< HEAD
     <div class="all-wrap">
       <form action="/register" method="post" id="form">
         <h2>Register Here</h2>
@@ -66,6 +67,29 @@
             Already have an account?
             <a href="/login"
               >Login</a
+=======
+    {{template "header" .}}
+    <div class="wrapper">
+      <div class="form-wrapper sign-up" id="form">
+        <form action="/register" method="post">
+          <h2>Sign Up</h2>
+          <div class="input-group">
+            <input type="text" name="username" required />
+            <label for="username">Username</label>
+          </div>
+          <div class="input-group">
+            <input type="email" name="email" required />
+            <label for="email">Email</label>
+          </div>
+          <div class="input-group">
+            <input type="password" name="password" required />
+            <label for="password">Password</label>
+          </div>
+          <div class="remember">
+            <label
+              ><input type="checkbox" /> I agree to the terms &
+              conditions</label
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
             >
           </p>
         </div>

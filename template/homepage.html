@@ -11,6 +11,7 @@
     />
   </head>
   <body>
+<<<<<<< HEAD
     <header>
       <div class="logo"> <a href="/">Forum</a></div>
       <nav>
@@ -24,11 +25,15 @@
         </button>
       </nav>
     </header>
+=======
+    {{template "header" .}}
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
     <div class="container">
       <!-- Sidebar -->
       <div class="sidebar move">
         <h2>Categories</h2>
         <ul>
+<<<<<<< HEAD
           <li><a href="#general">General Discussion</a></li>
           <li><a href="#tech">Tech and Development</a></li>
           <li><a href="#gaming">Gaming</a></li>
@@ -37,6 +42,14 @@
           <li><a href="#creative">Creative Corner</a></li>
           <li><a href="#debate">Controversial and Debate</a></li>
           <li><a href="#humor">Humor and Fun</a></li>
+=======
+          <li><a href="/">All</a></li>
+          <li><a href="?filterBy=createdBy">My posts</a></li>
+          <li><a href="?filterBy=likedBy">Liked posts</a></li>
+          {{range $index, $cat := .Categories}}
+          <li><a href="?filterBy=category&id={{$index}}">{{$cat}}</a></li>
+          {{end}}
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
         </ul>
       </div>
 
@@ -46,6 +59,7 @@
         <section id="general">
           <h2>General Discussion</h2>
           <!-- Post Block -->
+<<<<<<< HEAD
           {{range $index, $post := .Posts}}
           <div class="post-block">
             <h3 class="post-title">
@@ -84,6 +98,35 @@
               </button>
             </div>
           </div>
+=======
+           {{range .Posts}}
+          <div class="post-block">
+            <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
+            <h3 class="post-title">
+              <a href="/post?id={{.ID}}"> {{.Title}}</a>
+            </h3>
+            <pre class="post-body">{{.Content}}</pre>
+
+            <div class="post-actions">
+              <button class="icon-button">
+                <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
+              </button>
+              <button class="icon-button">
+                <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+              </button>
+              <p class="icon-button">
+                <span>{{.CatNames}}</span>
+              </p>
+            </div>
+          </div>
+          {{else}}
+          <div class="post-block">
+            <h3 class="post-title">
+              No post found
+            </h3>
+          </div>
+          {{end}}
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
         </section>
       </div>
 
@@ -92,7 +135,11 @@
         <div class="start-thread">
           <h3>Post a Thread</h3>
           <p>Share your thoughts with the community!</p>
+<<<<<<< HEAD
           <a href="/start-thread" class="start-thread-btn">Start a Thread</a>
+=======
+          <a href="start-thread" class="start-thread-btn">Start a Thread</a>
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
         </div>
       
         <!-- Filter Section -->

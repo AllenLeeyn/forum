@@ -10,7 +10,11 @@ type User struct {
 	TypeID    int
 	Name      string
 	Email     string
+<<<<<<< HEAD
 	PwHash    string
+=======
+	PwHash    []byte
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 	RegDate   time.Time
 	LastLogin time.Time
 }
@@ -35,11 +39,19 @@ type Post struct {
 	Content      string
 	CreatedAt    time.Time
 	Categories   []int
+<<<<<<< HEAD
+=======
+	CatNames     string
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 }
 
 type Comment struct {
 	ID           int
 	UserID       int
+<<<<<<< HEAD
+=======
+	UserName     string
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 	ParentID     sql.NullInt64
 	PostID       int
 	Content      string

@@ -45,6 +45,7 @@ func (db *DBContainer) InsertFeedback(tgt string, fb Feedback) error {
 		return fmt.Errorf("invalid target")
 	}
 	qry := `INSERT INTO ` + tgt + `_feedback 
+<<<<<<< HEAD
 			(user_id, parent_id, rating, created_at) 
 			VALUES ( ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
@@ -52,6 +53,14 @@ func (db *DBContainer) InsertFeedback(tgt string, fb Feedback) error {
 		fb.ParentID,
 		fb.Rating,
 		fb.CreatedAt)
+=======
+			(user_id, parent_id, rating) 
+			VALUES ( ?, ?, ?)`
+	_, err := db.conn.Exec(qry,
+		fb.UserID,
+		fb.ParentID,
+		fb.Rating)
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 	return err
 }
 

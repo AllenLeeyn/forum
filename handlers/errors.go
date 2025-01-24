@@ -1,4 +1,4 @@
-package utils
+package handlers
 
 import "net/http"
 
@@ -9,7 +9,7 @@ import "net/http"
 func IsHttpError(w http.ResponseWriter, r *http.Request, shouldBe interface{}, errMessage string, errStatus int, check string) {
 	if check == "method" {
 		if r.Method != shouldBe {
-			http.Error(w, errMessage, errStatus)
+			ExecuteError(w, errMessage, errStatus)
 		}
 	}
 }

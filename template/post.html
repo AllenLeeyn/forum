@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forum Topics</title>
+    <link rel="stylesheet" href="/static/homepage.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    {{template "header" .}}
+
+    <div class="content">
+      <div class="post-block">
+      <h5>[{{.Post.UserName}}] {{.Post.CreatedAt}}</h5>
+      <h3 class="post-title">
+        {{.Post.Title}}
+      </h3>
+      <pre class="post-body">{{.Post.Content}}</pre>
+
+      <div class="post-actions">
+        <button class="icon-button">
+          <i class="fas fa-heart"></i> <span>{{.Post.LikeCount}}</span>
+        </button>
+        <button class="icon-button">
+          <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
+        </button>
+        <p class="icon-button">
+          <span>{{.Post.CatNames}}</span>
+        </p>
+      </div>
+
+      {{range .Comments}}
+      <div class="post-block">
+        <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
+        <pre class="post-body">{{.Content}}</pre>
+        <div class="post-actions">
+          <button class="icon-button">
+            <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
+          </button>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </body>
+</html>

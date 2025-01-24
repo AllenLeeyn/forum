@@ -29,7 +29,11 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    3,
 			Name:      "BATMAN",
 			Email:     "batman@gotham.city",
+<<<<<<< HEAD
 			PwHash:    "bruc3W47N3",
+=======
+			PwHash:    []byte("bruc3W47N3"),
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"nil"},
@@ -37,7 +41,11 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    3,
 			Name:      "BATMAN",
 			Email:     "batman@gotham.city",
+<<<<<<< HEAD
 			PwHash:    "dickGrayson",
+=======
+			PwHash:    []byte("dickGrayson"),
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"UNIQUE constraint failed: users.email"},
@@ -45,7 +53,11 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    666,
 			Name:      "JOKER",
 			Email:     "j0k3r@gotham.city",
+<<<<<<< HEAD
 			PwHash:    "alfredPennyless",
+=======
+			PwHash:    []byte("alfredPennyless"),
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"FOREIGN KEY constraint failed"},
@@ -53,7 +65,11 @@ func TestInsertUser(t *testing.T) {
 			TypeID:    1,
 			Name:      "Superman",
 			Email:     "superman@metropolis.city",
+<<<<<<< HEAD
 			PwHash:    "clarkKent",
+=======
+			PwHash:    []byte("clarkKent"),
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			RegDate:   fixedTime,
 			LastLogin: fixedTime},
 			"nil"},
@@ -132,7 +148,11 @@ func TestUpdateUser(t *testing.T) {
 	u, _ := db.SelectUserByEmail("superman@metropolis.city")
 	fixedTime := time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC)
 	u.Name = "Ultimate Superman"
+<<<<<<< HEAD
 	u.PwHash = "kalEl"
+=======
+	u.PwHash = []byte("kalEl")
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 	u.LastLogin = fixedTime
 
 	err := db.UpdateUser(u)
@@ -258,14 +278,22 @@ func TestInsertPost(t *testing.T) {
 			Title:      "Why is Batman so parnoid?",
 			Content:    "He got way too much contigencies...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+<<<<<<< HEAD
 			Categories: []int{1, 2},
+=======
+			Categories: []int{0, 1},
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		}, "nil"},
 		{post{ // invalid userID
 			UserID:     -100,
 			Title:      "Why is Batman so serious?",
 			Content:    "He can even take a joke...",
 			CreatedAt:  time.Now(),
+<<<<<<< HEAD
 			Categories: []int{1},
+=======
+			Categories: []int{0},
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		}, "FOREIGN KEY constraint failed"},
 		{post{ // invalid category
 			UserID:     s.UserID,
@@ -279,20 +307,32 @@ func TestInsertPost(t *testing.T) {
 			Title:      "Having 72 hours at day",
 			Content:    "Here is how you train, invent, investigate and more...",
 			CreatedAt:  time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
+<<<<<<< HEAD
 			Categories: []int{1, 2, 4, 5},
+=======
+			Categories: []int{0, 1, 3, 4},
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		}, "nil"},
 		{post{ // valid entry
 			UserID:     u.ID,
 			Title:      "Why are there more and more supervillians?",
 			Content:    "Is there a deep societal problems that creates supervillians?",
 			CreatedAt:  time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
+<<<<<<< HEAD
 			Categories: []int{4, 5},
+=======
+			Categories: []int{3, 4},
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		}, "nil"},
 	}
 	db.DeleteAllPosts()
 
 	for i, tc := range testCases {
+<<<<<<< HEAD
 		err := db.InsertPost(tc.p)
+=======
+		_, err := db.InsertPost(tc.p)
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -314,58 +354,100 @@ func TestInsertComment(t *testing.T) {
 	}{
 		{ // valid comment in first post
 			comment{
+<<<<<<< HEAD
 				UserID:    s.UserID,
 				PostID:    posts[0].ID,
 				Content:   "Why can't be more trustful of us?",
 				CreatedAt: time.Now(),
+=======
+				UserID:  s.UserID,
+				PostID:  posts[0].ID,
+				Content: "Why can't be more trustful of us?",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 		{ // valid comment in first post
 			comment{
+<<<<<<< HEAD
 				UserID:    u.ID,
 				PostID:    posts[0].ID,
 				Content:   "Not to be xenophobic... but you are not from around here",
 				CreatedAt: time.Now(),
+=======
+				UserID:  u.ID,
+				PostID:  posts[0].ID,
+				Content: "Not to be xenophobic... but you are not from around here",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 		{ // invalid comment to first post
 			comment{
+<<<<<<< HEAD
 				UserID:    -100,
 				PostID:    posts[0].ID,
 				Content:   "he just so serious all the time",
 				CreatedAt: time.Now(),
+=======
+				UserID:  -100,
+				PostID:  posts[0].ID,
+				Content: "he just so serious all the time",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "FOREIGN KEY constraint failed",
 		},
 		{ // valid comment in third post
 			comment{
+<<<<<<< HEAD
 				UserID:    s.UserID,
 				PostID:    posts[2].ID,
 				Content:   "You can always move faster. Oh! You can't travel at the speed of light.",
 				CreatedAt: time.Now(),
+=======
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "You can always move faster. Oh! You can't travel at the speed of light.",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
+<<<<<<< HEAD
 				UserID:    u.ID,
 				PostID:    posts[2].ID,
 				Content:   "At least I don't get defeated by some rocks.",
 				CreatedAt: time.Now(),
+=======
+				UserID:  u.ID,
+				PostID:  posts[2].ID,
+				Content: "At least I don't get defeated by some rocks.",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
+<<<<<<< HEAD
 				UserID:    s.UserID,
 				PostID:    posts[2].ID,
 				Content:   "Humans get affected by radioactive materials too.",
 				CreatedAt: time.Now(),
+=======
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "Humans get affected by radioactive materials too.",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 		{ // valid comment in third post
 			comment{
+<<<<<<< HEAD
 				UserID:    s.UserID,
 				PostID:    posts[2].ID,
 				Content:   "So we both bleed...",
 				CreatedAt: time.Now(),
+=======
+				UserID:  s.UserID,
+				PostID:  posts[2].ID,
+				Content: "So we both bleed...",
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 			}, "nil",
 		},
 	}
@@ -545,6 +627,7 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 		}},
+<<<<<<< HEAD
 		{"catergory", "", 1, []time.Time{ // filterBy batman
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
@@ -554,6 +637,17 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
 		{"catergory", "", 3, []time.Time{}}, // empty result
+=======
+		{"category", "", 0, []time.Time{ // filterBy batman
+			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
+			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
+		}},
+		{"category", "oldest", 4, []time.Time{ // filterBy batman
+			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
+			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
+		}},
+		{"category", "", 2, []time.Time{}}, // empty result
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
 		{"likedBy", "likeCount", s.UserID, []time.Time{ //likedBy superman
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),

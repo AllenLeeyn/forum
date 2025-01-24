@@ -4,18 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Error</title>
+    <link rel="stylesheet" type="text/css" href="/static/homepage.css" />
   </head>
-  {{template "header"}}
   <body>
-    <nav class="navbar">
-      <a href="/" class="logo">PageName</a>
-    </nav>
-
+    {{template "header"}}
     <div class="container">
+<<<<<<< HEAD
       <div class="err-code">Error {{.ErrorCode}}</div>
       <h1 class="err-msg">{{.ErrorMessage}}</h1>
       <a href="/" class="home-page">
         Return PlaceLinkToHomeHere</a>
+=======
+      <h1>
+        <span class="err-code">{{.ErrorCode}}</span><br>
+        <span class="err-msg">{{.ErrorMessage}}</span><br>
+      </h1>
+      <div>
+      <a href="/" class="home-page">Return Home</a>
+    </div>
+>>>>>>> 8be9eaccc3a15efa4a6390295bf7249a6f455b5c
     </div>
   </body>
 </html>
