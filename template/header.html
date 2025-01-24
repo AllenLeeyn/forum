@@ -7,7 +7,7 @@
     <a href="#">Social</a>
     {{if .SessionCookie}}
       <a href="/profile-page">Profile</a>
-      <a href="/logout">Log Out</a>
+      <button id="logout-btn">Logout</button>
     {{else}}
       <a href="/login">Login</a>
     {{end}}
@@ -18,4 +18,22 @@
     </button>
   </nav>
 </header>
+<script>
+  document.getElementById('logout-btn').onclick = function () {
+      fetch('/logout', {
+          method: 'POST',
+          credentials: 'include', // Ensures cookies are sent with the request
+      })
+      .then(response => {
+          if (response.ok) {
+              window.location.href = '/login'; // Redirect to login page
+          } else {
+              alert('Failed to log out.');
+          }
+      })
+      .catch(error => {
+          console.error('Error logging out:', error);
+      });
+  };
+</script>
 {{end}}

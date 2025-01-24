@@ -170,3 +170,24 @@ func validPsswrd(password string) bool {
 		hasSpecial(password) &&
 		isValidLength
 }
+
+func LogOut(w http.ResponseWriter, r *http.Request) {
+	c, _ := r.Cookie("session-id")
+	if c == nil {
+		log.Println("no session cookie??")
+		return
+	}
+	sessionId := c.Value
+	http.SetCookie(w, &http.Cookie{
+		Name: "session-id",
+		Value:    "",              // Empty the cookie's value
+    MaxAge:   -1,              // Invalidate the cookie immediately
+    HttpOnly: true,
+	})
+	db.UpdateSession(&session{
+		IsActive: false,
+		ExpireTime: time.Now(),
+		LastAccess: time.Now(),
+		ID: sessionId,
+	})
+}
