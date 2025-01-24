@@ -48,27 +48,25 @@ func TermsPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Page for user to draft their post
+// Page for user to draft their post (if method == get), otherwise post it (if method == post)
 func StartThread(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		CustomExecuteTemplate(w, "start-thread.html", nil)
-	} else {
-		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
-	}
-}
-
-// Page that handles and uploads post made by user
-func PostThread(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		query := r.URL.Query()
-		title := query.Get("threadTitle")
-		content := query.Get("threadContent")
-		categoriesStr := query["category"]
+	} else if r.Method == http.MethodPost {
+		err := r.ParseForm()
+		if err != nil {
+			ExecuteError(w, "Error parsing form data", http.StatusBadRequest)
+			return
+		}
+		title := r.FormValue("threadTitle")
+		content := r.FormValue("threadContent")
+		categoriesStr := r.Form["category"]
 		var categoriesInt []int
 		for _, value := range categoriesStr {
 			intVal, err := strconv.Atoi(value)
 			if err != nil {
 				ExecuteError(w, "Error parsing categories", http.StatusBadRequest)
+				return
 			}
 			categoriesInt = append(categoriesInt, intVal)
 		}
