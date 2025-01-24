@@ -11,17 +11,7 @@
     />
   </head>
   <body>
-    <header>
-      <div class="logo"><a href="/">Forum</a></div>
-      <nav>
-        <a href="#">Articles</a>
-        <a href="#">Social</a>
-        <a href="/login">Login</a>
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-          <i class="fas fa-moon"></i>
-        </button>
-      </nav>
-    </header>
+    {{template "header" .}}
 
     <div class="wrapper">
       <div class="start-thread-container">

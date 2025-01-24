@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 //	Place for helper/util functions
@@ -65,8 +64,12 @@ func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
 func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 	// check session from cookie to get feedback data
 	cookie, _ := r.Cookie("session-id")
-	userID := checkSessionValidity(cookie)
-	feedbacks, err := db.SelectFeedbacks("Post", userID)
+	userID, userName := checkSessionValidity(w, cookie), "Guest"
+	u, err := db.SelectUserByField("id", userID)
+	if err == nil && u != nil {
+		userName = u.Name
+	}
+	feedbacks, err := db.SelectFeedbacks("post", userID)
 	if err != nil {
 		fmt.Println(err)
 		// something went wrong
@@ -87,32 +90,15 @@ func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		// something went wrong
 	}
+	extendSession(w, cookie)
 	CustomExecuteTemplate(w, "homepage.html",
 		homepageData{
 			cookie,
 			db.Categories,
 			posts,
+			userName,
 			feedbacks,
 			filterBy,
 			orderBy,
 			id})
-}
-
-func checkSessionValidity(c *http.Cookie) int {
-	sessionID := c.Value
-	fmt.Println(c)
-	fmt.Println(sessionID)
-	s, err := db.SelectActiveSessionBy("id", sessionID)
-	if err != nil {
-		fmt.Println(err)
-		return -1
-	}
-	if s.ExpireTime.Before(time.Now()) {
-		s.IsActive = false
-		if err := db.UpdateSession(s); err != nil {
-			fmt.Println("update failed")
-		}
-		return -1
-	}
-	return s.UserID
 }

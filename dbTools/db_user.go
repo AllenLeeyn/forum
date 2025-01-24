@@ -1,24 +1,6 @@
 package dbTools
 
-// db.SelectUserByEmail(). If no results found, User is not registered/ wrong email.
-func (db *DBContainer) SelectUserByEmail(email string) (*User, error) {
-	qry := `SELECT * FROM users WHERE email = ?`
-	var u User
-	err := db.conn.QueryRow(qry, email).Scan(
-		&u.ID,
-		&u.TypeID,
-		&u.Name,
-		&u.Email,
-		&u.PwHash,
-		&u.RegDate,
-		&u.LastLogin)
-	if err != nil {
-		return nil, checkErrNoRows(err)
-	}
-	return &u, nil
-}
-
-func (db *DBContainer) SelectUserByField(fieldName, fieldValue string) (*User, error) {
+func (db *DBContainer) SelectUserByField(fieldName string, fieldValue interface{}) (*User, error) {
 	qry := `SELECT * FROM users WHERE ` + fieldName + ` = ?`
 	var u User
 	err := db.conn.QueryRow(qry, fieldValue).Scan(

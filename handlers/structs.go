@@ -15,6 +15,7 @@ type homepageData struct {
 	SessionCookie *http.Cookie
 	Categories    []string
 	Posts         []post
+	UserName      string
 	Feedbacks     []feedback
 	FilterBy      string
 	OrderBy       string
