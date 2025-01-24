@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/static/login.css" />
   </head>
   <body>
+    {{template "header" .}}
     <div class="wrapper">
       <!-- Welcome Section -->
       <div class="welcome-section">
@@ -16,7 +17,6 @@
           We're excited to have you back. Login now to continue your journey!
         </p>
       </div>
-
       <!-- Login Form -->
       <div class="form-wrapper">
         <form action="/login" method="post" id="form">

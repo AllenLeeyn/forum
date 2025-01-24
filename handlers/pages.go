@@ -64,6 +64,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
 			//	Error parsing data
+
 		}
 		postData := post{
 			Title:   r.FormValue("title"),
@@ -108,6 +109,16 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 		title := query.Get("threadTitle")
 		content := query.Get("threadContent")
+		categoriesStr := query["category"]
+		var categoriesInt []int
+		for _, value := range categoriesStr {
+			intVal, err := strconv.Atoi(value)
+			if err != nil {
+				http.Error(w, "Error parsing categories", http.StatusBadRequest)
+			}
+			categoriesInt = append(categoriesInt, intVal)
+		}
+		fmt.Println(categoriesInt)
 		titleIsValid, titleInvalidReason := CheckValidity(title, "postTitle")
 		contentIsValid, contentInvalidReason := CheckValidity(content, "postContent")
 		if titleIsValid && contentIsValid {
@@ -130,10 +141,7 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid session", http.StatusUnauthorized)
 			return
 		}
-		fmt.Println("No error getting user by ID1")
 		//	Placeholder:
-		categories := []int{1, 2, 3}
-		fmt.Println("No error getting user by ID2")
 		post := dbTools.Post{
 			UserID:       session.UserID,
 			CommentCount: 0,
@@ -141,17 +149,13 @@ func PostThread(w http.ResponseWriter, r *http.Request) {
 			DislikeCount: 0,
 			Title:        title,
 			Content:      content,
-			Categories:   categories,
+			Categories:   categoriesInt,
 		}
-		fmt.Println("No error getting user by ID3")
 		fmt.Println(post)
-		fmt.Println("No error getting user by ID4")
 		err = db.InsertPost(post)
-		fmt.Println("No error getting user by ID5")
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println("No error getting user by ID")
 		UpdateAndExecuteHome(w, r)
 	} else {
 		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
