@@ -1,5 +1,5 @@
-INSERT INTO users (type_id, name, email, pw_hash)
-VALUES (1, 'ADMIN', 'admin@somewhere.earth', 's0m3thingS3cured?');
+INSERT INTO users (id, type_id, name, email, pw_hash)
+VALUES (0, 1, 'ADMIN', 'admin@somewhere.earth', 's0m3thingS3cured?');
 
 INSERT INTO posts (user_id, title, content)
 VALUES (

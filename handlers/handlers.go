@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"forum/dbTools"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //	Place for helper/util functions
@@ -81,4 +85,46 @@ func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie, _ := r.Cookie("session-id")
 	CustomExecuteTemplate(w, "homepage.html", homepageData{posts, db.Categories, cookie})
+}
+
+var commCount int = 1
+
+func Comment(w http.ResponseWriter, r *http.Request) {
+	sessionCookie, e := r.Cookie("session-id")
+	checkErr(e)
+
+	s := struct {
+		Comment string
+	}{}
+	b, e := io.ReadAll(r.Body)
+	checkErr(e)
+	e = json.Unmarshal(b, &s)
+	checkErr(e)
+
+	query := r.URL.Query()
+	postId := query.Get("postId")
+	pId, err := strconv.Atoi(postId)
+	checkErr(err)
+
+	session, e := db.SelectActiveSessionBy("id", sessionCookie.Value)
+	checkErr(e)
+
+	user, e := db.SelectUserByField("id", strconv.Itoa(session.UserID))
+	checkErr(e)
+
+	db.InsertComment(dbTools.Comment{
+		ID:        commCount,
+		UserID:    session.UserID,
+		PostID:    pId,
+		Content:   s.Comment,
+		UserName:  user.Name,
+		LikeCount: 7,
+		CreatedAt: time.Now(),
+	})
+	commCount++
+
+	post, err := db.SelectPost(pId)
+	if err != nil || post == nil {
+		fmt.Println("something went wrong with getting post or nothing found")
+	}
 }

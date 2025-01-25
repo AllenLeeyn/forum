@@ -33,6 +33,12 @@
         </p>
       </div>
 
+      </div>
+      <div id="comment-form">
+        <textarea id="comment-input" placeholder="Write your comment here..." rows="3"></textarea>
+        <button id="submit-comment">Post Comment</button>
+      </div>
+
       {{range .Comments}}
       <div class="post-block">
         <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
@@ -44,6 +50,46 @@
         </div>
       </div>
       {{end}}
+      </div>
     </div>
   </body>
+
+  <script>
+document.getElementById('submit-comment').onclick = function () {
+    const commentInput = document.getElementById('comment-input')
+    const commentText = commentInput.value.trim()
+
+    if (!commentText) {
+        alert('Comment cannot be empty!')
+        return;
+    }
+
+    const url = new URL(window.location.href)
+    const postId = url.searchParams.get('id')
+
+    if (!postId) {
+        alert('Post ID not found in URL.')
+        return;
+    }
+
+    // Send the comment to the server
+    fetch(`/add-comment?postId=${postId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Comment: commentText }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                alert('Failed to post comment. Please try again.');
+                console.error()
+            } else {
+              location.reload()
+            }
+        })
+
+    commentInput.value = '';
+};
+  </script>
 </html>

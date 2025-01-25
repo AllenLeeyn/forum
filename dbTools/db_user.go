@@ -38,9 +38,10 @@ func (db *DBContainer) SelectUserByField(fieldName, fieldValue string) (*User, e
 // db.InserUser() insert a User into the database
 func (db *DBContainer) InsertUser(u *User) error {
 	qry := `INSERT INTO users 
-			(type_id, name, email, pw_hash) 
-			VALUES ( ?, ?, ?, ?)`
+			(id, type_id, name, email, pw_hash) 
+			VALUES (?, ?, ?, ?, ?)`
 	_, err := db.conn.Exec(qry,
+		u.ID,
 		u.TypeID,
 		u.Name,
 		u.Email,

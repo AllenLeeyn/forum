@@ -48,8 +48,8 @@ func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error)
 // db.InsertComment() inserts a comment for a post.
 func (db *DBContainer) InsertComment(c Comment) error {
 	qry := `INSERT INTO comments
-			(user_id, post_id, parent_id, content)
-			VALUES (?, ?, ?, ?)`
+			(user_id, user_name, post_id, parent_id, content, like_count)
+			VALUES (?, ?, ?, ?, ?, ?)`
 
 	var parentID interface{}
 	if c.ParentID.Valid {
@@ -59,9 +59,11 @@ func (db *DBContainer) InsertComment(c Comment) error {
 	}
 	_, err := db.conn.Exec(qry,
 		c.UserID,
+		c.UserName,
 		c.PostID,
 		parentID,
-		c.Content)
+		c.Content,
+		c.LikeCount)
 	return err
 }
 

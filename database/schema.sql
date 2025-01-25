@@ -57,6 +57,7 @@ CREATE TABLE post_categories (
 CREATE TABLE comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
+    user_name TEXT NOT NULL,
     post_id INTEGER NOT NULL,
     parent_id INTEGER NULL,
     content TEXT NOT NULL DEFAULT 0,

@@ -54,7 +54,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("something went wrong with getting post or nothing found")
 		}
 
-		comments, err := db.SelectComments(id, "")
+		comments, err := db.SelectComments(id, "oldest")
 		if err != nil {
 			fmt.Println("something went wrong with grabbing comments")
 		}

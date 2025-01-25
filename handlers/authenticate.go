@@ -13,7 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var idCount int = 0
+var idCount int = 1
 
 func SignupPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
@@ -45,7 +45,6 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 
 	// add the user to the database
-	idCount++
 	user := &dbTools.User{
 		ID:        idCount,
 		TypeID:    1,
@@ -55,6 +54,7 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 		RegDate:   time.Now(),
 		LastLogin: time.Now(),
 	}
+	idCount++
 	db.InsertUser(user)
 
 	// generate a uuid for the session and set it into a cookie
@@ -148,7 +148,7 @@ func getCredentials(r *http.Request, isSignup bool) (string, string, string, err
 
 func checkErr(err error) {
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 
