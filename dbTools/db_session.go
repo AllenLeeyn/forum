@@ -23,10 +23,7 @@ func (db *DBContainer) SelectActiveSessionBy(field string, id interface{}) (*Ses
 		&s.StartTime,
 		&s.ExpireTime,
 		&s.LastAccess)
-	if err != nil {
-		return nil, checkErrNoRows(err)
-	}
-	return &s, nil
+	return &s, err
 }
 
 // db.InsertSession() when User login is successful

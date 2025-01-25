@@ -83,6 +83,11 @@ header nav a:hover {
   color: #ff847c; /* Peach */
 }
 
+.sidebar ul li a.active {
+  font-weight: bold;
+  color: #ff847c; /* Peach */
+}
+
 /* Right Sidebar */
 .right-sidebar {
   width: 20%;

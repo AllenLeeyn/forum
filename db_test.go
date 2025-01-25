@@ -88,7 +88,7 @@ func TestSelectUserByEmail(t *testing.T) {
 			"nil"},
 	}
 	for i, tc := range testCases {
-		u, err := db.SelectUserByEmail(tc.Email)
+		u, err := db.SelectUserByField("email", tc.Email)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -129,7 +129,7 @@ func TestSelectFieldFromTable(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	u, _ := db.SelectUserByEmail("superman@metropolis.city")
+	u, _ := db.SelectUserByField("email", "superman@metropolis.city")
 	fixedTime := time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC)
 	u.Name = "Ultimate Superman"
 	u.PwHash = []byte("kalEl")
@@ -140,7 +140,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Errorf("Case: updateUser() failed.%s\n", err)
 		return
 	}
-	u2, err2 := db.SelectUserByEmail(u.Email)
+	u2, err2 := db.SelectUserByField("email", u.Email)
 	if (err2 != nil || u2 == nil) &&
 		u.Name != u2.Name &&
 		u2.LastLogin == fixedTime {
@@ -151,8 +151,8 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestInsertSession(t *testing.T) {
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
-	u2, _ := db.SelectUserByEmail("superman@metropolis.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
+	u2, _ := db.SelectUserByField("email", "superman@metropolis.city")
 	testCases := []struct {
 		s        *session
 		expected string
@@ -204,16 +204,16 @@ func TestInsertSession(t *testing.T) {
 }
 
 func TestSelectActiveSessionBy(t *testing.T) {
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	testCases := []struct {
 		field    string
 		id       interface{}
 		expected string
 	}{
-		{"id", "0012", "nil"},               // select by sessionID
-		{"user_id", u.ID, "nil"},            // select by userID
-		{"user_id", -100, "empty"},          // invalid userID
-		{"Email", u.Email, "invalid field"}, // invalid field
+		{"id", "0012", "nil"},                           // select by sessionID
+		{"user_id", u.ID, "nil"},                        // select by userID
+		{"user_id", -100, "sql: no rows in result set"}, // invalid userID
+		{"Email", u.Email, "invalid field"},             // invalid field
 	}
 	for i, tc := range testCases {
 		s, err := db.SelectActiveSessionBy(tc.field, tc.id)
@@ -248,7 +248,7 @@ func TestUpdateSession(t *testing.T) {
 
 func TestInsertPost(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	testCases := []struct {
 		p        post
 		expected string
@@ -305,7 +305,7 @@ func TestInsertPost(t *testing.T) {
 
 func TestInsertComment(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	posts, _ := db.SelectPosts("", "oldest", 0)
 
 	testCases := []struct {
@@ -378,7 +378,7 @@ func TestInsertComment(t *testing.T) {
 }
 func TestInsertFeedback(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	posts, err := db.SelectPosts("", "", 0)
 	if err != nil {
 		t.Error(err)
@@ -496,7 +496,7 @@ func TestInsertFeedback(t *testing.T) {
 }
 
 func TestSelectUpdateFeedbacks(t *testing.T) {
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	// selectFeedback made in posts by user
 	feedbacks, err := db.SelectFeedbacks("post", u.ID)
 	if err != nil {
@@ -506,7 +506,7 @@ func TestSelectUpdateFeedbacks(t *testing.T) {
 	// change and update feedback on a post by user
 	// this change should reflect in the results of TestSelectPosts
 	feedbacks[0].Rating = 0
-	err = db.UpdateFeedback("post", *feedbacks[0])
+	err = db.UpdateFeedback("post", feedbacks[0])
 	if err != nil {
 		t.Error(err)
 	}
@@ -514,7 +514,7 @@ func TestSelectUpdateFeedbacks(t *testing.T) {
 
 func TestSelectPosts(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
-	u, _ := db.SelectUserByEmail("batman@gotham.city")
+	u, _ := db.SelectUserByField("email", "batman@gotham.city")
 	testCase := []struct {
 		filterBy string
 		orderBy  string

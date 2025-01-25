@@ -33,7 +33,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	UpdateAndExecuteHome(w, r)
 }
 
-// Page for viewing posts
+// Page for viewing posts. Do we need this?
 func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Now we're on the view posts page")
 	CustomExecuteTemplate(w, "view-post.html", nil)
@@ -41,6 +41,16 @@ func ViewPostPage(w http.ResponseWriter, r *http.Request) {
 
 // Page for making posts
 func PostPage(w http.ResponseWriter, r *http.Request) {
+
+	// check session from cookie to get feedback data
+	cookie, _ := r.Cookie("session-id")
+	/* 	userID := checkSessionValidity(w, session)
+	   	feedbacks, err := db.SelectFeedbacks("comment", userID)
+	   	if err != nil {
+	   		fmt.Println(err)
+	   		// something went wrong
+	   	} */
+
 	if r.Method == http.MethodGet {
 
 		idStr := r.URL.Query().Get("id")
@@ -59,7 +69,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("something went wrong with grabbing comments")
 		}
 		cookie, _ := r.Cookie("session-id")
-		CustomExecuteTemplate(w, "post.html", postpageData{*post, comments, cookie})
+		CustomExecuteTemplate(w, "post.html", postpageData{cookie, *post, comments})
 
 	} else if r.Method == http.MethodPost {
 		if err := r.ParseForm(); err != nil {
@@ -83,6 +93,7 @@ func PostPage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
+	extendSession(w, cookie)
 }
 
 // Terms page
@@ -106,6 +117,13 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 
 // Page for making posts
 func PostThread(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := r.Cookie("session-id")
+	if userID := checkSessionValidity(w, cookie); userID == -1 {
+		// need ask user to log in
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
 	if r.Method == http.MethodGet {
 		query := r.URL.Query()
 		title := query.Get("threadTitle")

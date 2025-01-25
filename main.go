@@ -35,10 +35,10 @@ func main() {
 	http.HandleFunc("/signup", handlers.SignupPage)
 	http.HandleFunc("/logout", handlers.LogOut)
 	http.HandleFunc("/terms", handlers.TermsPage)
-	http.HandleFunc("/start-thread", handlers.StartThread)
-	http.HandleFunc("/post-thread", handlers.PostThread)
 	http.HandleFunc("/post", handlers.PostPage)
-	http.HandleFunc("/view-post", handlers.ViewPostPage)
+	http.HandleFunc("/start-thread", handlers.StartThread)
+	http.HandleFunc("/post-thread", handlers.PostThread) //
+	http.HandleFunc("/view-post", handlers.ViewPostPage) //
 	http.HandleFunc("/add-comment", handlers.Comment)
 
 	fmt.Println("Starting Forum on http://localhost:8080/...")
