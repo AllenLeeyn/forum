@@ -107,11 +107,15 @@ func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 			id})
 }
 
-var commCount int = 1
-
 func Comment(w http.ResponseWriter, r *http.Request) {
-	sessionCookie, e := r.Cookie("session-id")
-	checkErr(e)
+	sessionCookie, _ := r.Cookie("session-id")
+	userID := checkSessionValidity(w, sessionCookie)
+	if userID == -1 {
+		// need ask user to log in
+		fmt.Println("no session found!")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
 	s := struct {
 		Comment string
@@ -121,30 +125,31 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	e = json.Unmarshal(b, &s)
 	checkErr(e)
 
-	query := r.URL.Query()
-	postId := query.Get("postId")
+	postId := r.URL.Query().Get("postId")
 	pId, err := strconv.Atoi(postId)
 	checkErr(err)
 
-	session, e := db.SelectActiveSessionBy("id", sessionCookie.Value)
-	checkErr(e)
+	post, err := db.SelectPost(pId)
+	if err != nil || post == nil {
+		fmt.Println("something went wrong with getting post or nothing found")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
-	user, e := db.SelectUserByField("id", strconv.Itoa(session.UserID))
-	checkErr(e)
+	user, err := db.SelectUserByField("id", userID)
+	if err != nil || user == nil {
+		fmt.Println("something went wrong with getting user or nothing found")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
 	db.InsertComment(dbTools.Comment{
-		ID:        commCount,
-		UserID:    session.UserID,
+		UserID:    userID,
 		PostID:    pId,
 		Content:   s.Comment,
 		UserName:  user.Name,
 		LikeCount: 7,
 		CreatedAt: time.Now(),
 	})
-	commCount++
 
-	post, err := db.SelectPost(pId)
-	if err != nil || post == nil {
-		fmt.Println("something went wrong with getting post or nothing found")
-	}
 }

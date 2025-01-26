@@ -18,17 +18,23 @@ func (db *DBContainer) SelectUserByField(fieldName string, fieldValue interface{
 }
 
 // db.InserUser() insert a User into the database
-func (db *DBContainer) InsertUser(u *User) error {
+func (db *DBContainer) InsertUser(u *User) (int, error) {
 	qry := `INSERT INTO users 
-			(id, type_id, name, email, pw_hash) 
-			VALUES (?, ?, ?, ?, ?)`
-	_, err := db.conn.Exec(qry,
-		u.ID,
+			(type_id, name, email, pw_hash) 
+			VALUES (?, ?, ?, ?)`
+	res, err := db.conn.Exec(qry,
 		u.TypeID,
 		u.Name,
 		u.Email,
 		u.PwHash)
-	return err
+	if err != nil {
+		return -1, err
+	}
+	userID, err := res.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+	return int(userID), nil
 }
 
 // db.UpdateUser() info like name, pwHash and lastLogin

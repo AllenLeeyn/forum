@@ -13,8 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var idCount int = 1
-
 func getCredentials(r *http.Request, isSignup bool) (string, string, string, error) {
 	username := r.FormValue("username")
 	email := r.FormValue("email")
@@ -102,13 +100,15 @@ func SignupPage(w http.ResponseWriter, r *http.Request) {
 
 	// add the user to the database
 	user := &dbTools.User{
-		ID:        idCount,
 		TypeID: 1,
 		Name:   name,
 		Email:  email,
 		PwHash: passwdHash,
 	}
-	db.InsertUser(user)
+	user.ID, err = db.InsertUser(user)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	createSession(w, user)
 	http.Redirect(w, r, "./", http.StatusSeeOther)
