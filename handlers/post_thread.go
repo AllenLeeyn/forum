@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"forum/dbTools"
 	"net/http"
 	"strconv"
@@ -12,29 +11,26 @@ func Post(w http.ResponseWriter, r *http.Request) {
 
 	// check session from cookie to get feedback data
 	sessionCookie, _ := r.Cookie("session-id")
-	/* 	userID := checkSessionValidity(w, session)
-	   	feedbacks, err := db.SelectFeedbacks("comment", userID)
-	   	if err != nil {
-	   		fmt.Println(err)
-	   		// something went wrong
-	   	} */
 
 	if r.Method == http.MethodGet {
 
 		idStr := r.URL.Query().Get("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			fmt.Println("something went wrong with post_id")
+			ExecuteError(w, "something went wrong with post_id", http.StatusInternalServerError)
+			return
 		}
 
 		post, err := db.SelectPost(id)
 		if err != nil || post == nil {
-			fmt.Println("something went wrong with getting post or nothing found")
+			ExecuteError(w, "something went wrong with getting post or nothing found", http.StatusInternalServerError)
+			return
 		}
 
 		comments, err := db.SelectComments(id, "oldest")
 		if err != nil {
-			fmt.Println("something went wrong with grabbing comments")
+			ExecuteError(w, "something went wrong with grabbing comments", http.StatusInternalServerError)
+			return
 		}
 		cookie, _ := r.Cookie("session-id")
 		ExecuteTemp(w, "post.html", postpageData{cookie, *post, comments})

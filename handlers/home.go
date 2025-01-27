@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"forum/dbTools"
 	"net/http"
 	"strconv"
@@ -30,8 +29,8 @@ func UpdateAndExecuteHome(w http.ResponseWriter, r *http.Request) {
 	}
 	feedbacks, err := db.SelectFeedbacks("post", userID)
 	if err != nil {
-		fmt.Println(err)
-		// something went wrong
+		ExecuteError(w, "Something went wrong fetching comments", http.StatusInternalServerError)
+		return
 	}
 
 	// get Queries. No sorting implemented yet

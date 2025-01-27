@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"forum/dbTools"
 	"io"
 	"net/http"
@@ -32,15 +31,13 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 
 	post, err := db.SelectPost(pId)
 	if err != nil || post == nil {
-		fmt.Println("something went wrong with getting post or nothing found")
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "something went wrong with getting post or nothing found", http.StatusNotFound)
 		return
 	}
 
 	user, err := db.SelectUserByField("id", userID)
 	if err != nil || user == nil {
-		fmt.Println("something went wrong with getting user or nothing found")
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "something went wrong with getting user or nothing found", http.StatusNotFound)
 		return
 	}
 
