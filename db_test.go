@@ -60,7 +60,7 @@ func TestInsertUser(t *testing.T) {
 	}
 	db.DeleteAllUsers()
 	for i, tc := range testCases {
-		err := db.InsertUser(tc.u)
+		_, err := db.InsertUser(tc.u)
 		result := "nil"
 		if err != nil {
 			result = err.Error()

@@ -29,17 +29,19 @@ func init() {
 
 func main() {
 	http.Handle("/static/", http.FileServer(http.Dir("assets/")))
+	http.HandleFunc("/", handlers.Home)
 
-	http.HandleFunc("/", handlers.HomePage)
-	http.HandleFunc("/login", handlers.LoginPage)
-	http.HandleFunc("/signup", handlers.SignupPage)
+	http.HandleFunc("/signup", handlers.Signup)
+	http.HandleFunc("/terms", handlers.Terms)
+
+	http.HandleFunc("/login", handlers.Login)
 	http.HandleFunc("/logout", handlers.LogOut)
-	http.HandleFunc("/terms", handlers.TermsPage)
-	http.HandleFunc("/post", handlers.PostPage)
+
+	http.HandleFunc("/post", handlers.Post)
 	http.HandleFunc("/start-thread", handlers.StartThread)
-	http.HandleFunc("/post-thread", handlers.PostThread) //
-	http.HandleFunc("/view-post", handlers.ViewPostPage) //
 	http.HandleFunc("/add-comment", handlers.Comment)
+
+	http.HandleFunc("/feedback", handlers.Feedback)
 
 	fmt.Println("Starting Forum on http://localhost:8080/...")
 	http.ListenAndServe(":8080", nil)

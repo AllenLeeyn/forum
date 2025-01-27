@@ -59,3 +59,11 @@ h1 {
 .forum-icon i {
   font-size: 45px;
 }
+
+.icon-button i.fas.fa-heart {
+  color: grey;
+}
+
+.icon-button.liked i.fas.fa-heart {
+  color: red;
+}
