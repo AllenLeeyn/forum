@@ -56,7 +56,9 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet {
 
-		ExecuteTemp(w, "start-thread.html", startThreadData{Categories: db.Categories})
+		ExecuteTemp(w, "start-thread.html", startThreadData{
+			SessionCookie: sessionCookie,
+			Categories:    db.Categories})
 		/* 	} else if r.Method == http.MethodPost {
 		 */
 	} else {
