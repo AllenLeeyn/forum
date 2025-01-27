@@ -45,7 +45,10 @@
 
             <div class="post-actions">
               <button class="icon-button like-button" data-id="{{.ID}}" data-for="post">
-                <i class="fas fa-heart"></i> <span>{{.LikeCount}}</span>
+                <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
+              </button>
+              <button class="icon-button dislike-button" data-id="{{.ID}}" data-for="post">
+                <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
               </button>
               <button class="icon-button">
                 <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>

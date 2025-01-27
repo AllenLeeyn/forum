@@ -195,11 +195,10 @@ header nav a:hover {
   gap: 5px;
 }
 
-.icon-button i.fas.fa-heart {
-  color: #fff; /* White */
+.icon-button.liked i.fas.fa-thumbs-up {
+  color: green;
 }
-
-.icon-button.liked i.fas.fa-heart {
+.icon-button.disliked i.fas.fa-thumbs-down {
   color: red;
 }
 
