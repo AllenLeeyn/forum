@@ -23,7 +23,7 @@
           <li><a href="?filterBy=createdBy" class="{{if eq .FilterBy "createdBy"}}active{{end}}">My posts</a></li>
           <li><a href="?filterBy=likedBy" class="{{if eq .FilterBy "likedBy"}}active{{end}}">Liked posts</a></li>
           {{range $index, $cat := .Categories}}
-          <li><a href="?filterBy=catergory&id={{$index}}" class="{{if and (eq $.FilterBy "catergory") (eq $index $.Id)}}active{{end}}">{{$cat}}</a></li>
+          <li><a href="?filterBy=category&id={{$index}}" class="{{if and (eq $.FilterBy "category") (eq $index $.Id)}}active{{end}}">{{$cat}}</a></li>
           {{end}}
         </ul>
       </div>

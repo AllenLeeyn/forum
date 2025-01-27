@@ -64,6 +64,6 @@ func Terms(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		ExecuteTemp(w, "terms.html", nil)
 	} else {
-		ExecuteError(w, http.StatusMethodNotAllowed, "Invalid User Method")
+		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }

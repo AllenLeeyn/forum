@@ -41,6 +41,13 @@ type postpageData struct {
 	Comments      []comment
 }
 
+type profilepageData struct {
+	Name          string
+	Email         string
+	Posts         []post
+	SessionCookie *http.Cookie
+}
+
 type startThreadData struct {
 	SessionCookie *http.Cookie
 	Categories    []string
@@ -82,7 +89,7 @@ func ExecuteTemp(w http.ResponseWriter, name string, data interface{}) {
 }
 
 // Execute error page if possible, otherwise use inbuilt http error
-func ExecuteError(w http.ResponseWriter, errorStatus int, errorMessage string) {
+func ExecuteError(w http.ResponseWriter, errorMessage string, errorStatus int) {
 	errorData := ErrorData{
 		ErrorCode:    errorStatus,
 		ErrorMessage: errorMessage,

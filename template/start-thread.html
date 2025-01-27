@@ -11,7 +11,18 @@
     />
   </head>
   <body>
-    {{template "header" .}}
+    <header>
+      <div class="logo"><a href="/">Forum</a></div>
+      <nav>
+        <a href="#">Articles</a>
+        <a href="#">Social</a>
+        <a href="/login">Login</a>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </nav>
+    </header>
+
     <div class="wrapper">
       <div class="start-thread-container">
         <!-- Left Sidebar (User Info) -->
@@ -26,7 +37,7 @@
         <!-- Right Sidebar (Thread Post) -->
         <div class="thread-post">
           <h2>Start a New Thread</h2>
-          <form action="/post-thread" method="get" id="post-thread-form">
+          <form action="/start-thread" method="post" id="post-thread-form">
             <div class="input-group">
               <input
                 type="text"
@@ -45,10 +56,16 @@
             </div>
               <div class="input-group">
                 <h4>Select categories:</h4>
-                {{range $index, $cat := .Categories}}
-                <input type="checkbox" id="category0" name="category{{$index}}" value="{{$index}}">
-                <label for="category{{$index}}">{{$cat}}</label><br>
-                {{end}}
+                <input type="checkbox" id="category0" name="category" value="0">
+                <label for="category0">General</label><br>
+                <input type="checkbox" id="category1" name="category" value="1">
+                <label for="category1">Golang</label><br>
+                <input type="checkbox" id="category2" name="category" value="2">
+                <label for="category2">Html</label><br>
+                <input type="checkbox" id="category3" name="category" value="3">
+                <label for="category3">Css</label><br>
+                <input type="checkbox" id="category4" name="category" value="4">
+                <label for="category4">Sqlite3</label><br>
               </div>
             <div class="input-group">
               <button type="submit">Post Thread</button>

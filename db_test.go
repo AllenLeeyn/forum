@@ -292,7 +292,7 @@ func TestInsertPost(t *testing.T) {
 	db.DeleteAllPosts()
 
 	for i, tc := range testCases {
-		err := db.InsertPost(tc.p)
+		_, err := db.InsertPost(tc.p)
 		result := "nil"
 		if err != nil {
 			result = err.Error()
@@ -538,15 +538,15 @@ func TestSelectPosts(t *testing.T) {
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 		}},
-		{"catergory", "", 0, []time.Time{ // filterBy batman
+		{"category", "", 0, []time.Time{ // filterBy batman
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 		}},
-		{"catergory", "oldest", 4, []time.Time{ // filterBy batman
+		{"category", "oldest", 4, []time.Time{ // filterBy batman
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
 			time.Date(2025, 1, 17, 13, 12, 59, 0, time.UTC),
 		}},
-		{"catergory", "", 2, []time.Time{}}, // empty result
+		{"category", "", 2, []time.Time{}}, // empty result
 		{"likedBy", "likeCount", s.UserID, []time.Time{ //likedBy superman
 			time.Date(2025, 1, 17, 12, 11, 59, 0, time.UTC),
 			time.Date(2025, 1, 17, 12, 12, 0, 0, time.UTC),
