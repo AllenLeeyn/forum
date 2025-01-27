@@ -22,11 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
             likeCountSpan.textContent = currentCount + 1;
           } else {
             // Alert the user if something went wrong
-            alert("Something went wrong while liking the post. Please try again.");
+            showMessage("Something went wrong while liking the post. Please ensure you are logged in and try again later.");
           }
         } catch (error) {
           // Handle network or other errors
-          alert("An error occurred. Please check your connection and try again.");
+          showMessage("An error occurred. Please check your connection and try again.");
           console.error("Error:", error);
         }
       });

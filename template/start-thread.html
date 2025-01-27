@@ -12,7 +12,6 @@
   </head>
   <body>
     {{template "header" .}}
-
     <div class="wrapper">
       <div class="start-thread-container">
         <!-- Left Sidebar (User Info) -->
@@ -44,6 +43,13 @@
                 required
               ></textarea>
             </div>
+              <div class="input-group">
+                <h4>Select categories:</h4>
+                {{range $index, $cat := .Categories}}
+                <input type="checkbox" id="category0" name="category{{$index}}" value="{{$index}}">
+                <label for="category{{$index}}">{{$cat}}</label><br>
+                {{end}}
+              </div>
             <div class="input-group">
               <button type="submit">Post Thread</button>
             </div>

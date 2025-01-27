@@ -41,6 +41,11 @@ type postpageData struct {
 	Comments      []comment
 }
 
+type startThreadData struct {
+	SessionCookie *http.Cookie
+	Categories    []string
+}
+
 type ErrorData struct {
 	ErrorMessage string
 	ErrorCode    int

@@ -1,13 +1,12 @@
 {{define "header"}}
 
 <header>
+  <link rel="stylesheet" href="/static/toastMsg.css" />
   <div class="logo"> <a href="/">Forum</a></div>
   <nav>
-    <a href="#">Articles</a>
-    <a href="#">Social</a>
     {{if .SessionCookie}}
       <a href="/profile-page">Profile</a>
-      <button id="logout-btn">Logout</button>
+      <a id="logout-btn">Logout</a>
     {{else}}
       <a href="/login">Login</a>
     {{end}}
@@ -18,22 +17,6 @@
     </button>
   </nav>
 </header>
-<script>
-  document.getElementById('logout-btn').onclick = function () {
-      fetch('/logout', {
-          method: 'POST',
-          credentials: 'include', // Ensures cookies are sent with the request
-      })
-      .then(response => {
-          if (response.ok) {
-              window.location.href = '/login'; // Redirect to login page
-          } else {
-              alert('Failed to log out.');
-          }
-      })
-      .catch(error => {
-          console.error('Error logging out:', error);
-      });
-  };
-</script>
+
+<script src="/static/script/header.js" defer></script>
 {{end}}

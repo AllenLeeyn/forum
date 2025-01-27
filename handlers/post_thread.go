@@ -47,8 +47,16 @@ func Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func StartThread(w http.ResponseWriter, r *http.Request) {
+	sessionCookie, _ := r.Cookie("session-id")
+	userID := checkSessionValidity(w, sessionCookie)
+	if userID == -1 { // likely user not login
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	if r.Method == http.MethodGet {
-		ExecuteTemp(w, "start-thread.html", nil)
+
+		ExecuteTemp(w, "start-thread.html", startThreadData{Categories: db.Categories})
 		/* 	} else if r.Method == http.MethodPost {
 		 */
 	} else {

@@ -48,5 +48,5 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	expireSession(w, c.Value)
-	http.Redirect(w, r, "./", http.StatusSeeOther)
+	http.Redirect(w, r, "./login", http.StatusSeeOther)
 }
