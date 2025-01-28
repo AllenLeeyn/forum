@@ -6,12 +6,10 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func Comment(w http.ResponseWriter, r *http.Request) {
-	sessionCookie, _ := r.Cookie("session-id")
-	userID := checkSessionValidity(w, sessionCookie)
+	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 { // likely user not login
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -40,14 +38,12 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 		ExecuteError(w, "something went wrong with getting user or nothing found", http.StatusNotFound)
 		return
 	}
-
+	extendSession(w, sessionCookie)
 	db.InsertComment(dbTools.Comment{
-		UserID:    userID,
-		PostID:    pId,
-		Content:   s.Comment,
-		UserName:  user.Name,
-		LikeCount: 7,
-		CreatedAt: time.Now(),
+		UserID:   userID,
+		PostID:   pId,
+		Content:  s.Comment,
+		UserName: user.Name,
 	})
 
 }

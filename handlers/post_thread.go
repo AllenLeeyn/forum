@@ -6,11 +6,10 @@ import (
 	"strconv"
 )
 
-// Page for making posts
+// Page for viewing individual post
 func Post(w http.ResponseWriter, r *http.Request) {
-
 	// check session from cookie to get feedback data
-	sessionCookie, _ := r.Cookie("session-id")
+	sessionCookie, _ := checkSessionValidity(w, r)
 
 	if r.Method == http.MethodGet {
 
@@ -20,31 +19,34 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			ExecuteError(w, "something went wrong with post_id", http.StatusInternalServerError)
 			return
 		}
-
 		post, err := db.SelectPost(id)
 		if err != nil || post == nil {
 			ExecuteError(w, "something went wrong with getting post or nothing found", http.StatusInternalServerError)
 			return
 		}
-
 		comments, err := db.SelectComments(id, "oldest")
 		if err != nil {
 			ExecuteError(w, "something went wrong with grabbing comments", http.StatusInternalServerError)
 			return
 		}
-		cookie, _ := r.Cookie("session-id")
-		ExecuteTemp(w, "post.html", postpageData{cookie, *post, comments})
-
-	} else if r.Method == http.MethodPost {
-		// for create post maybe
+		extendSession(w, sessionCookie)
+		ExecuteTemp(w, "post.html", postpageData{sessionCookie, *post, comments})
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
-	extendSession(w, sessionCookie)
 }
 
 // Page for user to draft their post (if method == get), otherwise post it (if method == post)
 func StartThread(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged in using session id
+	sessionCookie, userID := checkSessionValidity(w, r)
+	if userID == -1 {
+		// write header for toast message and do nothing
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	// only allows page to display or accept request if user is logged in
 	if r.Method == http.MethodGet {
 		ExecuteTemp(w, "start-thread.html", nil)
 	} else if r.Method == http.MethodPost {
@@ -61,18 +63,20 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 			ExecuteTemp(w, "start-thread.html", errData)
 			return
 		}
-		post := CreatePost(w, r, title, content, categoriesInt)
-		//	LikeCount in the negatives indicates an error
-		if post.LikeCount == -1 {
-			return
-		} else {
-			postNum, err := db.InsertPost(post)
-			if err != nil {
-				ExecuteError(w, "Failed to insert post into database", http.StatusInternalServerError)
-			}
-			postID := "/post?id=" + strconv.Itoa(postNum)
-			http.Redirect(w, r, postID, http.StatusSeeOther)
+		post := dbTools.Post{
+			UserID:     userID,
+			Title:      title,
+			Content:    content,
+			Categories: categoriesInt,
 		}
+		postNum, err := db.InsertPost(post)
+		if err != nil {
+			ExecuteError(w, "Failed to insert post into database", http.StatusInternalServerError)
+		}
+		extendSession(w, sessionCookie)
+		postID := "/post?id=" + strconv.Itoa(postNum)
+		http.Redirect(w, r, postID, http.StatusSeeOther)
+
 	} else {
 		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
 	}
@@ -118,40 +122,4 @@ func GetData(w http.ResponseWriter, r *http.Request) (title string, content stri
 		categoriesInt = append(categoriesInt, intVal)
 	}
 	return title, content, categoriesInt
-}
-
-func GetSessionAndCookie(w http.ResponseWriter, r *http.Request) (*dbTools.Session, *http.Cookie) {
-	cookie, err := r.Cookie("session-id")
-	if err != nil {
-		ExecuteError(w, "Session not found", http.StatusInternalServerError)
-		return nil, nil
-	}
-	session, err := db.SelectActiveSessionBy("id", cookie.Value)
-	if err != nil {
-		ExecuteError(w, "Invalid session", http.StatusUnauthorized)
-		return nil, cookie
-	}
-	return session, cookie
-}
-
-// Put together data into a post and return it
-func CreatePost(w http.ResponseWriter, r *http.Request, title string, content string, categoriesInt []int) dbTools.Post {
-	session, _ := GetSessionAndCookie(w, r)
-	if session == nil {
-		post := dbTools.Post{
-			LikeCount: -1,
-		}
-		return post
-	}
-	//	Placeholder:
-	post := dbTools.Post{
-		UserID:       session.UserID,
-		CommentCount: 0,
-		LikeCount:    0,
-		DislikeCount: 0,
-		Title:        title,
-		Content:      content,
-		Categories:   categoriesInt,
-	}
-	return post
 }

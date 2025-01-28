@@ -147,21 +147,22 @@ func validPsswrd(password string) bool {
 
 /*----------- session func -----------*/
 
-func checkSessionValidity(w http.ResponseWriter, sessionCookie *http.Cookie) int {
-	if sessionCookie == nil {
-		return -1
+func checkSessionValidity(w http.ResponseWriter, r *http.Request) (*http.Cookie, int) {
+	sessionCookie, err := r.Cookie("session-id")
+	if err != nil || sessionCookie == nil {
+		return nil, -1
 	}
 	sessionID := sessionCookie.Value
 	s, err := db.SelectActiveSessionBy("id", sessionID)
 	if err != nil {
 		fmt.Println(err)
-		return -1
+		return nil, -1
 	}
 	if s.ExpireTime.Before(time.Now()) {
 		expireSession(w, sessionCookie.Value)
-		return -1
+		return nil, -1
 	}
-	return s.UserID
+	return sessionCookie, s.UserID
 }
 
 func createSession(w http.ResponseWriter, user *dbTools.User) {

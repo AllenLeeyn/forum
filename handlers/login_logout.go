@@ -8,8 +8,8 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	sessionCookie, _ := r.Cookie("session-id")
-	if userID := checkSessionValidity(w, sessionCookie); userID != -1 {
+	sessionCookie, _ := checkSessionValidity(w, r)
+	if sessionCookie != nil {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
@@ -42,11 +42,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
-	c, _ := r.Cookie("session-id")
-	if c == nil {
+	sessionCookie, _ := r.Cookie("session-id")
+	if sessionCookie == nil {
 		log.Println("no session cookie??")
-		return
+	} else {
+		expireSession(w, sessionCookie.Value)
 	}
-	expireSession(w, c.Value)
 	http.Redirect(w, r, "./login", http.StatusSeeOther)
 }

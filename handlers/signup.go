@@ -8,8 +8,8 @@ import (
 )
 
 func Signup(w http.ResponseWriter, r *http.Request) {
-	sessionCookie, _ := r.Cookie("session-id")
-	if userID := checkSessionValidity(w, sessionCookie); userID != -1 {
+	sessionCookie, _ := checkSessionValidity(w, r)
+	if sessionCookie != nil {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
