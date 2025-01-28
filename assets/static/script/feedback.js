@@ -1,94 +1,98 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Get all like buttons
-    const likeButtons = document.querySelectorAll(".like-button");
-    const dislikeButtons = document.querySelectorAll(".dislike-button");
-  
-    // Add click event listeners
-    likeButtons.forEach((button) => {
-      button.addEventListener("click", async () => {
-        const postId = button.getAttribute("data-id"); // Get the post ID
-        const forType = button.getAttribute("data-for"); // Get the post ID
-        const isLiked = button.classList.contains("liked"); // Check if already liked
+  // Get all like and dislike buttons
+  const likeButtons = document.querySelectorAll(".like-button");
+  const dislikeButtons = document.querySelectorAll(".dislike-button");
 
-        const dislikeButton = document.querySelector(`.dislike-button[data-id="${postId}"]`);
-        const isDisliked = dislikeButton.classList.contains("disliked");
+  // Unified function to handle both like and dislike actions
+  async function handlePostFeedback(postId, action) {
+      const postElement = document.querySelector(`.post-actions[data-id="${postId}"]`);
+      const currentState = parseInt(postElement.getAttribute('data-state'), 10);
+      let newState = currentState;
+      let newAction = 0; // Default action (neutral)
 
-        try {
-          // Send a POST request to the server
-          const response = await fetch(`/feedback?for=${forType}&id=${postId}&action=${isLiked ? 'unlike' : 'like'}`, {
-            method: "POST",
-          });
-          const likeCountSpan = button.querySelector("span");
-          const currentCount = parseInt(likeCountSpan.textContent, 10);
-  
-          if (response.ok) {
-            if (button.classList.contains("liked")) {
-              button.classList.remove("liked");
-              likeCountSpan.textContent = currentCount - 1;
-            } else{
-              button.classList.add("liked");
-              likeCountSpan.textContent = currentCount + 1;
-              if(isDisliked){
-                dislikeButton.classList.remove("disliked");
-                const dislikeCountSpan = dislikeButton.querySelector("span");
-                const currentCount = parseInt(dislikeCountSpan.textContent, 10);
-                dislikeCountSpan.textContent = currentCount - 1;
-              }
-            }
+      // Get like and dislike button elements for the post
+      const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
+      const likeCountSpan = likeButton.querySelector("span");
+      let newLikeCount = parseInt(likeCountSpan.textContent);
+
+      const dislikeButton = document.querySelector(`.dislike-button[data-id="${postId}"]`);
+      const dislikeCountSpan = dislikeButton.querySelector("span");
+      let newDislikeCount = parseInt(dislikeCountSpan.textContent);
+
+      // Handle the "like" action
+      if (action === "like") {
+          if (currentState === 1) { // unLike
+              newState = 0
+              newLikeCount = newLikeCount - 1;
+              newAction = 0;
           } else {
-            // Alert the user if something went wrong
-            showMessage("Please ensure you are logged in and try again later.");
-          }
-        } catch (error) {
-          // Handle network or other errors
-          showMessage("An error occurred. Please check your connection and try again.");
-          console.error("Error:", error);
-        }
-      });
-    });
-
-    // Add click event listeners
-    dislikeButtons.forEach((button) => {
-      button.addEventListener("click", async () => {
-        const postId = button.getAttribute("data-id"); // Get the post ID
-        const forType = button.getAttribute("data-for"); // Get the post ID
-        const isDisliked = button.classList.contains("disliked"); // Check if already disliked
-
-        const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
-        const isLiked = likeButton.classList.contains("liked");
-
-        try {
-          // Send a POST request to the server
-          const response = await fetch(`/feedback?for=${forType}&id=${postId}&action=${isDisliked ? 'undislike' : 'dislike'}`, {
-            method: "POST",
-          });
-          const dislikeCountSpan = button.querySelector("span");
-          const currentCount = parseInt(dislikeCountSpan.textContent, 10);
-  
-          if (response.ok) {
-            if (button.classList.contains("disliked")) {
-              button.classList.remove("disliked");
-              dislikeCountSpan.textContent = currentCount - 1;
-            } else{
-              button.classList.add("disliked");
-              dislikeCountSpan.textContent = currentCount + 1;
-              if (isLiked){
-                likeButton.classList.remove("liked");
-                const likeCountSpan = likeButton.querySelector("span");
-                const currentCount = parseInt(likeCountSpan.textContent, 10);
-                likeCountSpan.textContent = currentCount - 1;
+              if (currentState === -1) { // remove dislike
+                newDislikeCount = newDislikeCount - 1;
               }
-            }
-          } else {
-            // Alert the user if something went wrong
-            showMessage("Please ensure you are logged in and try again later.");
+              newState = 1
+              newLikeCount = newLikeCount + 1;
+              newAction = 1;
           }
-        } catch (error) {
-          // Handle network or other errors
-          showMessage("An error occurred. Please check your connection and try again.");
-          console.error("Error:", error);
+      } 
+      // Handle the "dislike" action
+      else if (action === "dislike") {
+          if (currentState === -1) { // unDislike
+            newState = 0
+            newDislikeCount = newDislikeCount - 1;
+            newAction = 0;
+          } else {
+              if (currentState === 1) { // remove like
+                newLikeCount = newLikeCount - 1;
+              }
+              newState = -1
+              newDislikeCount = newDislikeCount + 1;
+              newAction = -1; // Dislike action
+          }
+      }
+
+      // Create the data to send in the POST request
+      const feedback = {
+        tgt: "post",
+        parentID: postId,
+        rating: newAction
+      };
+
+      // You could handle fetch success/failure like this:
+      await fetch('/feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedback)
+      })
+      .then(response => {
+        if (!response.ok) {
+            // Handle error (e.g., alert the user)
+            showMessage("Please ensure you are logged in and try again later.");
+        } else {
+          postElement.setAttribute('data-state', newState);
+          likeCountSpan.textContent = newLikeCount;
+          dislikeCountSpan.textContent = newDislikeCount;
         }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        showMessage("An error occurred. Please check your connection.");
       });
-    });
+  }
+
+  // Attach event listeners to both like and dislike buttons
+  likeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+          const postId = parseInt(button.getAttribute("data-id"), 10);
+          handlePostFeedback(postId, "like");
+      });
   });
-  
+
+  dislikeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+          const postId = parseInt(button.getAttribute("data-id"), 10);
+          handlePostFeedback(postId, "dislike");
+      });
+  });
+});
