@@ -29,7 +29,6 @@ type homepageData struct {
 	Categories    []string
 	Posts         []post
 	UserName      string
-	Feedbacks     []feedback
 	FilterBy      string
 	OrderBy       string
 	Id            int

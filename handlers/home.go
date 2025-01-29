@@ -23,12 +23,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		userName = u.Name
 	}
 
-	feedbacks, err := db.SelectFeedbacks("post", userID)
-	if err != nil {
-		ExecuteError(w, "Something went wrong fetching comments", http.StatusInternalServerError)
-		return
-	}
-
 	// get Queries. No sorting implemented yet
 	filterBy := r.URL.Query().Get("filterBy")
 	orderBy := r.URL.Query().Get("orderBy")
@@ -38,7 +32,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if err != nil || id > len(db.Categories) {
 		id = -1
 	}
-	posts, err := db.SelectPosts(filterBy, orderBy, id)
+	if filterBy != "category" {
+		id = userID
+	}
+	posts, err := db.SelectPosts(filterBy, orderBy, id, userID)
 	if err != nil {
 		ExecuteError(w, "Problem occur when getting data", http.StatusInternalServerError)
 	}
@@ -49,7 +46,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 			db.Categories,
 			posts,
 			userName,
-			feedbacks,
 			filterBy,
 			orderBy,
 			id})

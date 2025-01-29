@@ -1,6 +1,7 @@
 package dbTools
 
 import (
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -14,8 +15,7 @@ func getWhereQuery(filterBy string, id int) string {
 	case "category":
 		return fmt.Sprintf(` WHERE ',' || category_ids || ',' LIKE '%%,%v,%%'`, id)
 	case "likedBy":
-		return fmt.Sprintf(` INNER JOIN post_feedback pf ON pf.parent_id = v_posts.id 
-							 WHERE pf.user_id = %v AND pf.rating = 1`, id)
+		return fmt.Sprintf(` WHERE pf.user_id = %v AND pf.rating = 1`, id)
 	}
 	return ``
 }
@@ -61,14 +61,16 @@ If invalid options or empty are given, default option is used.
 Valid filterBy: createdBy, category, likedBy.
 Valid orderBy: oldest, likeCount, commentCount.
 */
-func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, error) {
-	qry := `SELECT id, puser_id, user_name, 
-			comment_count, like_count, dislike_count,
-			title, content, pcreated_at, category_ids
-			FROM v_posts` +
+func (db *DBContainer) SelectPosts(filterBy, orderBy string, id, userID int) ([]Post, error) {
+	qry := `SELECT v_posts.id, puser_id, user_name, 
+				comment_count, like_count, dislike_count,
+				title, content, pcreated_at, category_ids, pf.rating
+			FROM v_posts
+			LEFT JOIN post_feedback pf ON pf.parent_id = v_posts.id AND pf.user_id = ?` +
 		getWhereQuery(filterBy, id) +
 		getOrderByQuery(orderBy)
-	rows, err := db.conn.Query(qry)
+	rows, err := db.conn.Query(qry, userID)
+	fmt.Println(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -78,6 +80,7 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, er
 	for rows.Next() {
 		var p Post
 		var catIDs string
+		var rating sql.NullInt64
 		err := rows.Scan(
 			&p.ID,
 			&p.UserID,
@@ -88,7 +91,8 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, er
 			&p.Title,
 			&p.Content,
 			&p.CreatedAt,
-			&catIDs)
+			&catIDs,
+			&rating)
 		if err != nil {
 			return nil, err
 		}
@@ -99,11 +103,17 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id int) ([]Post, er
 		if len(p.Content) > 50 {
 			p.Content = p.Content[:50] + "..."
 		}
+		if rating.Valid {
+			p.Rating = int(rating.Int64)
+		} else {
+			p.Rating = 0
+		}
 		posts = append(posts, p)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)
 	}
+	fmt.Println(posts)
 	return posts, nil
 }
 
