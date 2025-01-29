@@ -48,7 +48,7 @@
                 <h4>Select categories:</h4>
                 {{range $index, $cat := .Categories}}
                 <input type="checkbox" id="category{{$index}}" name="category" value="{{$index}}">
-                <label for="category0">{{$cat}}</label><br>
+                <label for="category{{$index}}">{{$cat}}</label><br>
                 {{end}}
               </div>
             <div class="input-group">
