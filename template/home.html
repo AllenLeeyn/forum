@@ -43,11 +43,11 @@
             </h3>
             <pre class="post-body">{{.Content}}</pre>
 
-            <div class="post-actions">
-              <button class="icon-button like-button" data-id="{{.ID}}" data-for="post">
+            <div class="post-actions" data-id={{.ID}} data-state="{{.Rating}}">
+              <button class="icon-button like-button" data-id={{.ID}} data-for="post">
                 <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
               </button>
-              <button class="icon-button dislike-button" data-id="{{.ID}}" data-for="post">
+              <button class="icon-button dislike-button" data-id={{.ID}} data-for="post">
                 <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
               </button>
               <button class="icon-button">

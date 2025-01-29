@@ -36,6 +36,7 @@ type Post struct {
 	CreatedAt    time.Time
 	Categories   []int
 	CatNames     string
+	Rating       int
 }
 
 type Comment struct {

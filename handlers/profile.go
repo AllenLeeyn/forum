@@ -15,7 +15,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		posts, err := db.SelectPosts("createdBy", "", userID)
+		posts, err := db.SelectPosts("createdBy", "", userID, userID)
 		if err != nil {
 			ExecuteError(w, "Error getting user posts", http.StatusInternalServerError)
 		}

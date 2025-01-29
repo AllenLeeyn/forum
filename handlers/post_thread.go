@@ -48,7 +48,7 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 
 	// only allows page to display or accept request if user is logged in
 	if r.Method == http.MethodGet {
-		ExecuteTemp(w, "start-thread.html", nil)
+		ExecuteTemp(w, "start-thread.html", startThreadData{sessionCookie, db.Categories})
 	} else if r.Method == http.MethodPost {
 		title, content, categoriesInt := GetData(w, r)
 		if title == "" && content == "" && categoriesInt == nil {
