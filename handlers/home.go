@@ -8,11 +8,11 @@ import (
 // Home page
 func Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.Error(w, "Error 404, Page not found", http.StatusNotFound)
+		ExecuteError(w, "Tmpl", "Page not found", http.StatusNotFound)
 		return
 	}
 	if r.Method != http.MethodGet {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 	}
 
 	// check session from cookie to get feedback data
@@ -37,10 +37,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	posts, err := db.SelectPosts(filterBy, orderBy, id, userID)
 	if err != nil {
-		ExecuteError(w, "Problem occur when getting data", http.StatusInternalServerError)
+		ExecuteError(w, "Tmpl", "Error getting posts: "+err.Error(), http.StatusInternalServerError)
 	}
 	extendSession(w, sessionCookie)
-	ExecuteTemp(w, "home.html",
+	ExecuteTmpl(w, "home.html",
 		homepageData{
 			sessionCookie,
 			db.Categories,

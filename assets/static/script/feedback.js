@@ -4,18 +4,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const dislikeButtons = document.querySelectorAll(".dislike-button");
 
   // Unified function to handle both like and dislike actions
-  async function handlePostFeedback(postId, action) {
-      const postElement = document.querySelector(`.post-actions[data-id="${postId}"]`);
+  function handlePostFeedback(forType, parentID, action) {
+      const postElement = document.querySelector(`.post-actions[data-id="${parentID}"][data-for="${forType}"]`);
       const currentState = parseInt(postElement.getAttribute('data-state'), 10);
       let newState = currentState;
       let newAction = 0; // Default action (neutral)
 
       // Get like and dislike button elements for the post
-      const likeButton = document.querySelector(`.like-button[data-id="${postId}"]`);
+      const likeButton = document.querySelector(`.like-button[data-id="${parentID}"][data-for="${forType}"]`);
       const likeCountSpan = likeButton.querySelector("span");
       let newLikeCount = parseInt(likeCountSpan.textContent);
 
-      const dislikeButton = document.querySelector(`.dislike-button[data-id="${postId}"]`);
+      const dislikeButton = document.querySelector(`.dislike-button[data-id="${parentID}"][data-for="${forType}"]`);
       const dislikeCountSpan = dislikeButton.querySelector("span");
       let newDislikeCount = parseInt(dislikeCountSpan.textContent);
 
@@ -52,13 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Create the data to send in the POST request
       const feedback = {
-        tgt: "post",
-        parentID: postId,
+        tgt: forType,
+        parentID: parentID,
         rating: newAction
       };
 
       // You could handle fetch success/failure like this:
-      await fetch('/feedback', {
+      fetch('/feedback', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -67,8 +67,9 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then(response => {
         if (!response.ok) {
-            // Handle error (e.g., alert the user)
-            showMessage("Please ensure you are logged in and try again later.");
+          return response.json().then(errorData => {
+            showMessage(errorData.message);
+          });
         } else {
           postElement.setAttribute('data-state', newState);
           likeCountSpan.textContent = newLikeCount;
@@ -84,15 +85,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // Attach event listeners to both like and dislike buttons
   likeButtons.forEach((button) => {
       button.addEventListener("click", () => {
-          const postId = parseInt(button.getAttribute("data-id"), 10);
-          handlePostFeedback(postId, "like");
+          const forType = button.getAttribute("data-for");
+          const parentID = parseInt(button.getAttribute("data-id"), 10);
+          handlePostFeedback(forType, parentID, "like");
       });
   });
 
   dislikeButtons.forEach((button) => {
       button.addEventListener("click", () => {
-          const postId = parseInt(button.getAttribute("data-id"), 10);
-          handlePostFeedback(postId, "dislike");
+          const forType = button.getAttribute("data-for");
+          const parentID = parseInt(button.getAttribute("data-id"), 10);
+          handlePostFeedback(forType, parentID, "dislike");
       });
   });
 });

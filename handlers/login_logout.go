@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -9,31 +8,30 @@ import (
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := checkSessionValidity(w, r)
-	if sessionCookie != nil {
+	if sessionCookie != nil { // logged in user trying to login again?
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
 	if r.Method == http.MethodGet {
-		//	Going to the login page
-		ExecuteTemp(w, "login.html", nil)
+		ExecuteTmpl(w, "login.html", nil) // Going to the login page
 		return
 	} else if r.Method != http.MethodPost {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	username, _, passwd, e := getCredentials(r, false)
 
 	if e != nil {
-		http.Error(w, e.Error(), 400)
+		ExecuteError(w, "json", e.Error(), 400)
 		return
 	}
 
 	// check that credentials are valid
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
-		http.Error(w, "incorrect username and/or password X", 400)
+		ExecuteError(w, "json", "incorrect username and/or password X", 400)
 		return
 	}
 
@@ -44,7 +42,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := r.Cookie("session-id")
 	if sessionCookie == nil {
-		log.Println("no session cookie??")
+		ExecuteError(w, "json", "User not logged in", 400)
 	} else {
 		expireSession(w, sessionCookie.Value)
 	}

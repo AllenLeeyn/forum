@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"forum/dbTools"
@@ -53,8 +54,9 @@ type startThreadData struct {
 }
 
 type ErrorData struct {
-	ErrorMessage string
-	ErrorCode    int
+	Type    string
+	Message string
+	Code    int
 }
 
 type PostError struct {
@@ -80,7 +82,7 @@ func checkErr(err error) {
 /*----------- Execute func -----------*/
 
 // Custom execute template I wrote to both execute and check for error
-func ExecuteTemp(w http.ResponseWriter, name string, data interface{}) {
+func ExecuteTmpl(w http.ResponseWriter, name string, data interface{}) {
 	err := tmpl.ExecuteTemplate(w, name, data)
 	if err != nil {
 		log.Fatalf("Error executing template: %v", err)
@@ -88,16 +90,22 @@ func ExecuteTemp(w http.ResponseWriter, name string, data interface{}) {
 }
 
 // Execute error page if possible, otherwise use inbuilt http error
-func ExecuteError(w http.ResponseWriter, errorMessage string, errorStatus int) {
-	errorData := ErrorData{
-		ErrorCode:    errorStatus,
-		ErrorMessage: errorMessage,
+func ExecuteError(w http.ResponseWriter, errtype, msg string, code int) {
+	errorData := ErrorData{errtype, msg, code}
+	if errorData.Type == "Tmpl" {
+		err := tmpl.ExecuteTemplate(w, "error.html", errorData)
+		if err != nil {
+			message := fmt.Sprintf("Error %d\n%s", errorData.Code, errorData.Message)
+			http.Error(w, message, http.StatusNotFound)
+		}
+		return
 	}
-	err := tmpl.ExecuteTemplate(w, "error.html", errorData)
-	if err != nil {
-		message := fmt.Sprintf("Error %d\n%s", errorStatus, errorMessage)
-		http.Error(w, message, http.StatusNotFound)
+	w.WriteHeader(errorData.Code)
+	type errorJson struct {
+		Message string `json:"message"`
 	}
+	errJson := errorJson{errorData.Message}
+	json.NewEncoder(w).Encode(errJson)
 }
 
 /*----------- aunthenticate func -----------*/

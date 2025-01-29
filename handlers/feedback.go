@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -10,11 +9,11 @@ import (
 func Feedback(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 { // likely user not login
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
 		return
 	}
 	if r.Method != http.MethodPost {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 	}
 
 	userFeedback := struct {
@@ -23,37 +22,34 @@ func Feedback(w http.ResponseWriter, r *http.Request) {
 		Rating   int    `json:"rating"`
 	}{}
 	body, err := io.ReadAll(r.Body)
-	fmt.Println(string(body))
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "json", "Error reading body: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = json.Unmarshal(body, &userFeedback)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+	if err = json.Unmarshal(body, &userFeedback); err != nil {
+		ExecuteError(w, "json", "Error reading json: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// need to add trigger for dislike count
+
 	fb, err := db.SelectFeedback(userFeedback.Tgt, userID, userFeedback.ParentID)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "json", "Error getting feedback: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if fb == nil {
-		err = db.InsertFeedback(userFeedback.Tgt,
-			feedback{
-				UserID:   userID,
-				ParentID: userFeedback.ParentID,
-				Rating:   userFeedback.Rating})
-		if err != nil {
-			ExecuteError(w, "something went wrong with feedback", http.StatusNotFound)
+		fb = &feedback{
+			UserID:   userID,
+			ParentID: userFeedback.ParentID,
+			Rating:   userFeedback.Rating}
+		if err = db.InsertFeedback(userFeedback.Tgt, *fb); err != nil {
+			ExecuteError(w, "json", "Error giving feedback: "+err.Error(), http.StatusInternalServerError)
 		}
 	} else {
 		fb.Rating = userFeedback.Rating
-		err = db.UpdateFeedback(userFeedback.Tgt, *fb)
-		if err != nil {
-			ExecuteError(w, "something went wrong with feedback", http.StatusNotFound)
+		if err = db.UpdateFeedback(userFeedback.Tgt, *fb); err != nil {
+			ExecuteError(w, "json", "Error giving feedback: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
+	w.WriteHeader(http.StatusOK)
 	extendSession(w, sessionCookie)
 }

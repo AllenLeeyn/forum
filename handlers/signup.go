@@ -16,10 +16,10 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet {
 		//	Going to the login page
-		ExecuteTemp(w, "signup.html", nil)
+		ExecuteTmpl(w, "signup.html", nil)
 		return
 	} else if r.Method != http.MethodPost {
-		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -27,15 +27,15 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 	// check that credentials are valid
 	if e != nil {
-		http.Error(w, e.Error(), 400)
+		ExecuteError(w, "json", e.Error(), 400)
 		return
 	}
 	if user, _ := db.SelectUserByField("email", email); user != nil {
-		http.Error(w, "email is already used", 400)
+		ExecuteError(w, "json", "email is already used", 400)
 		return
 	}
 	if user, _ := db.SelectUserByField("name", name); user != nil {
-		http.Error(w, "name is already used", 400)
+		ExecuteError(w, "json", "name is already used", 400)
 		return
 	}
 
@@ -51,7 +51,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 	user.ID, err = db.InsertUser(user)
 	if err != nil {
-		http.Error(w, err.Error(), 400)
+		ExecuteError(w, "json", "Error creating user"+e.Error(), 400)
 		return
 	}
 
@@ -62,8 +62,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 // Terms page
 func Terms(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		ExecuteTemp(w, "terms.html", nil)
+		ExecuteTmpl(w, "terms.html", nil)
 	} else {
-		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }

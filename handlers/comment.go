@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"forum/dbTools"
 	"io"
 	"net/http"
 	"strconv"
@@ -10,8 +9,12 @@ import (
 
 func Comment(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, userID := checkSessionValidity(w, r)
-	if userID == -1 { // likely user not login
-		w.WriteHeader(http.StatusNotFound)
+	if userID == -1 {
+		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
+		return
+	}
+	if r.Method != http.MethodPost {
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -19,31 +22,35 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 		Comment string
 	}{}
 	b, e := io.ReadAll(r.Body)
-	checkErr(e)
+	checkErr(e) // need to handle error here?
 	e = json.Unmarshal(b, &s)
-	checkErr(e)
+	checkErr(e) // need to handle error here?
 
 	postId := r.URL.Query().Get("postId")
 	pId, err := strconv.Atoi(postId)
-	checkErr(err)
+	checkErr(err) // need to handle error here?
 
-	post, err := db.SelectPost(pId)
+	post, err := db.SelectPost(pId, userID)
 	if err != nil || post == nil {
-		ExecuteError(w, "something went wrong with getting post or nothing found", http.StatusNotFound)
+		ExecuteError(w, "json", "Post not found: "+err.Error(), http.StatusNotFound)
 		return
 	}
 
 	user, err := db.SelectUserByField("id", userID)
 	if err != nil || user == nil {
-		ExecuteError(w, "something went wrong with getting user or nothing found", http.StatusNotFound)
+		ExecuteError(w, "json", "User not found: "+err.Error(), http.StatusNotFound)
 		return
 	}
-	extendSession(w, sessionCookie)
-	db.InsertComment(dbTools.Comment{
+	c := comment{
 		UserID:   userID,
 		PostID:   pId,
 		Content:  s.Comment,
-		UserName: user.Name,
-	})
+		UserName: user.Name}
 
+	if err := db.InsertComment(c); err != nil {
+		ExecuteError(w, "json", "Error creating comment: "+err.Error(), http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	extendSession(w, sessionCookie)
 }

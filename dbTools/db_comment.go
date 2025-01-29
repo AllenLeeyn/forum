@@ -1,27 +1,35 @@
 package dbTools
 
+import (
+	"database/sql"
+	"fmt"
+)
+
 // db.SelectComments() select all comments made in a post.
-func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error) {
+func (db *DBContainer) SelectComments(id, userID int, orderBy string) ([]Comment, error) {
 	qry := `SELECT c.id, u.id, u.name, c.post_id, c.parent_id, c.content, 
-				   c.like_count, c.dislike_count, c.created_at
+				   c.like_count, c.dislike_count, c.created_at, cf.rating
 			FROM comments c
 			INNER JOIN users u ON c.user_id = u.id
+			LEFT JOIN comment_feedback cf ON cf.parent_id = c.id AND cf.user_id = ?
 			WHERE post_id = ?`
-	orderByQry := ` ORDER BY created_at DESC`
+	orderByQry := ` ORDER BY c.created_at DESC`
 	switch orderBy {
 	case "oldest":
-		orderByQry = ` ORDER BY created_at ASC`
+		orderByQry = ` ORDER BY c.created_at ASC`
 	case "likeCount":
-		orderByQry = ` ORDER BY like_count DESC`
+		orderByQry = ` ORDER BY c.like_count DESC`
 	}
 	qry += orderByQry
 
-	rows, err := db.conn.Query(qry, id)
+	rows, err := db.conn.Query(qry, userID, id)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
 	var comments []Comment
+	var rating sql.NullInt64
 	for rows.Next() {
 		var c Comment
 		err := rows.Scan(
@@ -33,9 +41,15 @@ func (db *DBContainer) SelectComments(id int, orderBy string) ([]Comment, error)
 			&c.Content,
 			&c.LikeCount,
 			&c.DislikeCount,
-			&c.CreatedAt)
+			&c.CreatedAt,
+			&rating)
 		if err != nil {
 			return nil, err
+		}
+		if rating.Valid {
+			c.Rating = int(rating.Int64)
+		} else {
+			c.Rating = 0
 		}
 		comments = append(comments, c)
 	}

@@ -7,7 +7,9 @@
         if (response.ok) {
             window.location.href = '/start-thread';
         } else {
-            showMessage(" Please ensure you are logged in and try again later.");
+            return response.json().then(errorData => {
+              showMessage(errorData.message);
+            });
         }
     })
     .catch(error => {

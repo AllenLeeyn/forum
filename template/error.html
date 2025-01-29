@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Error</title>
+    <title>Forum Topics</title>
+    <link rel="stylesheet" href="/static/home.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
-  {{template "header"}}
   <body>
-    <nav class="navbar">
-      <a href="/" class="logo">PageName</a>
-    </nav>
-
-    <div class="container">
-      <div class="err-code">Error PlaceErrorCodeHere</div>
-      <h1 class="err-msg">PlaceErrorTemplateHere</h1>
-      <a href="/" class="home-page">
-        Return PlaceLinkToHomeHere</a>
+    {{template "header"}}
+    <div>
+      <div class="err-code"></div>
+      <h5 class="err-msg">ERROR CODE: {{.Code}}</h5>
+      <h1 class="err-msg">{{.Message}}</h1>
     </div>
   </body>
 </html>

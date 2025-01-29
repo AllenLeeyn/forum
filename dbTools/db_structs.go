@@ -49,6 +49,7 @@ type Comment struct {
 	LikeCount    int
 	DislikeCount int
 	CreatedAt    time.Time
+	Rating       int
 }
 
 type Feedback struct {

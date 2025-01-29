@@ -18,7 +18,9 @@ document.getElementById('logout-btn').onclick = function () {
               window.location.href = '/';
             }, 2000);
           } else {
-            showMessage("Failed to log out.");
+            return response.json().then(errorData => {
+              showMessage(errorData.message);
+            });
           }
       })
       .catch(error => {

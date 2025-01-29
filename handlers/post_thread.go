@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/dbTools"
 	"net/http"
 	"strconv"
@@ -9,28 +10,28 @@ import (
 // Page for viewing individual post
 func Post(w http.ResponseWriter, r *http.Request) {
 	// check session from cookie to get feedback data
-	sessionCookie, _ := checkSessionValidity(w, r)
+	sessionCookie, userID := checkSessionValidity(w, r)
 
 	if r.Method == http.MethodGet {
 
 		idStr := r.URL.Query().Get("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			ExecuteError(w, "something went wrong with post_id", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		post, err := db.SelectPost(id)
+		post, err := db.SelectPost(id, userID)
 		if err != nil || post == nil {
-			ExecuteError(w, "something went wrong with getting post or nothing found", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting post: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		comments, err := db.SelectComments(id, "oldest")
+		comments, err := db.SelectComments(id, userID, "oldest")
 		if err != nil {
-			ExecuteError(w, "something went wrong with grabbing comments", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting comments: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		extendSession(w, sessionCookie)
-		ExecuteTemp(w, "post.html", postpageData{sessionCookie, *post, comments})
+		ExecuteTmpl(w, "post.html", postpageData{sessionCookie, *post, comments})
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -41,26 +42,23 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 	// check if user is logged in using session id
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
-		// write header for toast message and do nothing
-		w.WriteHeader(http.StatusNotFound)
+		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
 		return
 	}
 
 	// only allows page to display or accept request if user is logged in
 	if r.Method == http.MethodGet {
-		ExecuteTemp(w, "start-thread.html", startThreadData{sessionCookie, db.Categories})
+		ExecuteTmpl(w, "start-thread.html", startThreadData{sessionCookie, db.Categories})
 	} else if r.Method == http.MethodPost {
-		title, content, categoriesInt := GetData(w, r)
-		if title == "" && content == "" && categoriesInt == nil {
+		title, content, categoriesInt, err := GetData(w, r)
+		if err != nil {
+			ExecuteError(w, "json", "Error reading form:"+err.Error(), 400)
 			return
 		}
-		titleIsValid, titleInvalidReason := CheckPostValidity(title, "postTitle")
-		contentIsValid, contentInvalidReason := CheckPostValidity(content, "postContent")
+		titleIsValid, titleError := CheckPostValidity(title, "postTitle")
+		contentIsValid, contentError := CheckPostValidity(content, "postContent")
 		if !(titleIsValid && contentIsValid) {
-			errData := ErrorData{
-				ErrorMessage: titleInvalidReason + "\n" + contentInvalidReason,
-			}
-			ExecuteTemp(w, "start-thread.html", errData)
+			ExecuteError(w, "json", "Error :"+titleError+contentError, 400)
 			return
 		}
 		post := dbTools.Post{
@@ -71,14 +69,14 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 		}
 		postNum, err := db.InsertPost(post)
 		if err != nil {
-			ExecuteError(w, "Failed to insert post into database", http.StatusInternalServerError)
+			ExecuteError(w, "json", "Error creating post: "+err.Error(), http.StatusInternalServerError)
 		}
 		extendSession(w, sessionCookie)
 		postID := "/post?id=" + strconv.Itoa(postNum)
 		http.Redirect(w, r, postID, http.StatusSeeOther)
 
 	} else {
-		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -104,11 +102,10 @@ func CheckPostValidity(input string, dataType string) (bool, string) {
 }
 
 // Gets and parses data from front end post
-func GetData(w http.ResponseWriter, r *http.Request) (title string, content string, categoriesInt []int) {
-	err := r.ParseForm()
+func GetData(w http.ResponseWriter, r *http.Request) (title string, content string, categoriesInt []int, err error) {
+	err = r.ParseForm()
 	if err != nil {
-		ExecuteError(w, "Error parsing form data", http.StatusBadRequest)
-		return "", "", nil
+		return "", "", nil, fmt.Errorf("error parsing form data")
 	}
 	title = r.FormValue("threadTitle")
 	content = r.FormValue("threadContent")
@@ -116,10 +113,9 @@ func GetData(w http.ResponseWriter, r *http.Request) (title string, content stri
 	for _, value := range categoriesStr {
 		intVal, err := strconv.Atoi(value)
 		if err != nil {
-			ExecuteError(w, "Error parsing categories", http.StatusBadRequest)
-			return "", "", nil
+			return "", "", nil, fmt.Errorf("error parsing categories")
 		}
 		categoriesInt = append(categoriesInt, intVal)
 	}
-	return title, content, categoriesInt
+	return title, content, categoriesInt, nil
 }

@@ -70,7 +70,6 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id, userID int) ([]
 		getWhereQuery(filterBy, id) +
 		getOrderByQuery(orderBy)
 	rows, err := db.conn.Query(qry, userID)
-	fmt.Println(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -113,19 +112,20 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id, userID int) ([]
 	if err := rows.Err(); err != nil {
 		return nil, checkErrNoRows(err)
 	}
-	fmt.Println(posts)
 	return posts, nil
 }
 
-func (db *DBContainer) SelectPost(id int) (*Post, error) {
-	qry := `SELECT id, puser_id, user_name, 
+func (db *DBContainer) SelectPost(id, userID int) (*Post, error) {
+	qry := `SELECT v_posts.id, puser_id, user_name, 
 			comment_count, like_count, dislike_count,
-			title, content, pcreated_at, category_ids
+			title, content, pcreated_at, category_ids, pf.rating
 			FROM v_posts
+			LEFT JOIN post_feedback pf ON pf.parent_id = v_posts.id AND pf.user_id = ?
 			WHERE id = ?`
 	var p Post
 	var catIDs string
-	err := db.conn.QueryRow(qry, id).Scan(
+	var rating sql.NullInt64
+	err := db.conn.QueryRow(qry, userID, id).Scan(
 		&p.ID,
 		&p.UserID,
 		&p.UserName,
@@ -135,7 +135,8 @@ func (db *DBContainer) SelectPost(id int) (*Post, error) {
 		&p.Title,
 		&p.Content,
 		&p.CreatedAt,
-		&catIDs)
+		&catIDs,
+		&rating)
 
 	if err != nil {
 		return nil, checkErrNoRows(err)
@@ -143,6 +144,11 @@ func (db *DBContainer) SelectPost(id int) (*Post, error) {
 	p.Categories, p.CatNames, err = db.splitCategoryIDs(catIDs)
 	if err != nil {
 		return nil, err
+	}
+	if rating.Valid {
+		p.Rating = int(rating.Int64)
+	} else {
+		p.Rating = 0
 	}
 	return &p, err
 }

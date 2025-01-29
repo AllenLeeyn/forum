@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"strconv"
 )
 
 // Profile page
@@ -10,18 +9,18 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	// check if user is logged in using session id
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
-		ExecuteError(w, "Invalid session", http.StatusUnauthorized)
+		ExecuteError(w, "json", "Invalid session", http.StatusUnauthorized)
 		return
 	}
 
 	if r.Method == http.MethodGet {
 		posts, err := db.SelectPosts("createdBy", "", userID, userID)
 		if err != nil {
-			ExecuteError(w, "Error getting user posts", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting user posts: "+err.Error(), http.StatusInternalServerError)
 		}
-		user, err := db.SelectUserByField("id", strconv.Itoa(userID))
+		user, err := db.SelectUserByField("id", userID)
 		if err != nil {
-			ExecuteError(w, "Error getting user details", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting user details: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		//	Placeholder data
@@ -32,8 +31,8 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 			SessionCookie: sessionCookie,
 		}
 		extendSession(w, sessionCookie)
-		ExecuteTemp(w, "profile.html", data)
+		ExecuteTmpl(w, "profile.html", data)
 	} else {
-		ExecuteError(w, "Invalid User Method", http.StatusMethodNotAllowed)
+		ExecuteError(w, "Tmpl", "Invalid User Method", http.StatusMethodNotAllowed)
 	}
 }
