@@ -161,11 +161,7 @@ func checkSessionValidity(w http.ResponseWriter, r *http.Request) (*http.Cookie,
 	}
 	sessionID := sessionCookie.Value
 	s, err := db.SelectActiveSessionBy("id", sessionID)
-	if err != nil {
-		fmt.Println(err)
-		return nil, -1
-	}
-	if s.ExpireTime.Before(time.Now()) {
+	if err != nil || s.ExpireTime.Before(time.Now()) {
 		expireSession(w, sessionCookie.Value)
 		return nil, -1
 	}
