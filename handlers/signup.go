@@ -40,7 +40,10 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	passwdHash, err := bcrypt.GenerateFromPassword([]byte(passwd), 0)
-	checkErr(err)
+	if err != nil {
+		ExecuteError(w, "json", "Error creating user"+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// add the user to the database
 	user := &dbTools.User{

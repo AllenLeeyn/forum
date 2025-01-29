@@ -22,7 +22,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		}
 		post, err := db.SelectPost(id, userID)
 		if err != nil || post == nil {
-			ExecuteError(w, "Tmpl", "Error getting post: "+err.Error(), http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting post: nothing found", http.StatusInternalServerError)
 			return
 		}
 		comments, err := db.SelectComments(id, userID, "oldest")

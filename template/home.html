@@ -20,8 +20,10 @@
         <h2>Categories</h2>
         <ul>
           <li><a href="/" class="{{if not .FilterBy}}active{{end}}">All</a></li>
+          {{if .SessionCookie}}
           <li><a href="?filterBy=createdBy" class="{{if eq .FilterBy "createdBy"}}active{{end}}">My posts</a></li>
           <li><a href="?filterBy=likedBy" class="{{if eq .FilterBy "likedBy"}}active{{end}}">Liked posts</a></li>
+          {{end}}
           {{range $index, $cat := .Categories}}
           <li><a href="?filterBy=category&id={{$index}}" class="{{if and (eq $.FilterBy "category") (eq $index $.Id)}}active{{end}}">{{$cat}}</a></li>
           {{end}}

@@ -33,7 +33,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// check that credentials are valid
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
-		ExecuteError(w, "json", "incorrect username and/or password X", 400)
+		ExecuteError(w, "json", "incorrect username and/or password", 400)
 		return
 	}
 

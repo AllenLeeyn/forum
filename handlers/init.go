@@ -122,10 +122,11 @@ func getCredentials(r *http.Request, isSignup bool) (string, string, string, err
 		return "", "", "", errors.New("invalid method")
 	}
 	if !validRegex(username, usernameRegex) {
-		return "", "", "", errors.New("invalid username and/or password Y")
+		return "", "", "", errors.New("user name must be between 3 to 16 alphanumeric characters, '_' or '-'")
 	}
 	if !validPsswrd(passwd) {
-		return "", "", "", errors.New("invalid username and/or password Y")
+		return "", "", "", errors.New("password must be 8 characters or longer.\n" +
+			"Include at least a lower case character, an upper case character, a number and one of '@$!%*?&'")
 	}
 	if isSignup && !validRegex(email, emailRegex) {
 		return "", "", "", errors.New("invalid email")
