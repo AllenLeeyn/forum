@@ -3,124 +3,279 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forum Topics</title>
-    <link rel="stylesheet" href="/static/homepage.css" />
+    <title>Social Forum</title>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link rel="stylesheet" href="/static/homepage.css" />
   </head>
   <body>
-    <header>
-      <div class="logo"> <a href="/">Forum</a></div>
-      <nav>
-        <a href="#">Articles</a>
-        <a href="#">Social</a>
-        <a href="/login">Login</a>
-        <!-- Dark mode toggle button -->
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-          <i class="fas fa-moon"></i>
-          <!-- Dark mode icon -->
-        </button>
-      </nav>
-    </header>
+    <nav class="navbar">
+      <div class="nav-content">
+        <div class="logo">
+          <img src="/api/placeholder/120/40" alt="Logo" />
+        </div>
+        <div class="nav-actions">
+          <button><i class="far fa-bell"></i></button>
+          <div class="user-dropdown">
+            <button><i class="far fa-user"></i></button>
+            <div class="dropdown-content">
+              <a href="/login">Login</a>
+              <a href="/signup">Sign Up</a>
+            </div>
+          </div>
+          <button class="new-post">New Post</button>
+        </div>
+      </div>
+    </nav>
+
     <div class="container">
-      <!-- Sidebar -->
-      <div class="sidebar move">
-        <h2>Categories</h2>
-        <ul>
-          <li><a href="#general">General Discussion</a></li>
-          <li><a href="#tech">Tech and Development</a></li>
-          <li><a href="#gaming">Gaming</a></li>
-          <li><a href="#entertainment">Entertainment and Media</a></li>
-          <li><a href="#lifestyle">Lifestyle and Health</a></li>
-          <li><a href="#creative">Creative Corner</a></li>
-          <li><a href="#debate">Controversial and Debate</a></li>
-          <li><a href="#humor">Humor and Fun</a></li>
-        </ul>
+      <!-- Categories Sidebar -->
+      <div class="categories">
+        <h3>Categories</h3>
+        <div class="category-item">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-fire"></i>
+          <span>Popular</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-laptop-code"></i>
+          <span>Technology</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-gamepad"></i>
+          <span>Gaming</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-film"></i>
+          <span>Entertainment</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-palette"></i>
+          <span>Art & Design</span>
+        </div>
+        <div class="category-item">
+          <i class="fas fa-book"></i>
+          <span>Education</span>
+        </div>
       </div>
 
-      <!-- Main Content -->
-      <div class="content">
-        <!-- General Discussion -->
-        <section id="general">
-          <h2>General Discussion</h2>
-          <!-- Post Block -->
-          <div class="post-block">
-            <h3 class="post-title">
-              <a href="#"> Allen invasion and they happen to be Pineapples</a>
-            </h3>
-            <p class="post-body">
-              <span style="color: brown">ANANAS</span> , the pineapple King
-              insists humans to call him "Your Highness"<br />
-              for its RICH HARD flavour. MILLIons of people refuse to do so and
-              ...read more
-            </p>
-
-            
-            <div class="post-actions">
-              <button class="icon-button">
-                <i class="fas fa-heart"></i> <span>3</span>
-              </button>
-              <button class="icon-button">
-                <i class="fas fa-comment"></i> <span>5</span>
-              </button>
+      <!-- Posts Feed -->
+      <div class="feed">
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
             </div>
           </div>
-          <!-- Post Block -->
-          <div class="post-block">
-            <h3 class="post-title">
-              <a href="#"> Man UGhhhhhhhhhhhhhhhhhhhh</a>
-            </h3>
-            <p class="post-body">
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="fa-thumbs-up"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="far fa-heart"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="fa fa-thumbs-up"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="fa fa-thumbs-up"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="far fa-heart"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">PineappleKing</div>
+              <div class="post-time">2 hours ago · Technology</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Alien invasion and they happen to be Pineapples</h3>
+            <p>
+              ANANAS, the pineapple King insists humans to call him "Your
+              Highness" for its RICH HARD flavour. MILLIons of people refuse to
+              do so...
+            </p>
+          </div>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="far fa-heart"></i>
+              <span>3.2k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>245</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="post-meta">
+              <div class="post-author">CreativeRebel</div>
+              <div class="post-time">5 hours ago · Design</div>
+            </div>
+          </div>
+          <div class="post-content">
+            <h3>Man UGhhhhhhhhhhhhhhhhhhhh</h3>
+            <p>
               A group of men rejecting my project cause apparently it's too
-              <span style="color: pink"> PINK!!!</span>
+              PINK!!!
             </p>
-
-            
-            <div class="post-actions">
-              <button class="icon-button">
-                <i class="fas fa-heart"></i> <span>7</span>
-              </button>
-              <button class="icon-button">
-                <i class="fas fa-comment"></i> <span>12</span>
-              </button>
-            </div>
           </div>
-        </section>
-      </div>
-
-      <!-- Right Sidebar -->
-      <div class="right-sidebar">
-        <div class="start-thread">
-          <h3>Post a Thread</h3>
-          <p>Share your thoughts with the community!</p>
-          <a href="#" class="start-thread-btn">Start a Thread</a>
-        </div>
-      
-        <!-- Filter Section -->
-        <div class="filter-section">
-          <h4>Filter Threads</h4>
-          <label for="category">Category:</label>
-          <select id="category">
-            <option value="all">All</option>
-            <option value="tech">Technology</option>
-            <option value="life">Lifestyle</option>
-            <option value="science">Science</option>
-          </select>
-          
-          <label for="keyword">Keyword:</label>
-          <input type="text" id="keyword" placeholder="Search...">
-          
-          <button type="button">Apply Filters</button>
+          <div class="post-actions">
+            <button class="action-button">
+              <i class="far fa-heart"></i>
+              <span>1.8k</span>
+            </button>
+            <button class="action-button">
+              <i class="far fa-comment"></i>
+              <span>432</span>
+            </button>
+          </div>
         </div>
       </div>
-      
-    
-    <script>
-      function toggleDarkMode() {
-        document.body.classList.toggle("dark-mode");
-      }
-    </script>
+    </div>
   </body>
 </html>
