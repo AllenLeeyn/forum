@@ -51,7 +51,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 	user.ID, err = db.InsertUser(user)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating user"+e.Error(), 400)
+		ExecuteError(w, "json", "Error creating user"+err.Error(), 400)
 		return
 	}
 
