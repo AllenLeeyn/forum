@@ -1,3 +1,15 @@
+:root {
+  --primary: #441752; /* Deep purple */
+  --secondary: #8174a0; /* Muted lavender */
+  --accent: #a888b5; /* Soft purple */
+  --highlight: #efb6c8; /* Pink */
+  --background: #f8f9fa; /* Light gray background */
+  --card-background: #ffffff; /* White for cards */
+  --text: #2d3436; /* Dark gray for text */
+  --text-light: #636e72; /* Medium gray for secondary text */
+  --hover: #e8eaf6; /* Light purple for hover effects */
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,8 +19,7 @@
 
 body {
   min-height: 100vh;
-  display: flex;
-  background-color: #f5f5f5;
+  background-color: var(--background);
 }
 
 .container {
@@ -20,7 +31,7 @@ body {
 /* Left Side - Image Section */
 .image-section {
   flex: 1;
-  background-color: #1a1b3d; /* Dark blue from the image */
+  background-color: var(--primary); /* Deep purple */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -33,22 +44,36 @@ body {
 /* Decorative shapes */
 .shape-1 {
   position: absolute;
-  width: 400px;
-  height: 400px;
-  background-color: #ff7276; /* Coral color */
+  width: 300px;
+  height: 300px;
+  background-color: var(--highlight); /* Pink */
   border-radius: 50%;
-  top: -100px;
-  right: -100px;
+  top: -50px;
+  left: -50px;
+  opacity: 0.6;
 }
 
 .shape-2 {
   position: absolute;
-  width: 500px;
-  height: 500px;
-  background-color: #ffd24c; /* Yellow color */
+  width: 400px;
+  height: 400px;
+  background-color: var(--accent); /* Soft purple */
   border-radius: 50%;
-  bottom: -200px;
-  left: -200px;
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.6;
+}
+
+.shape-3 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background-color: var(--secondary); /* Muted lavender */
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
 }
 
 .image-content {
@@ -68,14 +93,14 @@ body {
   line-height: 1.6;
 }
 
-/* Right Side - Login Form */
+/* Right Side - Signup Form */
 .form-section {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px;
-  background-color: white;
+  background-color: var(--card-background);
 }
 
 .form-container {
@@ -86,7 +111,7 @@ body {
 .form-container h2 {
   font-size: 32px;
   margin-bottom: 40px;
-  color: #1a1b3d;
+  color: var(--primary);
 }
 
 .input-group {
@@ -97,14 +122,16 @@ body {
 .input-group input {
   width: 100%;
   padding: 15px;
-  border: 2px solid #e1e1e1;
+  border: 2px solid var(--hover);
   border-radius: 8px;
   font-size: 16px;
   transition: all 0.3s ease;
+  background-color: var(--background);
+  color: var(--text);
 }
 
 .input-group input:focus {
-  border-color: #1a1b3d;
+  border-color: var(--primary);
   outline: none;
 }
 
@@ -113,9 +140,9 @@ body {
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: white;
+  background-color: var(--card-background);
   padding: 0 5px;
-  color: #666;
+  color: var(--text-light);
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -124,23 +151,37 @@ body {
 .input-group input:valid ~ label {
   top: 0;
   font-size: 14px;
-  color: #1a1b3d;
+  color: var(--primary);
 }
 
-.remember {
+.terms-and-conditions {
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
-  margin-bottom: 25px;
 }
 
-.remember input[type="checkbox"] {
+.terms-and-conditions input[type="checkbox"] {
   margin-right: 10px;
+}
+
+.terms-and-conditions label {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.terms-and-conditions a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.terms-and-conditions a:hover {
+  text-decoration: underline;
 }
 
 button {
   width: 100%;
   padding: 15px;
-  background-color: #1a1b3d;
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -150,7 +191,16 @@ button {
 }
 
 button:hover {
-  background-color: #2a2b5d;
+  background-color: var(--secondary);
+}
+.remember {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.remember input[type="checkbox"] {
+  margin-right: 10px;
 }
 
 .signUp-link {

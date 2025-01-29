@@ -209,6 +209,13 @@ button:hover {
   text-decoration: underline;
 }
 
+/* Error styling */
+#error {
+  color: #ff4444;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
