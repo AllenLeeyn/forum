@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Page</title>
-    <link rel="stylesheet" href="/static/profile.css" />
+    <link rel="stylesheet" href="/assets/static/profile.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -12,41 +12,80 @@
     <script src="/static/script/feedback.js" defer></script>
   </head>
   <body>
-    {{template "header" .}}
-
-    <div class="content">
-      <div class="profile-header">
-        <h2>Name: {{.Name}}</h2>
-        <h2>Email: {{.Email}}</h2>
-      </div>
-
-      <div class="post-block">
-        <h3>Your Posts:</h3>
-        {{range .Posts}}
-      
-        <div class="posts">
-        <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
-        <h3 class="post-title">
-            <a href="/post?id={{.ID}}"> {{.Title}}</a>
-        </h3>
-        <pre class="post-body">{{.Content}}</pre>
-
-        <div class="post-actions" data-id={{.ID}} data-state="{{.Rating}}" data-for="post">
-          <button class="icon-button like-button" data-id={{.ID}} data-for="post">
-            <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
-          </button>
-          <button class="icon-button dislike-button" data-id={{.ID}} data-for="post">
-            <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
-          </button>
-          <button class="icon-button">
-            <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
-          </button>
-          <p class="icon-button">
-            <span>{{.CatNames}}</span>
-          </p>
+    <nav class="navbar">
+      <div class="nav-content">
+        <div class="logo">
+          <img src="" alt="Logo" />
+        </div>
+        <div class="nav-actions">
+          <button class="new-post">New Post</button>
         </div>
       </div>
-        {{end}}
+    </nav>
+
+    <div class="container">
+      <!-- Categories Sidebar with Profile Info -->
+      <div class="categories">
+        <h3>Profile</h3>
+        <ul>
+          <li><strong>Name:</strong> {{.Name}}</li>
+          <li><strong>Email:</strong> {{.Email}}</li>
+        </ul>
+      </div>
+
+      <!-- Posts Feed -->
+      <div class="feed">
+        <section id="general">
+          <h2>Your Posts</h2>
+
+          {{range .Posts}}
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="post-meta">
+                <div class="post-author">{{.UserName}}</div>
+                <div class="post-time">{{.CreatedAt}}</div>
+              </div>
+            </div>
+            <div class="post-content">
+              <h3>
+                <a href="/post?id={{.ID}}">{{.Title}}</a>
+              </h3>
+              <p>{{.Content}}</p>
+            </div>
+            <div
+              class="post-actions"
+              data-id="{{.ID}}"
+              data-state="{{.Rating}}"
+              data-for="post"
+            >
+              <button
+                class="action-button like-button"
+                data-id="{{.ID}}"
+                data-for="post"
+              >
+                <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
+              </button>
+              <button
+                class="action-button dislike-button"
+                data-id="{{.ID}}"
+                data-for="post"
+              >
+                <i class="fas fa-thumbs-down"></i>
+                <span>{{.DislikeCount}}</span>
+              </button>
+              <button class="action-button">
+                <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+              </button>
+              <p class="action-button">
+                <span>{{.CatNames}}</span>
+              </p>
+            </div>
+          </div>
+          {{end}}
+        </section>
       </div>
     </div>
   </body>
