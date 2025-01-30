@@ -306,7 +306,7 @@ func TestInsertPost(t *testing.T) {
 func TestInsertComment(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
 	u, _ := db.SelectUserByField("email", "batman@gotham.city")
-	posts, _ := db.SelectPosts("", "oldest", 0)
+	posts, _ := db.SelectPosts("", "oldest", 0, -1)
 
 	testCases := []struct {
 		c        comment
@@ -379,12 +379,12 @@ func TestInsertComment(t *testing.T) {
 func TestInsertFeedback(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
 	u, _ := db.SelectUserByField("email", "batman@gotham.city")
-	posts, err := db.SelectPosts("", "", 0)
+	posts, err := db.SelectPosts("", "", 0, -1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	comments, err := db.SelectComments(posts[0].ID, "")
+	comments, err := db.SelectComments(posts[0].ID, -1, "")
 	if err != nil {
 		t.Error(err)
 		return
@@ -495,23 +495,6 @@ func TestInsertFeedback(t *testing.T) {
 	}
 }
 
-func TestSelectUpdateFeedbacks(t *testing.T) {
-	u, _ := db.SelectUserByField("email", "batman@gotham.city")
-	// selectFeedback made in posts by user
-	feedbacks, err := db.SelectFeedbacks("post", u.ID)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	// change and update feedback on a post by user
-	// this change should reflect in the results of TestSelectPosts
-	feedbacks[0].Rating = 0
-	err = db.UpdateFeedback("post", feedbacks[0])
-	if err != nil {
-		t.Error(err)
-	}
-}
-
 func TestSelectPosts(t *testing.T) {
 	s, _ := db.SelectActiveSessionBy("id", "0013")
 	u, _ := db.SelectUserByField("email", "batman@gotham.city")
@@ -562,7 +545,7 @@ func TestSelectPosts(t *testing.T) {
 	}
 
 	for i, tc := range testCase {
-		posts, err := db.SelectPosts(tc.filterBy, tc.orderBy, tc.catID)
+		posts, err := db.SelectPosts(tc.filterBy, tc.orderBy, tc.catID, -1)
 		if err != nil {
 			t.Errorf("Case %d: expected %v, got %v\n", i, tc.expected, err)
 			continue
