@@ -1,4 +1,15 @@
-/* General Styles */
+:root {
+  --primary: #441752; /* Deep purple */
+  --secondary: #8174a0; /* Muted lavender */
+  --accent: #a888b5; /* Soft purple */
+  --highlight: #efb6c8; /* Pink */
+  --background: #f8f9fa; /* Light gray background */
+  --card-background: #ffffff; /* White for cards */
+  --text: #2d3436; /* Dark gray for text */
+  --text-light: #636e72; /* Medium gray for secondary text */
+  --hover: #e8eaf6; /* Light purple for hover effects */
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,174 +18,224 @@
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: #faf3e0; /* Cream */
-  color: #2c2c2c; /* Dark Brown */
+  background-color: var(--background);
 }
 
-/* Wrapper */
-.wrapper {
+.container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 800px; /* Adjusted width for both sections */
-  height: 500px; /* Adjusted height */
-  background-color: #fff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  padding: 40px;
-  overflow: hidden;
-  gap: 30px; /* Space between sections */
+  width: 100%;
+  height: 100vh;
 }
 
-/* Form Wrapper */
-.form-wrapper {
-  width: 45%;
-}
-
-.form-wrapper h2 {
-  font-size: 24px;
-  color: #2c2c2c; /* Dark Brown */
-  text-align: center;
-}
-
-/* Input Group */
-.input-group {
+/* Left Side - Image Section */
+.image-section {
+  flex: 1;
+  background-color: var(--primary); /* Deep purple */
   position: relative;
-  margin: 20px 0;
-  border-bottom: 2px solid #99b898; /* Soft Green */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  color: white;
 }
 
-.input-group label {
+/* Decorative shapes */
+.shape-1 {
   position: absolute;
+  width: 300px;
+  height: 300px;
+  background-color: var(--highlight); /* Pink */
+  border-radius: 50%;
+  top: -50px;
+  left: -50px;
+  opacity: 0.6;
+}
+
+.shape-2 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-color: var(--accent); /* Soft purple */
+  border-radius: 50%;
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.6;
+}
+
+.shape-3 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background-color: var(--secondary); /* Muted lavender */
+  border-radius: 50%;
   top: 50%;
-  left: 5px;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #2c2c2c;
-  pointer-events: none;
-  transition: 0.5s;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+}
+
+.image-content {
+  position: relative;
+  z-index: 1;
+}
+
+.image-content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.image-content p {
+  font-size: 18px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* Right Side - Signup Form */
+.form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: var(--card-background);
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-container h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: var(--primary);
+}
+
+.input-group {
+  margin-bottom: 25px;
+  position: relative;
 }
 
 .input-group input {
   width: 100%;
-  height: 40px;
+  padding: 15px;
+  border: 2px solid var(--hover);
+  border-radius: 8px;
   font-size: 16px;
-  color: #2c2c2c;
-  padding: 0 5px;
-  background: transparent;
-  border: none;
+  transition: all 0.3s ease;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+.input-group input:focus {
+  border-color: var(--primary);
   outline: none;
+}
+
+.input-group label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--card-background);
+  padding: 0 5px;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+  pointer-events: none;
 }
 
 .input-group input:focus ~ label,
 .input-group input:valid ~ label {
-  top: -5px;
-  font-size: 12px;
-  color: #ff847c; /* Peach */
-}
-
-/* Remember Checkbox */
-.remember {
-  margin: -5px 0 15px 5px;
-}
-
-.remember label {
-  color: #2c2c2c; /* Dark Brown */
+  top: 0;
   font-size: 14px;
+  color: var(--primary);
 }
 
-.remember label input {
-  accent-color: #99b898; /* Soft Green */
+.terms-and-conditions {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
-/* Button */
+.terms-and-conditions input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.terms-and-conditions label {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.terms-and-conditions a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.terms-and-conditions a:hover {
+  text-decoration: underline;
+}
+
 button {
-  position: relative;
   width: 100%;
-  height: 40px;
-  background: #ff847c;
-  font-size: 16px;
-  color: #fff;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: 30px;
+  padding: 15px;
+  background-color: var(--primary);
+  color: white;
   border: none;
-  outline: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background: #e97164;
+  background-color: var(--secondary);
+}
+.remember {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-/* Sign-Up Link */
+.remember input[type="checkbox"] {
+  margin-right: 10px;
+}
+
 .signUp-link {
-  font-size: 14px;
   text-align: center;
-  margin: 15px 0;
+  margin-top: 25px;
 }
 
-.signUp-link p {
-  color: #2c2c2c;
-}
-
-.signUp-link p a {
-  color: #ff847c;
+.signUp-link a {
+  color: #1a1b3d;
   text-decoration: none;
   font-weight: 500;
 }
 
-.signUp-link p a:hover {
+.signUp-link a:hover {
   text-decoration: underline;
 }
 
-/* Welcome Section */
-.welcome-section {
-  flex: 1;
-  padding-left: 20px;
+/* Error styling */
+#error {
+  color: #ff4444;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
-.welcome-section h1 {
-  font-size: 36px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  line-height: 1.2;
-}
-
-.welcome-section p {
-  font-size: 16px;
-  color: #2c2c2c;
-  line-height: 1.5;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
   }
-  100% {
-    opacity: 1;
-  }
-}
 
-@keyframes slideInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-30px);
+  .image-section {
+    display: none;
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+
+  .form-section {
+    padding: 20px;
   }
-}
-
-.welcome-section {
-  animation: fadeIn 1s ease-out;
-}
-
-.form-wrapper {
-  animation: slideInLeft 1s ease-out;
 }

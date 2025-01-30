@@ -11,43 +11,43 @@
     <script src="/static/script/header.js" defer></script>
   </head>
   <body>
-    <div class="wrapper">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <h1>Welcome Back!</h1>
-        <p>
-          We're excited to have you back. Login now to continue your journey!<br>
-        </p>
-        <div class="signUp-link">
+    <div class="container">
+      <!-- Left side with image background -->
+      <div class="image-section">
+        <div class="shape-1"></div>
+        <div class="shape-2"></div>
+        <div class="image-content">
+          <h1>Welcome Back!</h1>
           <p>
-            <a href="/">Back to home</a>
+            Log in to your account to continue your journey with us. We're
+            excited to show you what's new!
           </p>
         </div>
       </div>
 
-      <!-- Login Form -->
-      <div class="form-wrapper">
-        <form action="/login" method="post" id="form">
+      <!-- Right side with login form -->
+      <div class="form-section">
+        <div class="form-container">
           <h2>Login</h2>
-          <div class="input-group">
-            <input type="text" name="username" required />
-            <label for="username">Username</label>
-          </div>
-          <div class="input-group">
-            <input type="password" name="password" required />
-            <label for="password">Password</label>
-          </div>
-          <div class="remember">
-            <label><input type="checkbox" /> Remember me</label>
-          </div>
-          <button type="submit" id="submit">Login</button>
-          <div class="signUp-link">
-            <p>
-              Don't have an account?
-              <a href="/signup">Sign Up</a>
-            </p>
-          </div>
-        </form>
+          <form action="/login" method="post" id="form">
+            <div class="input-group">
+              <input type="text" name="username" required />
+              <label>Username</label>
+            </div>
+            <div class="input-group">
+              <input type="password" name="password" required />
+              <label>Password</label>
+            </div>
+            <div class="remember">
+              <input type="checkbox" id="remember" />
+              <label for="remember">Remember me</label>
+            </div>
+            <button type="submit">Login</button>
+            <div class="signUp-link">
+              <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </body>
