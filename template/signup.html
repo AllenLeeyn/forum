@@ -6,74 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up</title>
     <link rel="stylesheet" href="/static/toastMsg.css" />
-    <link rel="stylesheet" type="text/css" href="/static/signup.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/static/signup.css" />
     <script src="/static/script/signup.js" defer></script>
     <script src="/static/script/header.js" defer></script>
   </head>
   <body>
-    <div class="wrapper">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <h1>Welcome to Our Forum!</h1>
-        <p>
-          Join our community. Share your thoughts, discover new ideas, and make
-          amazing connections.
-          <br>
-        </p>
-        <div class="signIn-link">
-          <p>
-            <a href="/">Back to home</a>
-          </p>
+    <div class="container">
+      <!-- Left side with image background -->
+      <div class="image-section">
+        <div class="shape-1"></div>
+        <div class="shape-2"></div>
+        <div class="image-content">
+          <h1>Welcome to GritHub!</h1>
+          <p>Sign up to continue your journey today!!!</p>
         </div>
       </div>
 
-      <!-- Sign-Up Form Section -->
-      <div class="form-wrapper sign-up">
-        <form action="/signup" method="post" id="form">
+      <!-- Right side with login form -->
+      <div class="form-section">
+        <div class="form-container">
           <h2>Sign Up</h2>
-
-          <!-- Username -->
-          <div class="input-group">
-            <input type="text" name="username" required />
-            <label for="username">Username</label>
-          </div>
-
-          <!-- Email -->
-          <div class="input-group">
-            <input type="email" name="email" required />
-            <label for="email">Email</label>
-          </div>
-
-          <!-- Password -->
-          <div class="input-group">
-            <input type="password" name="password" required />
-            <label for="password">Password</label>
-          </div>
-
-          <!-- Confirm Password -->
-          <div class="input-group">
-            <input type="password" name="confirm-password" required />
-            <label for="confirm-password">Confirm Password</label>
-          </div>
-
-          <div class="terms">
-            <p>
-              By signing up, you agree to our
-              <a href="terms"> terms</a>.
-            </p>
-
-          <!-- Submit Button -->
-          <button type="submit" id="submit">Sign Up</button>
-
-          <!-- Link to Login -->
-          <div class="signIn-link">
-            <p>Already have an account? <a href="/login">Login</a></p>
-          </div>
-        </form>
+          <form action="/login" method="post" id="form">
+            <div class="input-group">
+              <input type="text" name="username" required />
+              <label>Username</label>
+            </div>
+            <div class="input-group">
+              <input type="email" name="email" required />
+              <label>Email</label>
+            </div>
+            <div class="input-group">
+              <input type="password" name="password" required />
+              <label>Password</label>
+            </div>
+            <div class="input-group">
+              <input type="password" name="password" required />
+              <label>Confirm Password</label>
+            </div>
+            <div class="terms-and-conditions">
+              <label for="remember"
+                >by signing up you agree to our
+                <a href="/terms">terms.</a></label
+              >
+            </div>
+            <button type="submit">Login</button>
+            <div class="login-link">
+              <p>Already have an account? <a href="/login">Login</a></p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </body>
-  <script>
-    
-  </script>
 </html>

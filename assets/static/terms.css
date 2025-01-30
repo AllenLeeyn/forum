@@ -1,64 +1,176 @@
 /* General Styles */
+:root {
+  --primary: #441752; /* Deep purple */
+  --secondary: #8174a0; /* Muted lavender */
+  --accent: #a888b5; /* Soft purple */
+  --highlight: #efb6c8; /* Pink */
+  --background: #f8f9fa; /* Light gray background */
+  --card-background: #ffffff; /* White for cards */
+  --text: #2d3436; /* Dark gray for text */
+  --text-light: #636e72; /* Medium gray for secondary text */
+  --hover: #e8eaf6; /* Light purple for hover effects */
+}
+
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #faf3e0; /* Cream */
-  color: #2c2c2c; /* Dark Brown */
+  background-color: var(--background);
+  color: var(--text);
   margin: 0;
   padding: 0;
+  min-height: 100vh;
 }
 
 .terms-wrapper {
   max-width: 900px;
   margin: 50px auto;
-  background-color: #fff;
-  padding: 30px;
+  background-color: var(--card-background);
+  padding: 40px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative shapes for the terms wrapper */
+.terms-wrapper::before {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background-color: var(--highlight); /* Pink */
+  border-radius: 50%;
+  top: -50px;
+  left: -50px;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.terms-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background-color: var(--accent); /* Soft purple */
+  border-radius: 50%;
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.3;
+  z-index: 1;
 }
 
 .terms-header h1 {
   text-align: center;
-  font-size: 32px;
-  color: #2c2c2c;
-  margin-bottom: 20px;
-}
-
-.terms-content {
-  line-height: 1.6;
+  font-size: 36px;
+  color: var(--primary);
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
 }
 
 h2 {
-  color: #ff847c; /* Peach */
+  color: var(--accent); /* Soft purple */
   font-size: 24px;
-  margin-top: 20px;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
 }
 
 p {
   font-size: 16px;
-  margin-bottom: 15px;
+  color: var(--text);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 a {
-  color: #ff847c; /* Peach */
+  color: var(--primary);
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
+  color: var(--secondary);
 }
 
-/* Footer */
+/* Footer with Image Section */
 .terms-footer {
   text-align: center;
   margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hover);
+  position: relative;
+  overflow: hidden;
+  padding: 60px 20px;
+  background-color: var(--primary); /* Deep purple */
+  color: white;
+  border-radius: 15px;
+}
+
+.terms-footer::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background-color: var(--highlight); /* Pink */
+  border-radius: 50%;
+  top: -50px;
+  left: -50px;
+  opacity: 0.3;
+}
+
+.terms-footer::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-color: var(--accent); /* Soft purple */
+  border-radius: 50%;
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.3;
 }
 
 .terms-footer p {
   font-size: 14px;
-  color: #2c2c2c;
+  color: white;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .back-link {
   font-size: 16px;
   font-weight: 500;
+  color: var(--highlight); /* Pink */
+  text-decoration: none;
+  position: relative;
+  z-index: 2;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  color: var(--accent); /* Soft purple */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .terms-wrapper {
+    padding: 20px;
+  }
+
+  .terms-wrapper::before,
+  .terms-wrapper::after {
+    display: none; /* Hide decorative shapes on small screens */
+  }
+
+  .terms-footer {
+    padding: 40px 20px;
+  }
+
+  .terms-footer::before,
+  .terms-footer::after {
+    display: none; /* Hide decorative shapes on small screens */
+  }
 }
