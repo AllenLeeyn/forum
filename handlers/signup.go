@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"forum/dbTools"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -46,7 +45,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add the user to the database
-	user := &dbTools.User{
+	user := &user{
 		TypeID: 1,
 		Name:   name,
 		Email:  email,

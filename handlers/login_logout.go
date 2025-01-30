@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"forum/dbTools"
 	"net/http"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -37,14 +35,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, e := db.SelectActiveSessionBy("user_id", user.ID)
+	s, e := db.SelectActiveSessionBy("user_id", user.ID)
 	if e == nil {
-		db.UpdateSession(&dbTools.Session{
-			IsActive:   false,
-			ExpireTime: time.Now(),
-			LastAccess: time.Now(),
-			ID:         session.ID,
-		})
+		expireSession(w, s.ID)
 	}
 	createSession(w, user)
 	http.Redirect(w, r, "./", http.StatusSeeOther)
