@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Forum</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/assets/static/home.css" />
+    <script src="/static/script/feedback.js" defer></script>
+    <script src="/static/script/home.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-content">
+        <div class="logo">
+          <img src="" alt="Logo" />
+        </div>
+        <div class="nav-actions">
+          <button class="new-post">New Post</button>
+         
+            
+          
+              <a href="/login">Login</a>
+              <a href="/signup">Sign Up</a>
+            
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Categories Sidebar -->
+      <div class="categories">
+        <h3>Categories</h3>
+        <ul>
+          <li><a href="/" class="{{if not .FilterBy}}active{{end}}">All</a></li>
+          {{if .SessionCookie}}
+          <li><a href="?filterBy=createdBy" class="{{if eq .FilterBy "createdBy"}}active{{end}}">My posts</a></li>
+          <li><a href="?filterBy=likedBy" class="{{if eq .FilterBy "likedBy"}}active{{end}}">Liked posts</a></li>
+          {{end}}
+          {{range $index, $cat := .Categories}}
+          <li><a href="?filterBy=category&id={{$index}}" class="{{if and (eq $.FilterBy "category") (eq $index $.Id)}}active{{end}}">{{$cat}}</a></li>
+          {{end}}
+        </ul>
+      </div>
+
+      <!-- Posts Feed -->
+      <div class="feed">
+        <section id="general">
+          <h2>Hello, {{.UserName}}.</h2>
+          
+          <!-- Post Block -->
+          {{range .Posts}}
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="post-meta">
+                <div class="post-author">{{.UserName}}</div>
+                <div class="post-time">{{.CreatedAt}}</div>
+              </div>
+            </div>
+            <div class="post-content">
+              <h3>
+                <a href="/post?id={{.ID}}">{{.Title}}</a>
+              </h3>
+              <p>{{.Content}}</p>
+            </div>
+            <div class="post-actions" data-id={{.ID}} data-state="{{.Rating}}" data-for="post">
+              <button class="action-button like-button" data-id={{.ID}} data-for="post">
+                <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
+              </button>
+              <button class="action-button dislike-button" data-id={{.ID}} data-for="post">
+                <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
+              </button>
+              <button class="action-button">
+                <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+              </button>
+              <p class="action-button">
+                <span>{{.CatNames}}</span>
+              </p>
+            </div>
+          </div>
+          {{else}}
+          <div class="post-card">
+            <h3 class="post-title">
+              No post found
+            </h3>
+          </div>
+          {{end}}
+        </section>
+      </div>
+    </div>
+
+    <script>
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+      }
+    </script>
+  </body>
+</html>
