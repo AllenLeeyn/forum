@@ -93,6 +93,21 @@ body {
   line-height: 1.6;
 }
 
+.image-content h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.image-content h3 a {
+  color: white;
+  text-decoration: none;
+}
+
+.image-content h3 a:hover {
+  color: var(--highlight);
+}
+
 /* Right Side - Signup Form */
 .form-section {
   flex: 1;
