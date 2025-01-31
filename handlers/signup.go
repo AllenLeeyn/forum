@@ -27,18 +27,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		ExecuteError(w, "json", e.Error(), http.StatusBadRequest)
 		return
 	}
-<<<<<<< HEAD
-	if user, _ := db.SelectUserByField("email", email); user != nil {
-		ExecuteError(w, "json", "Email is already in use", http.StatusBadRequest)
-		return
-	}
-	if user, _ := db.SelectUserByField("name", name); user != nil {
-		ExecuteError(w, "json", "Name is already taken", http.StatusBadRequest)
-		return
-	}
-=======
->>>>>>> refs/remotes/origin/homepage
-
 	passwdHash, err := bcrypt.GenerateFromPassword([]byte(passwd), 0)
 	if err != nil {
 		ExecuteError(w, "json", "Error creating user", http.StatusInternalServerError)

@@ -73,12 +73,6 @@ func Init(dbMain *dbTools.DBContainer) {
 	db = dbMain
 }
 
-func checkErr(err error) {
-	if err != nil {
-		log.Println(err)
-	}
-}
-
 /*----------- Execute func -----------*/
 
 // Custom execute template I wrote to both execute and check for error
