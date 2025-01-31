@@ -18,6 +18,14 @@ a:hover {
   transition: color 0.2s ease;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  margin-right: 10px;
+}
 
 .logo-text {
   font-size: 1.5rem;

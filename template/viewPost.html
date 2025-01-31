@@ -4,7 +4,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forum Topics</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <title>grit:hub</title>
     <link rel="stylesheet" href="/static/viewPost.css" />
     <link
       rel="stylesheet"
@@ -18,7 +19,6 @@
     {{template "header" .}}
 
     <div class="content">
-
       <div class="post-block">
         <h5>[{{.Post.UserName}}] {{.Post.CreatedAt}}</h5>
         <h3 class="post-title">
@@ -43,9 +43,7 @@
             <p class="icon-button">
             <span>{{.Post.CatNames}}</span>
             </p>
-            
           </div>
-
       </div>
 
       <div id="comment-form">
