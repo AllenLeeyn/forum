@@ -107,10 +107,7 @@
           </div>
           <div class="input-group">
             <h4>Select categories:</h4>
-            {{range $index, $cat := .Categories}}
-            <input type="checkbox" id="category{{$index}}" name="category" value="{{$index}}">
-            <label for="category{{$index}}">{{$cat}}</label><br>
-            {{end}}
+            {{range $index, $cat := .Categories}}<input type="checkbox" id="category{{$index}}" name="category" value="{{$index}}"><label for="category{{$index}}">{{$cat}}</label> {{end}}
           </div>
         </form>
       </div>

@@ -22,6 +22,10 @@
     color: var(--text);
   }
 
+  textarea {
+    resize: none;
+  }
+
   a {
     color: var(--primary);
     transition: color 0.2s ease;

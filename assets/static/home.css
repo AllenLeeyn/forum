@@ -25,6 +25,10 @@ body {
   color: var(--text);
 }
 
+textarea {
+  resize: none;
+}
+
 a {
   color: var(--primary);
   transition: color 0.2s ease;
@@ -34,8 +38,6 @@ a:hover {
   color: var(--accent);
   transition: color 0.2s ease;
 }
-
-
 
 /* Main Layout */
 .container {
