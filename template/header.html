@@ -2,19 +2,25 @@
 
 <header>
   <link rel="stylesheet" href="/static/toastMsg.css" />
+  <link rel="stylesheet" href="/static/header.css" />
   <div class="logo"> <a href="/">Forum</a></div>
-  <nav>
-    {{if .SessionCookie}}
-      <a href="/profile-page">Profile</a>
-      <a id="logout-btn">Logout</a>
-    {{else}}
-      <a href="/login">Login</a>
-    {{end}}
-    <!-- Dark mode toggle button -->
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-      <i class="fas fa-moon"></i>
-      <!-- Dark mode icon -->
-    </button>
+  <nav class="navbar">
+    <div class="nav-content">
+      <div class="logo">
+        <img src="" alt="Logo"/>
+        <a class="logo-text" href="/">grit:hub</a>
+      </div>
+      <div class="nav-actions">
+        <button class="new-post" id="new-post">New Post</button>
+          {{if .SessionCookie}}
+          <a href="/profile-page">Profile</a>
+          <a id="logout-btn">Log out</a>
+          {{else}}
+          <a href="/login">Log in</a>
+          <a href="/signup">Sign up</a>
+          {{end}}
+      </div>
+    </div>
   </nav>
 </header>
 

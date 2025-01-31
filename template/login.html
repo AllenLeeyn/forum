@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <link rel="stylesheet" href="/static/toastMsg.css" />
-    <link rel="stylesheet" type="text/css" href="/assets/static/login.css" />
+    <link rel="stylesheet" type="text/css" href="/static/login.css" />
     <script src="/static/script/login.js" defer></script>
     <script src="/static/script/header.js" defer></script>
   </head>
@@ -22,8 +22,9 @@
             Log in to your account to continue your journey with us. We're
             excited to show you what's new!
           </p>
-          <br />
-          <h3><a href="/home">Back to the home</a></h3>
+          <br>
+          <br>
+          <a href="/" class="back-link">Back to the home</a>
         </div>
       </div>
 
@@ -41,7 +42,7 @@
               <label>Password</label>
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit" id="submit">Login</button>
             <div class="signUp-link">
               <p>Don't have an account? <a href="/signup">Sign Up</a></p>
             </div>

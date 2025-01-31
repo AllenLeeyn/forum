@@ -38,8 +38,8 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogOut)
 	http.HandleFunc("/profile-page", handlers.ProfilePage)
 
-	http.HandleFunc("/post", handlers.Post)
-	http.HandleFunc("/start-thread", handlers.StartThread)
+	http.HandleFunc("/post", handlers.ViewPost)
+	http.HandleFunc("/new-post", handlers.NewPost)
 	http.HandleFunc("/add-comment", handlers.Comment)
 
 	http.HandleFunc("/feedback", handlers.Feedback)

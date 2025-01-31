@@ -3,7 +3,7 @@
     bottom: 20px; /* Position it at the bottom of the screen */
     left: 50%;
     transform: translateX(-50%);
-    background-color: #ff5e5b; /* Green background for success */
+    background-color: red; /* Green background for success */
     color: white;
     padding: 10px 20px;
     border-radius: 5px;

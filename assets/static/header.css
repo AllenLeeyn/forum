@@ -37,3 +37,10 @@ a {
 a .nav-item:hover {
   color: #1ed760;
 }
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}

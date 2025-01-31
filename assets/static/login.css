@@ -108,6 +108,13 @@ body {
   color: var(--highlight);
 }
 
+.back-link {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--highlight); /* Pink */
+  text-decoration: none;
+}
+
 /* Right Side - Signup Form */
 .form-section {
   flex: 1;

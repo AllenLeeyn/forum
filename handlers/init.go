@@ -128,6 +128,9 @@ func getCredentials(r *http.Request, isSignup bool) (string, string, string, err
 		return "", "", "", errors.New("password must be 8 characters or longer.\n" +
 			"Include at least a lower case character, an upper case character, a number and one of '@$!%*?&'")
 	}
+	if isSignup && (passwd != r.FormValue("confirm-password")) {
+		return "", "", "", errors.New("passwords do not match")
+	}
 	if isSignup && !validRegex(email, emailRegex) {
 		return "", "", "", errors.New("invalid email")
 	}

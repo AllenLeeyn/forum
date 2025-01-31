@@ -8,7 +8,7 @@ import (
 )
 
 // Page for viewing individual post
-func Post(w http.ResponseWriter, r *http.Request) {
+func ViewPost(w http.ResponseWriter, r *http.Request) {
 	// check session from cookie to get feedback data
 	sessionCookie, userID := checkSessionValidity(w, r)
 
@@ -31,14 +31,14 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		extendSession(w, sessionCookie)
-		ExecuteTmpl(w, "post.html", postpageData{sessionCookie, *post, comments})
+		ExecuteTmpl(w, "viewPost.html", postpageData{sessionCookie, *post, comments})
 	} else {
 		http.Error(w, "Error 405, Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 // Page for user to draft their post (if method == get), otherwise post it (if method == post)
-func StartThread(w http.ResponseWriter, r *http.Request) {
+func NewPost(w http.ResponseWriter, r *http.Request) {
 	// check if user is logged in using session id
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
@@ -48,7 +48,7 @@ func StartThread(w http.ResponseWriter, r *http.Request) {
 
 	// only allows page to display or accept request if user is logged in
 	if r.Method == http.MethodGet {
-		ExecuteTmpl(w, "start-thread.html", startThreadData{sessionCookie, db.Categories})
+		ExecuteTmpl(w, "newPost.html", startThreadData{sessionCookie, db.Categories})
 	} else if r.Method == http.MethodPost {
 		title, content, categoriesInt, err := GetData(w, r)
 		if err != nil {

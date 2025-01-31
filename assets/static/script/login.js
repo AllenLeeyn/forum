@@ -7,24 +7,22 @@ document.getElementById('submit').onclick = function () {
   const passwordField = document.querySelector("input[name='password']");
 
   // Validate username
-  if (usernameField.value.trim() === "") {
-    return showMessage("Username is required.");
-  } else if (usernameField.value.length > 25) {
-    return showMessage("Username must be less than 25 characters.");
-  } else if (!/^[\u0000-\u007F]+$/.test(usernameField.value)) {
-    return showMessage("Username must not contain non-ASCII characters.");
-  }
+    if (usernameField.value.trim() === "") {
+      return showMessage("Username is required.");
+    } else if (usernameField.value.length < 3) {
+      return showMessage("Invalid username");
+    } else if (usernameField.value.length > 16) {
+      return showMessage("Invalid username");
+    } else if (!/^[\u0000-\u007F]+$/.test(usernameField.value)) {
+      return showMessage("Invalid username");
+    }
 
   // Validate password
-  if (passwordField.value.trim() === "") {
-    return showMessage("Password is required.");
-  } else if (passwordField.value.length <= 6) {
-    return showMessage("Password must be longer than 6 characters.");
-  } else if (passwordField.value.length >= 20) {
-    return showMessage("Password must be less than 20 characters.");
-  } else if (passwordField.value.toLowerCase() === "password") {
-    return showMessage("Password cannot be 'password'.");
-  }
+    if (passwordField.value.trim() === "") {
+      return showMessage("Password is required.");
+    } else if (passwordField.value.length <= 7) {
+      return showMessage("Password must be at least 8 characters long.");
+    }
 
   fetch('/login',{
     method: 'POST',
