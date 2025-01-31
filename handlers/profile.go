@@ -29,6 +29,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 			Email:         user.Email,
 			Posts:         posts,
 			SessionCookie: sessionCookie,
+			Categories:    db.Categories,
 		}
 		extendSession(w, sessionCookie)
 		ExecuteTmpl(w, "profile.html", data)

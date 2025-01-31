@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Page</title>
-    <link rel="stylesheet" href="/static/profile.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link rel="stylesheet" href="/static/profile.css" />
     <script src="/static/script/feedback.js" defer></script>
   </head>
   <body>
@@ -81,6 +81,40 @@
           {{end}}
         </section>
       </div>
+
+    <div id="newPostModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="post-thread-form" action="/new-post" method="post">
+          <div class="input-group">
+            <input
+              type="text"
+              name="threadTitle"
+              placeholder="Post Title"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <textarea
+              name="threadContent"
+              placeholder="Write your thread content here..."
+              rows="10"
+              required
+            ></textarea>
+          </div>
+          <div class="input-group">
+            <button class="new-post" id="create-new-post" type="submit">Create Post</button>
+          </div>
+          <div class="input-group">
+            <h4>Select categories:</h4>
+            {{range $index, $cat := .Categories}}
+            <input type="checkbox" id="category{{$index}}" name="category" value="{{$index}}">
+            <label for="category{{$index}}">{{$cat}}</label><br>
+            {{end}}
+          </div>
+        </form>
+      </div>
+    </div>
     </div>
   </body>
 </html>

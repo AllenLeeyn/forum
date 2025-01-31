@@ -39,16 +39,13 @@ type postpageData struct {
 	SessionCookie *http.Cookie
 	Post          post
 	Comments      []comment
+	Categories    []string
 }
 
 type profilepageData struct {
 	Name          string
 	Email         string
 	Posts         []post
-	SessionCookie *http.Cookie
-}
-
-type startThreadData struct {
 	SessionCookie *http.Cookie
 	Categories    []string
 }
