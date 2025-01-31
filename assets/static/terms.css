@@ -20,6 +20,17 @@ body {
   min-height: 100vh;
 }
 
+a {
+  color: var(--primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent);
+  transition: color 0.2s ease;
+}
+
+
 .terms-wrapper {
   max-width: 900px;
   margin: 50px auto;

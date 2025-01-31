@@ -23,6 +23,17 @@ body {
   color: var(--text);
 }
 
+a {
+  color: var(--primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent);
+  transition: color 0.2s ease;
+}
+
+
 /* Navbar */
 .navbar {
   background: var(--card-background);

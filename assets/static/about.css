@@ -18,6 +18,17 @@ body {
   padding: 0;
 }
 
+a {
+  color: var(--primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent);
+  transition: color 0.2s ease;
+}
+
+
 .about-container {
   max-width: 1200px;
   margin: 20px auto 0;

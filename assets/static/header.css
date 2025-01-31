@@ -9,7 +9,14 @@ div #logo {
 a {
   text-decoration: none;
   font-family: monospace;
+  color: var(--primary);
 }
+
+a:hover {
+  color: var(--accent);
+  transition: color 0.2s ease;
+}
+
 
 .logo-text {
   font-size: 1.5rem;
