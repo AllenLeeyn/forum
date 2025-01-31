@@ -37,7 +37,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	posts, err := db.SelectPosts(filterBy, orderBy, id, userID)
 	if err != nil {
-		ExecuteError(w, "Tmpl", "Error getting posts: "+err.Error(), http.StatusInternalServerError)
+		ExecuteError(w, "Tmpl", "Error getting posts", http.StatusInternalServerError)
 	}
 	extendSession(w, sessionCookie)
 	ExecuteTmpl(w, "home.html",

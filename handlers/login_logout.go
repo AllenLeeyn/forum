@@ -30,7 +30,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// check that credentials are valid
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
-		ExecuteError(w, "json", "incorrect username and/or password", http.StatusBadRequest)
+		ExecuteError(w, "json", "Incorrect username and/or password", http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +45,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := r.Cookie("session-id")
 	if sessionCookie == nil {
-		ExecuteError(w, "json", "user not logged in", http.StatusBadRequest)
+		ExecuteError(w, "json", "You're not logged in", http.StatusBadRequest)
 	} else {
 		expireSession(w, sessionCookie.Value)
 	}

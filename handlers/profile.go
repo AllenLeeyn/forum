@@ -16,11 +16,11 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		posts, err := db.SelectPosts("createdBy", "", userID, userID)
 		if err != nil {
-			ExecuteError(w, "Tmpl", "Error getting user posts: "+err.Error(), http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting user posts", http.StatusInternalServerError)
 		}
 		user, err := db.SelectUserByField("id", userID)
 		if err != nil {
-			ExecuteError(w, "Tmpl", "Error getting user details: "+err.Error(), http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting user details", http.StatusInternalServerError)
 			return
 		}
 		//	Placeholder data

@@ -30,17 +30,17 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if user, _ := db.SelectUserByField("email", email); user != nil {
-		ExecuteError(w, "json", "email is already used", http.StatusBadRequest)
+		ExecuteError(w, "json", "Email is already in use", http.StatusBadRequest)
 		return
 	}
 	if user, _ := db.SelectUserByField("name", name); user != nil {
-		ExecuteError(w, "json", "name is already used", http.StatusBadRequest)
+		ExecuteError(w, "json", "Name is already taken", http.StatusBadRequest)
 		return
 	}
 
 	passwdHash, err := bcrypt.GenerateFromPassword([]byte(passwd), 0)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating user"+err.Error(), http.StatusInternalServerError)
+		ExecuteError(w, "json", "Error creating user", http.StatusInternalServerError)
 		return
 	}
 
@@ -53,7 +53,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 	user.ID, err = db.InsertUser(user)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating user"+err.Error(), http.StatusInternalServerError)
+		ExecuteError(w, "json", "Error creating user", http.StatusInternalServerError)
 		return
 	}
 
