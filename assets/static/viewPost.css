@@ -35,8 +35,40 @@
     color: var(--accent);
     transition: color 0.2s ease;
   }
+
   
-  
+.checkbox-group {
+  display: flex;
+  flex-flow: row;
+}
+
+.checkbox-item input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-item label {
+  margin-right: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--background);
+  color: var(--text);
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.checkbox-item label:hover {
+  background: #dcd0f8;
+  transition: all 0.2s ease;
+}
+
+.checkbox-item input[type="checkbox"]:checked + label {
+  background: var(--secondary);
+  color: var(--background);
+  transition: all 0.2s ease;
+}
+
+
   /* Main Content */
   .content {
     max-width: 1200px;
