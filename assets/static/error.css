@@ -1,0 +1,66 @@
+/* error.css */
+:root {
+    --primary: #441752; /* Deep purple */
+    --secondary: #8174a0; /* Muted lavender */
+    --accent: #a888b5; /* Soft purple */
+    --highlight: #efb6c8; /* Pink */
+    --background: #f8f9fa; /* Light gray background */
+    --card-background: #ffffff; /* White for cards */
+    --text: #2d3436; /* Dark gray for text */
+    --text-light: #636e72; /* Medium gray for secondary text */
+    --hover: #e8eaf6; /* Light purple for hover effects */
+  }
+  
+  body {
+    background: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .error-container {
+    text-align: center;
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .code {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+  
+  .msg {
+    font-size: 2rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+  }
+  
+  .home-button {
+    background: var(--primary);
+    color: var(--card-background);
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+  
+  .home-button:hover {
+    background: var(--secondary);
+  }

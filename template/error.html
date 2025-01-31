@@ -1,21 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Forum Topics</title>
-    <link rel="stylesheet" href="/static/home.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error Page</title>
+    <link rel="stylesheet" href="/assets/static/error.css" /> 
   </head>
+
   <body>
-    {{template "header"}}
-    <div>
-      <div class="err-code"></div>
-      <h5 class="err-msg">ERROR CODE: {{.Code}}</h5>
-      <h1 class="err-msg">{{.Message}}</h1>
+    <div class="error-container">
+      <div class="code">{{.Code}}</div>
+      <h1 class="msg">{{.Message}}</h1>
+      <p class="description">Oops! Something went wrong.</p>
+      <a href="/" class="home-button">Return to Home</a>
     </div>
   </body>
-</html>
+</html> 
