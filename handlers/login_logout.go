@@ -46,6 +46,7 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := r.Cookie("session-id")
 	if sessionCookie == nil {
 		ExecuteError(w, "json", "You're not logged in", http.StatusBadRequest)
+		return
 	} else {
 		expireSession(w, sessionCookie.Value)
 	}
