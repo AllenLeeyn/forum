@@ -150,6 +150,16 @@ a:hover {
   display: block;
 }
 
+.like-button.active-like {
+  color: green;
+  transition: color 0.3s ease;
+}
+
+.dislike-button.active-dislike {
+  color: red;
+  transition: color 0.3s ease;
+}
+
 /* Main Layout */
 .container {
   max-width: 1200px;

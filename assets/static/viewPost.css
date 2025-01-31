@@ -68,6 +68,15 @@
   transition: all 0.2s ease;
 }
 
+.like-button.active-like {
+  color: green;
+  transition: color 0.3s ease;
+}
+
+.dislike-button.active-dislike {
+  color: red;
+  transition: color 0.3s ease;
+}
 
   /* Main Content */
   .content {
@@ -205,6 +214,22 @@
   
   .comment-actions .icon-button i {
     margin-right: 0.5rem;
+  }
+
+  .action-button {
+    display: inline;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    color: var(--primary);
   }
   
   @media (max-width: 1024px) {

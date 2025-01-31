@@ -70,6 +70,25 @@ a:hover {
   transition: all 0.2s ease;
 }
 
+.like-button.active-like {
+  color: green;
+  transition: color 0.3s ease;
+}
+
+.dislike-button.active-dislike {
+  color: red;
+  transition: color 0.3s ease;
+}
+
+.categories ul {
+  margin: 10px;
+}
+
+.categories li {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
 /* Main Layout */
 .container {
   max-width: 1200px;

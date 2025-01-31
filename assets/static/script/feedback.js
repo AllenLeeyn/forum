@@ -50,6 +50,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }
       }
 
+      // Update UI before sending the request
+      postElement.setAttribute('data-state', newState);
+      likeCountSpan.textContent = newLikeCount;
+      dislikeCountSpan.textContent = newDislikeCount;
+
+      // Toggle active classes immediately
+      likeButton.classList.toggle("active-like", newState === 1);
+      dislikeButton.classList.toggle("active-dislike", newState === -1);
+
       // Create the data to send in the POST request
       const feedback = {
         tgt: forType,
