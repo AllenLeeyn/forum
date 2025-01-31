@@ -21,6 +21,17 @@
     background: var(--background);
     color: var(--text);
   }
+
+  a {
+    color: var(--primary);
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    color: var(--accent);
+    transition: color 0.2s ease;
+  }
+  
   
   /* Main Content */
   .content {

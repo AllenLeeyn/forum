@@ -21,6 +21,17 @@
     height: 100vh;
     margin: 0;
   }
+
+  a {
+    color: var(--primary);
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    color: var(--accent);
+    transition: color 0.2s ease;
+  }
+  
   
   .error-container {
     text-align: center; 
