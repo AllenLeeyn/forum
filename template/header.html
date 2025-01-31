@@ -14,7 +14,7 @@
         <button class="new-post" id="new-post">New Post</button>
           {{if .SessionCookie}}
           <a href="/profile-page">Profile</a>
-          <a id="logout-btn">Log out</a>
+          <a id="logout-btn" href="javascript:void(0);" class="logout-link">Log out</a>
           {{else}}
           <a href="/login">Log in</a>
           <a href="/signup">Sign up</a>
