@@ -1,4 +1,4 @@
-document.getElementById('submit').onclick = function () {
+document.getElementById('submit').onclick = function (event) {
     event.preventDefault();
     const form = document.getElementById('form');
     const formData = new FormData(form);

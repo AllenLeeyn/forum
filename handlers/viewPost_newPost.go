@@ -49,38 +49,40 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// only allows page to display or accept request if user is logged in
 	if r.Method == http.MethodGet {
-		ExecuteTmpl(w, "newPost.html", startThreadData{sessionCookie, db.Categories})
-	} else if r.Method == http.MethodPost {
-		title, content, categoriesInt, err := GetData(w, r)
-		if err != nil {
-			ExecuteError(w, "json", "Error getting form data", http.StatusBadRequest)
-			return
-		}
-		titleIsValid, titleError := CheckPostValidity(title, "postTitle")
-		contentIsValid, contentError := CheckPostValidity(content, "postContent")
-		if !(titleIsValid && contentIsValid) {
-			ExecuteError(w, "json", "Error: "+titleError+contentError, http.StatusBadRequest)
-			return
-		}
-		post := dbTools.Post{
-			UserID:     userID,
-			Title:      title,
-			Content:    content,
-			Categories: categoriesInt,
-		}
-		postNum, err := db.InsertPost(post)
-		if err != nil {
-			ExecuteError(w, "json", "Error creating post", http.StatusInternalServerError)
-		}
-		extendSession(w, sessionCookie)
-		postID := "/post?id=" + strconv.Itoa(postNum)
-		http.Redirect(w, r, postID, http.StatusSeeOther)
-
-	} else {
+		w.WriteHeader(http.StatusOK)
+		return
+	} else if r.Method != http.MethodPost {
 		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
+
+	title, content, categoriesInt, err := GetData(w, r)
+	if err != nil {
+		ExecuteError(w, "json", "Error getting form data", http.StatusBadRequest)
+		return
+	}
+	titleIsValid, titleError := CheckPostValidity(title, "postTitle")
+	contentIsValid, contentError := CheckPostValidity(content, "postContent")
+	if !(titleIsValid && contentIsValid) {
+		ExecuteError(w, "json", "Error: "+titleError+contentError, http.StatusBadRequest)
+		return
+	}
+	post := dbTools.Post{
+		UserID:     userID,
+		Title:      title,
+		Content:    content,
+		Categories: categoriesInt,
+	}
+	postNum, err := db.InsertPost(post)
+	if err != nil {
+		ExecuteError(w, "json", "Error creating post", http.StatusInternalServerError)
+		return
+	}
+	extendSession(w, sessionCookie)
+	postID := "/post?id=" + strconv.Itoa(postNum)
+	http.Redirect(w, r, postID, http.StatusSeeOther)
+
 }
 
 /*----------- helper functions for posts -----------*/
@@ -106,7 +108,7 @@ func CheckPostValidity(input string, dataType string) (bool, string) {
 
 // Gets and parses data from front end post
 func GetData(w http.ResponseWriter, r *http.Request) (title string, content string, categoriesInt []int, err error) {
-	err = r.ParseForm()
+	err = r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		return "", "", nil, fmt.Errorf("error parsing form data")
 	}
