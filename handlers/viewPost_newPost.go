@@ -13,16 +13,15 @@ func ViewPost(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, userID := checkSessionValidity(w, r)
 
 	if r.Method == http.MethodGet {
-
 		idStr := r.URL.Query().Get("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			ExecuteError(w, "Tmpl", "Error: "+err.Error(), http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error: "+err.Error(), http.StatusBadRequest)
 			return
 		}
 		post, err := db.SelectPost(id, userID)
 		if err != nil || post == nil {
-			ExecuteError(w, "Tmpl", "Error getting post: nothing found", http.StatusInternalServerError)
+			ExecuteError(w, "Tmpl", "Error getting post or nothing found", http.StatusBadRequest)
 			return
 		}
 		comments, err := db.SelectComments(id, userID, "oldest")
@@ -42,7 +41,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	// check if user is logged in using session id
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
-		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
+		ExecuteError(w, "json", "Please login and try again", http.StatusBadRequest)
 		return
 	}
 
@@ -52,13 +51,13 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		title, content, categoriesInt, err := GetData(w, r)
 		if err != nil {
-			ExecuteError(w, "json", "Error reading form:"+err.Error(), 400)
+			ExecuteError(w, "json", "Error reading form:"+err.Error(), http.StatusBadRequest)
 			return
 		}
 		titleIsValid, titleError := CheckPostValidity(title, "postTitle")
 		contentIsValid, contentError := CheckPostValidity(content, "postContent")
 		if !(titleIsValid && contentIsValid) {
-			ExecuteError(w, "json", "Error :"+titleError+contentError, 400)
+			ExecuteError(w, "json", "Error :"+titleError+contentError, http.StatusBadRequest)
 			return
 		}
 		post := dbTools.Post{

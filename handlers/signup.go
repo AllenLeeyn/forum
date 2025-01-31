@@ -26,15 +26,15 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 	// check that credentials are valid
 	if e != nil {
-		ExecuteError(w, "json", e.Error(), 400)
+		ExecuteError(w, "json", e.Error(), http.StatusBadRequest)
 		return
 	}
 	if user, _ := db.SelectUserByField("email", email); user != nil {
-		ExecuteError(w, "json", "email is already used", 400)
+		ExecuteError(w, "json", "email is already used", http.StatusBadRequest)
 		return
 	}
 	if user, _ := db.SelectUserByField("name", name); user != nil {
-		ExecuteError(w, "json", "name is already used", 400)
+		ExecuteError(w, "json", "name is already used", http.StatusBadRequest)
 		return
 	}
 
@@ -53,7 +53,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 	user.ID, err = db.InsertUser(user)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating user"+err.Error(), 400)
+		ExecuteError(w, "json", "Error creating user"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

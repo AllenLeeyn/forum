@@ -9,7 +9,7 @@ import (
 func Login(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := checkSessionValidity(w, r)
 	if sessionCookie != nil { // logged in user trying to login again?
-		http.Redirect(w, r, "/", http.StatusFound)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -22,16 +22,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username, _, passwd, e := getCredentials(r, false)
-
 	if e != nil {
-		ExecuteError(w, "json", e.Error(), 400)
+		ExecuteError(w, "json", e.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// check that credentials are valid
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
-		ExecuteError(w, "json", "incorrect username and/or password", 400)
+		ExecuteError(w, "json", "incorrect username and/or password", http.StatusBadRequest)
 		return
 	}
 
@@ -46,9 +45,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := r.Cookie("session-id")
 	if sessionCookie == nil {
-		ExecuteError(w, "json", "User not logged in", 400)
+		ExecuteError(w, "json", "user not logged in", http.StatusBadRequest)
 	} else {
 		expireSession(w, sessionCookie.Value)
 	}
-	http.Redirect(w, r, "./login", http.StatusSeeOther)
+	http.Redirect(w, r, "./", http.StatusSeeOther)
 }

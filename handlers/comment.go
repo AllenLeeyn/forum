@@ -10,7 +10,7 @@ import (
 func Comment(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
-		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
+		ExecuteError(w, "json", "Please login and try again", http.StatusUnauthorized)
 		return
 	}
 	if r.Method != http.MethodPost {
@@ -21,14 +21,22 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	s := struct {
 		Comment string
 	}{}
-	b, e := io.ReadAll(r.Body)
-	checkErr(e) // need to handle error here?
-	e = json.Unmarshal(b, &s)
-	checkErr(e) // need to handle error here?
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		ExecuteError(w, "json", "Error reading body: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err = json.Unmarshal(body, &s); err != nil {
+		ExecuteError(w, "json", "Error reading json: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	postId := r.URL.Query().Get("postId")
 	pId, err := strconv.Atoi(postId)
-	checkErr(err) // need to handle error here?
+	if err != nil {
+		ExecuteError(w, "Tmpl", "Error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	post, err := db.SelectPost(pId, userID)
 	if err != nil || post == nil {

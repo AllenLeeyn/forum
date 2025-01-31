@@ -9,7 +9,7 @@ import (
 func Feedback(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 { // likely user not login
-		ExecuteError(w, "json", "Please login and try again", http.StatusNotFound)
+		ExecuteError(w, "json", "Please login and try again", http.StatusUnauthorized)
 		return
 	}
 	if r.Method != http.MethodPost {
@@ -35,8 +35,7 @@ func Feedback(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ExecuteError(w, "json", "Error getting feedback: "+err.Error(), http.StatusInternalServerError)
 		return
-	}
-	if fb == nil {
+	} else if fb == nil {
 		fb = &feedback{
 			UserID:   userID,
 			ParentID: userFeedback.ParentID,
