@@ -134,6 +134,12 @@ func getCredentials(r *http.Request, isSignup bool) (string, string, string, err
 	if isSignup && !validRegex(email, emailRegex) {
 		return "", "", "", errors.New("invalid email")
 	}
+	if user, _ := db.SelectUserByField("email", email); isSignup && user != nil {
+		return "", "", "", errors.New("email is already used")
+	}
+	if user, _ := db.SelectUserByField("name", username); isSignup && user != nil {
+		return "", "", "", errors.New("name is already used")
+	}
 	return username, email, passwd, nil
 }
 

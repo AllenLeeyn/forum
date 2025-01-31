@@ -8,7 +8,7 @@ import (
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, _ := checkSessionValidity(w, r)
-	if sessionCookie != nil { // logged in user trying to login again?
+	if sessionCookie != nil { // logged in user trying to login again
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -27,7 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check that credentials are valid
+	// check that user exists
 	user, _ := db.SelectUserByField("name", username)
 	if user == nil || bcrypt.CompareHashAndPassword(user.PwHash, []byte(passwd)) != nil {
 		ExecuteError(w, "json", "Incorrect username and/or password", http.StatusBadRequest)

@@ -14,7 +14,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		//	Going to the login page
 		ExecuteTmpl(w, "signup.html", nil)
 		return
 	} else if r.Method != http.MethodPost {
@@ -22,13 +21,13 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name, email, passwd, e := getCredentials(r, true)
-
 	// check that credentials are valid
+	name, email, passwd, e := getCredentials(r, true)
 	if e != nil {
 		ExecuteError(w, "json", e.Error(), http.StatusBadRequest)
 		return
 	}
+<<<<<<< HEAD
 	if user, _ := db.SelectUserByField("email", email); user != nil {
 		ExecuteError(w, "json", "Email is already in use", http.StatusBadRequest)
 		return
@@ -37,6 +36,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		ExecuteError(w, "json", "Name is already taken", http.StatusBadRequest)
 		return
 	}
+=======
+>>>>>>> refs/remotes/origin/homepage
 
 	passwdHash, err := bcrypt.GenerateFromPassword([]byte(passwd), 0)
 	if err != nil {
