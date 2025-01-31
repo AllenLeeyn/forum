@@ -60,9 +60,12 @@
               <button class="action-button dislike-button" data-id={{.ID}} data-for="post">
                 <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
               </button>
-              <button class="action-button">
-                <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
-              </button>
+              <form action="/post?id={{.ID}}" method="GET">
+                <input type="hidden" name="id" value="{{.ID}}" />
+                <button type="submit" class="action-button">
+                  <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+                </button>
+              </form>
               <p class="action-button">
                 <span>{{.CatNames}}</span>
               </p>
