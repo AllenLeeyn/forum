@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,33 +13,41 @@
     <script src="/static/script/feedback.js" defer></script>
     <script src="/static/script/post.js" defer></script>
   </head>
+
   <body>
     {{template "header" .}}
 
     <div class="content">
+
       <div class="post-block">
-      <h5>[{{.Post.UserName}}] {{.Post.CreatedAt}}</h5>
-      <h3 class="post-title">
+        <h5>[{{.Post.UserName}}] {{.Post.CreatedAt}}</h5>
+        <h3 class="post-title">
         {{.Post.Title}}
-      </h3>
-      <pre class="post-body">{{.Post.Content}}</pre>
+        </h3>
+        <pre class="post-body">{{.Post.Content}}</pre>
 
-      <div class="post-actions" data-id={{.Post.ID}} data-state="{{.Post.Rating}}" data-for="post">
-        <button class="icon-button like-button" data-id={{.Post.ID}} data-for="post">
-          <i class="fas fa-thumbs-up"></i> <span>{{.Post.LikeCount}}</span>
-        </button>
-        <button class="icon-button dislike-button" data-id={{.Post.ID}} data-for="post">
-          <i class="fas fa-thumbs-down"></i> <span>{{.Post.DislikeCount}}</span>
-        </button>
-        <button class="icon-button">
-          <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
-        </button>
-        <p class="icon-button">
-          <span>{{.Post.CatNames}}</span>
-        </p>
+          <div class="post-actions" data-id={{.Post.ID}} data-state="{{.Post.Rating}}" data-for="post">
+
+            <button class="icon-button like-button" data-id={{.Post.ID}} data-for="post">
+            <i class="fas fa-thumbs-up"></i> <span>{{.Post.LikeCount}}</span>
+            </button>
+
+            <button class="icon-button dislike-button" data-id={{.Post.ID}} data-for="post">
+            <i class="fas fa-thumbs-down"></i> <span>{{.Post.DislikeCount}}</span>
+            </button>
+
+            <button class="icon-button">
+            <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
+            </button>
+
+            <p class="icon-button">
+            <span>{{.Post.CatNames}}</span>
+            </p>
+            
+          </div>
+
       </div>
 
-      </div>
       <div id="comment-form">
         <textarea id="comment-input" placeholder="Write your comment here..." rows="3"></textarea>
         <button id="submit-comment">Post Comment</button>
@@ -60,7 +69,6 @@
       </div>
       {{end}}
       </div>
-    </div>
   </body>
 
   <script>

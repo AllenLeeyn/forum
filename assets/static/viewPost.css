@@ -74,6 +74,7 @@
   
   #comment-form {
     margin-top: 2rem;
+    margin-bottom: 20px;
     background: var(--card-background);
     padding: 1rem;
     border-radius: 8px;
