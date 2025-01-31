@@ -27,8 +27,11 @@
       <!-- Posts Feed -->
       <div class="feed">
         <section id="general">
+          {{if .Posts}}
           <h2>Your Posts</h2>
-
+          {{else}}
+          <h2>You haven't posted anything yet :(</h2>
+          {{end}}
           {{range .Posts}}
           <div class="post-card">
             <div class="post-header">
