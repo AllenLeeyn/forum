@@ -1,0 +1,25 @@
+This text file includes all **current** results when it comes to passing audit questions
+
+The results might've changed if this hasn't been updated recently.
+
+Passing: 29
+
+Failing:
+Does the project have Dockerfiles?
+Does all images build as above?
+Is the docker containers running as above?
+Does the project present no unused object?
+
+?:
+Does it present the comment/post on both browsers?
+Were you able to create a post?
+Were you forbidden from creating the empty post?
+Were you able to choose several categories for that post?
+Were you able to choose a category for that post?
+Enter the forum as a registered user and try seeing all of your created posts.
+
+
+Concerns:
+
+When no posts maybe profile should say that you have none
+Log out doesn't seem clickable

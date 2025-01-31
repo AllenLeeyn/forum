@@ -92,6 +92,7 @@ func ExecuteTmpl(w http.ResponseWriter, name string, data interface{}) {
 // Execute error page if possible, otherwise use inbuilt http error
 func ExecuteError(w http.ResponseWriter, errtype, msg string, code int) {
 	errorData := ErrorData{errtype, msg, code}
+	w.WriteHeader(code)
 	if errorData.Type == "Tmpl" {
 		err := tmpl.ExecuteTemplate(w, "error.html", errorData)
 		if err != nil {
@@ -100,7 +101,6 @@ func ExecuteError(w http.ResponseWriter, errtype, msg string, code int) {
 		}
 		return
 	}
-	w.WriteHeader(errorData.Code)
 	type errorJson struct {
 		Message string `json:"message"`
 	}
