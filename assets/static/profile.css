@@ -69,6 +69,22 @@ a:hover {
   transition: all 0.2s ease;
 }
 
+.feed h2 {
+  margin-bottom: 30px;
+}
+
+.info h3 {
+  margin-bottom: 10px;
+}
+
+.info ul {
+  margin: 5px;
+  color: var(--primary);
+  font-family: monospace;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
 
 /* Navbar */
 .navbar {

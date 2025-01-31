@@ -89,6 +89,10 @@ a:hover {
   font-size: 15px;
 }
 
+.feed h2 {
+  margin-bottom: 30px;
+}
+
 /* Main Layout */
 .container {
   max-width: 1200px;
