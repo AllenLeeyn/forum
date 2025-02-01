@@ -51,7 +51,7 @@ a:hover {
 .checkbox-item label {
   margin-right: 10px;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 50%;
   cursor: pointer;
   background: var(--background);
   color: var(--text);
@@ -85,7 +85,7 @@ a:hover {
 }
 
 .categories li {
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   font-size: 15px;
 }
 
@@ -115,8 +115,7 @@ a:hover {
 .category-item {
   display: flex;
   align-items: center;
-  padding: 0.8rem 1rem;
-  margin-bottom: 0.5rem;
+  padding: 5px;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
@@ -128,10 +127,10 @@ a:hover {
   color: var(--card-background);
 }
 
-.category-item i {
-  margin-right: 1rem;
-  font-size: 1.2rem;
-  color: var(--primary);
+.category-item.active {
+  background: var(--primary);
+  color: white;
+  font-weight: bold;
 }
 
 /* Posts Feed */
@@ -233,9 +232,5 @@ a:hover {
 @media (max-width: 1024px) {
   .container {
     grid-template-columns: 1fr;
-  }
-  .categories,
-  .trending {
-    display: none;
   }
 }
