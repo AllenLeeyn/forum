@@ -66,42 +66,6 @@
       </div>
       {{end}}
 
-    <div id="newPostModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <form id="post-thread-form" action="/new-post" method="post">
-          <div class="input-group">
-            <input
-              type="text"
-              name="threadTitle"
-              placeholder="Post Title"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <textarea
-              name="threadContent"
-              placeholder="Write your thread content here..."
-              rows="10"
-              required
-            ></textarea>
-          </div>
-          <div class="input-group">
-            <button class="new-post" id="create-new-post" type="submit">Create Post</button>
-          </div>
-          <div class="input-group">
-            <h4>Select categories:</h4>
-            <div class="checkbox-group">
-              {{range $index, $cat := .Categories}}
-                <div class="checkbox-item">
-                  <input type="checkbox" id="category{{$index}}" name="category" value="{{$index}}">
-                  <label for="category{{$index}}">{{$cat}}</label>
-                </div>
-              {{end}}
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+      {{template "newPostModal" .}}
   </body>
 </html>
