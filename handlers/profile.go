@@ -23,7 +23,6 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 			ExecuteError(w, "Tmpl", "Error getting user details", http.StatusInternalServerError)
 			return
 		}
-		//	Placeholder data
 		data := profilepageData{
 			Name:          user.Name,
 			Email:         user.Email,

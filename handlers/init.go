@@ -43,6 +43,8 @@ type postpageData struct {
 }
 
 type profilepageData struct {
+	ProfileID     int
+	ViewerID      int
 	Name          string
 	Email         string
 	Posts         []post

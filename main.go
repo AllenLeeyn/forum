@@ -39,6 +39,7 @@ func main() {
 	http.HandleFunc("/profile-page", handlers.ProfilePage)
 
 	http.HandleFunc("/post", handlers.ViewPost)
+	http.HandleFunc("/profile", handlers.ViewProfilePage)
 	http.HandleFunc("/new-post", handlers.NewPost)
 	http.HandleFunc("/add-comment", handlers.Comment)
 

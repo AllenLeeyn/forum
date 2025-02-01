@@ -20,16 +20,26 @@
       <div class="info">
         <h3>Profile</h3>
         <ul><b>Name:</b> {{.Name}}</ul>
-        <ul><b>Email:</b> {{.Email}}</ul>
+        {{if .Email}}
+          <ul><b>Email:</b> {{.Email}}</ul>
+        {{end}}
       </div>
 
       <!-- Posts Feed -->
       <div class="feed">
         <section id="general">
-          {{if .Posts}}
-          <h2>Your Posts</h2>
+          {{if eq .ProfileID .ViewerID}}
+            {{if .Posts}}
+              <h2>Your Posts</h2>
+            {{else}}
+              <h2>You haven't posted anything yet :(</h2>
+            {{end}}
           {{else}}
-          <h2>You haven't posted anything yet :(</h2>
+            {{if .Posts}}
+              <h2>{{.Name}}'s Posts</h2>
+            {{else}}
+              <h2>{{.Name}} hasn't posted anything yet :(</h2>
+            {{end}}
           {{end}}
           {{range .Posts}}
           <div class="post-card">
