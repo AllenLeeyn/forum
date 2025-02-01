@@ -34,6 +34,7 @@ type Post struct {
 	Title        string
 	Content      string
 	CreatedAt    time.Time
+	TimeAgo      string
 	Categories   []int
 	CatNames     string
 	Rating       int
@@ -49,6 +50,7 @@ type Comment struct {
 	LikeCount    int
 	DislikeCount int
 	CreatedAt    time.Time
+	TimeAgo      string
 	Rating       int
 }
 

@@ -19,30 +19,39 @@
     {{template "header" .}}
 
     <div class="content">
-      <div class="post-block">
-        <h5>[{{.Post.UserName}}] {{.Post.CreatedAt}}</h5>
-        <h3 class="post-title">
-        {{.Post.Title}}
-        </h3>
-        <pre class="post-body">{{.Post.Content}}</pre>
-
-          <div class="post-actions" data-id={{.Post.ID}} data-state="{{.Post.Rating}}" data-for="post">
-
-              <button class="icon-button like-button" data-id={{.Post.ID}} data-for="post">
-                <i class="fas fa-thumbs-up"></i> <span>{{.Post.LikeCount}}</span>
-              </button>
-              <button class="icon-button dislike-button" data-id={{.Post.ID}} data-for="post">
-                <i class="fas fa-thumbs-down"></i> <span>{{.Post.DislikeCount}}</span>
-              </button>
-
-            <button class="icon-button">
-            <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
-            </button>
-
-            <p class="icon-button">
-            <span>{{.Post.CatNames}}</span>
-            </p>
+      <div class="post-card">
+        <div class="post-header">
+          <div class="post-avatar">
+            <i class="fas fa-user"></i>
           </div>
+          <div class="post-meta">
+            <a href="/profile?id={{.Post.UserID}}" class="post-author">{{.Post.UserName}}</a>
+            <div class="post-time">{{.Post.TimeAgo}}</div>
+          </div>
+        </div>
+        <div class="post-content">
+          <h3>
+            <a href="/post?id={{.Post.ID}}">{{.Post.Title}}</a>
+          </h3>
+          <p>{{.Post.Content}}</p>
+        </div>
+        <div class="post-actions" data-id={{.Post.ID}} data-state="{{.Post.Rating}}" data-for="post">
+          <button class="icon-button like-button" data-id={{.Post.ID}} data-for="post">
+            <i class="fas fa-thumbs-up"></i> <span>{{.Post.LikeCount}}</span>
+          </button>
+          <button class="icon-button dislike-button" data-id={{.Post.ID}} data-for="post">
+            <i class="fas fa-thumbs-down"></i> <span>{{.Post.DislikeCount}}</span>
+          </button>
+          <form action="/post?id={{.Post.ID}}" method="GET">
+            <input type="hidden" name="id" value="{{.Post.ID}}" />
+            <button type="submit" class="icon-button">
+              <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
+            </button>
+          </form>
+          <p class="action-button">
+            <span>{{.Post.CatNames}}</span>
+          </p>
+        </div>
       </div>
 
       <div id="comment-form">
@@ -51,10 +60,19 @@
       </div>
 
       {{range .Comments}}
-      <div class="post-block">
-        <h5>[{{.UserName}}] {{.CreatedAt}}</h5>
-        <pre class="post-body">{{.Content}}</pre>
-        
+      <div class="post-card">
+        <div class="post-header">
+          <div class="post-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="post-meta">
+            <a href="/profile?id={{.UserID}}" class="post-author">{{.UserName}}</a>
+            <div class="post-time">{{.TimeAgo}}</div>
+          </div>
+        </div>
+        <div class="post-content">
+          <pre class="comment-body">{{.Content}}</pre>
+        </div>
         <div class="post-actions" data-id={{.ID}} data-state="{{.Rating}}" data-for="comment">
           <button class="icon-button like-button" data-id={{.ID}} data-for="comment">
             <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>

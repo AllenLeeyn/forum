@@ -3,6 +3,7 @@ package dbTools
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -73,6 +74,32 @@ func (db *DBContainer) isValidCategories(categories []int) error {
 		}
 	}
 	return nil
+}
+
+func getTimeAgo(createdAt time.Time) string {
+	timeDiff := time.Since(createdAt)
+
+	day := time.Hour * 24
+	week := day * 7
+	month := day * 30
+	year := day * 365
+
+	switch {
+	case timeDiff < time.Minute:
+		return "A few moments ago"
+	case timeDiff < time.Hour:
+		return fmt.Sprintf("%d minute(s) ago", int(timeDiff/time.Minute))
+	case timeDiff < day:
+		return fmt.Sprintf("%d hour(s) ago", int(timeDiff/time.Hour))
+	case timeDiff < week:
+		return fmt.Sprintf("%d day(s) ago", int(timeDiff/day))
+	case timeDiff < month:
+		return fmt.Sprintf("%d week(s) ago", int(timeDiff/week))
+	case timeDiff < year:
+		return fmt.Sprintf("%d month(s) ago", int(timeDiff/month))
+	default:
+		return fmt.Sprintf("%d year(s) ago", int(timeDiff/year))
+	}
 }
 
 // db.deleteAllusers() for testing purposes

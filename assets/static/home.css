@@ -70,16 +70,6 @@ a:hover {
   transition: all 0.2s ease;
 }
 
-.like-button.active-like {
-  color: green;
-  transition: color 0.3s ease;
-}
-
-.dislike-button.active-dislike {
-  color: red;
-  transition: color 0.3s ease;
-}
-
 .categories ul {
   margin: 10px;
 }
@@ -196,14 +186,13 @@ a:hover {
 .post-actions {
   display: flex;
   gap: 2rem;
-  padding-top: 1rem;
+  padding-top: 0.6rem;
   border-top: 1px solid var(--background);
 }
   
 .icon-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   background: none;
   border: none;
   color: var(--text-light);

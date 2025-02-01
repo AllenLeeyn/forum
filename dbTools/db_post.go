@@ -107,6 +107,7 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id, userID int) ([]
 		} else {
 			p.Rating = 0
 		}
+		p.TimeAgo = getTimeAgo(p.CreatedAt)
 		posts = append(posts, p)
 	}
 	if err := rows.Err(); err != nil {
@@ -150,6 +151,7 @@ func (db *DBContainer) SelectPost(id, userID int) (*Post, error) {
 	} else {
 		p.Rating = 0
 	}
+	p.TimeAgo = getTimeAgo(p.CreatedAt)
 	return &p, err
 }
 
