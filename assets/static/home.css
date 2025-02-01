@@ -51,7 +51,7 @@ a:hover {
 .checkbox-item label {
   margin-right: 10px;
   padding: 0.5rem 1rem;
-  border-radius: 50%;
+  border-radius: 8px;
   cursor: pointer;
   background: var(--background);
   color: var(--text);
