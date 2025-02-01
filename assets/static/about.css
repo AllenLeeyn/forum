@@ -57,7 +57,6 @@ a:hover {
   position: absolute;
   width: 400px;
   height: 400px;
-  background: linear-gradient(45deg, var(--highlight), var(--secondary));
   border-radius: 50%;
   bottom: -100px;
   right: -100px;
@@ -108,8 +107,8 @@ a:hover {
 }
 
 .team-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: inline-flex;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 0.8fr));
   gap: 2rem;
   position: relative;
   z-index: 2;
@@ -198,12 +197,28 @@ a:hover {
   color: var(--accent);
 }
 
-@media (max-width: 768px) {
+ul {
+  list-style-type: none; padding: 0; margin: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+
+@media (max-width: 1320px) {
   .about-container {
+    text-align: center;
     padding: 1rem;
   }
 
+  .app-description {
+    max-width: 50vh;
+    margin: 0 auto; /* This ensures it centers horizontally */
+  }
+
   .team-section {
+    display: inline-grid;
     grid-template-columns: 1fr;
   }
 

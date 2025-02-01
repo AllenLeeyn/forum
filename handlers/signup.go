@@ -56,5 +56,6 @@ func Terms(w http.ResponseWriter, r *http.Request) {
 		ExecuteTmpl(w, "terms.html", nil)
 	} else {
 		ExecuteError(w, "Tmpl", "Invalid User Method", http.StatusMethodNotAllowed)
+		return
 	}
 }

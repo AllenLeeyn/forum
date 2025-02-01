@@ -78,7 +78,7 @@ func Init(dbMain *dbTools.DBContainer) {
 func ExecuteTmpl(w http.ResponseWriter, name string, data interface{}) {
 	err := tmpl.ExecuteTemplate(w, name, data)
 	if err != nil {
-		log.Fatalf("Error executing template: %v", err)
+		ExecuteError(w, "Tmpl", "Error executing page template", http.StatusInternalServerError)
 	}
 }
 

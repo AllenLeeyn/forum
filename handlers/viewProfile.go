@@ -6,7 +6,7 @@ import (
 )
 
 // Profile page
-func ViewProfilePage(w http.ResponseWriter, r *http.Request) {
+func ViewProfile(w http.ResponseWriter, r *http.Request) {
 	var viewer int
 	var data profilepageData
 	if r.Method == http.MethodGet {
@@ -33,6 +33,7 @@ func ViewProfilePage(w http.ResponseWriter, r *http.Request) {
 		posts, err := db.SelectPosts("createdBy", "", id, viewer)
 		if err != nil {
 			ExecuteError(w, "Tmpl", "Error getting user posts", http.StatusInternalServerError)
+			return
 		}
 		if viewer == id {
 			data = profilepageData{
@@ -56,5 +57,6 @@ func ViewProfilePage(w http.ResponseWriter, r *http.Request) {
 		ExecuteTmpl(w, "profile.html", data)
 	} else {
 		ExecuteError(w, "Tmpl", "Invalid User Method", http.StatusMethodNotAllowed)
+		return
 	}
 }
