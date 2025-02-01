@@ -112,11 +112,14 @@
   }
   
   .icon-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     background: none;
     border: none;
-    cursor: pointer;
     color: var(--text-light);
-    font-size: 1.1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
     transition: color 0.3s ease;
   }
   
@@ -128,6 +131,14 @@
     margin-right: 0.5rem;
   }
   
+  .post-actions[data-state="1"] .icon-button i.fas.fa-thumbs-up {
+    color: green;
+  }
+  
+  .post-actions[data-state="-1"] .icon-button i.fas.fa-thumbs-down {
+    color: red;
+  }
+
   #comment-form {
     margin-top: 2rem;
     margin-bottom: 20px;

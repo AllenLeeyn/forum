@@ -64,19 +64,28 @@
               data-state="{{.Rating}}"
               data-for="post"
             >
-            <button class="action-button like-button {{if eq .Rating 1}}active-like{{end}}" data-id={{.ID}} data-for="post">
-              <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
-            </button>
-            <button class="action-button dislike-button {{if eq .Rating -1}}active-dislike{{end}}" data-id={{.ID}} data-for="post">
-              <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
-            </button>
+              <button
+                class="icon-button like-button"
+                data-id="{{.ID}}"
+                data-for="post"
+              >
+                <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
+              </button>
+              <button
+                class="icon-button dislike-button"
+                data-id="{{.ID}}"
+                data-for="post"
+              >
+                <i class="fas fa-thumbs-down"></i>
+                <span>{{.DislikeCount}}</span>
+              </button>
               <form action="/post?id={{.ID}}" method="GET">
                 <input type="hidden" name="id" value="{{.ID}}" />
-                <button type="submit" class="action-button">
+                <button type="submit" class="icon-button">
                   <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
                 </button>
               </form>
-              <p class="action-button">
+              <p class="icon-button">
                 <span>{{.CatNames}}</span>
               </p>
             </div>
