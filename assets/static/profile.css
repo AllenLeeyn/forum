@@ -129,7 +129,7 @@ a:hover {
 }
 
 .nav-actions .new-post:hover {
-  background: var(--secondary);
+  background: var(--accent);
 }
 
 /* User Dropdown */

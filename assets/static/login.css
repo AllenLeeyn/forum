@@ -124,6 +124,14 @@ a:hover {
   font-weight: 500;
   color: var(--highlight); /* Pink */
   text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--hover);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
 }
 
 /* Right Side - Signup Form */
@@ -222,7 +230,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--secondary);
+  background-color: var(--accent);
 }
 .remember {
   display: flex;
@@ -240,13 +248,17 @@ button:hover {
 }
 
 .signUp-link a {
-  color: #1a1b3d;
-  text-decoration: none;
+  box-shadow: none;
+  color: var(--primary);
+  text-decoration: underline;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .signUp-link a:hover {
-  text-decoration: underline;
+  color: var(--secondary);
+  box-shadow: 0px 2px 0px var(--secondary);
+  transition: all 0.2s ease;
 }
 
 /* Error styling */

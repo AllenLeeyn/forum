@@ -202,13 +202,18 @@ a:hover {
 }
 
 .terms-and-conditions a {
+  box-shadow: none;
   color: var(--primary);
-  text-decoration: none;
+  text-decoration: underline;
+  transition: all 0.2s ease;
 }
 
 .terms-and-conditions a:hover {
-  text-decoration: underline;
+  color: var(--secondary);
+  box-shadow: 0px 2px 0px var(--secondary);
+  transition: all 0.2s ease;
 }
+
 
 button {
   width: 100%;
@@ -223,7 +228,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--secondary);
+  background-color: var(--accent);
 }
 
 .login-link {
@@ -232,13 +237,17 @@ button:hover {
 }
 
 .login-link a {
+  box-shadow: none;
   color: var(--primary);
-  text-decoration: none;
+  text-decoration: underline;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .login-link a:hover {
-  text-decoration: underline;
+  color: var(--secondary);
+  box-shadow: 0px 2px 0px var(--secondary);
+  transition: all 0.2s ease;
 }
 
 /* Error styling */

@@ -102,7 +102,7 @@ a {
 
 a:hover {
   text-decoration: underline;
-  color: var(--secondary);
+  color: var(--hover);
 }
 
 /* Footer with Image Section */
@@ -162,7 +162,7 @@ a:hover {
 
 .back-link:hover {
   text-decoration: underline;
-  color: var(--accent); /* Soft purple */
+  color: var(--hover);
 }
 
 /* Responsive Design */

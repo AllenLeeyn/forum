@@ -28,7 +28,6 @@
   }
   
   a:hover {
-    color: var(--accent);
     transition: color 0.2s ease;
   }
   
@@ -83,5 +82,5 @@
   }
   
   .home-button:hover {
-    background: var(--secondary);
+    background: var(--accent);
   }
