@@ -12,13 +12,13 @@
       <div class="nav-actions">
         <button class="new-post" id="new-post">New Post</button>
           {{if .SessionCookie}}
-          <a href="/profile-page">Profile</a>
-          <a href="/about">About</a>
-          <a id="logout-btn" href="javascript:void(0);" class="logout-link">Log out</a>
+          <a href="/profile-page" class="pill-button">Profile</a>
+          <a href="/about" class="pill-button">About</a>
+          <a id="logout-btn" href="javascript:void(0);" class="pill-button">Log out</a>
           {{else}}
-          <a href="/login">Log in</a>
-          <a href="/signup">Sign up</a>
-          <a href="/about">About</a>
+          <a href="/login" class="pill-button">Log in</a>
+          <a href="/signup" class="pill-button">Sign up</a>
+          <a href="/about" class="pill-button">About</a>
           {{end}}
       </div>
     </div>

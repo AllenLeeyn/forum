@@ -54,7 +54,7 @@ a:hover {
 
 .nav-actions {
   display: flex;
-  gap: 1.5rem;
+  gap: 5px;
   align-items: center;
 }
 
@@ -133,7 +133,7 @@ a:hover {
   float: right;
   background: var(--primary);
   color: var(--card-background);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   border-radius: 20px;
   font-size: 0.9rem;
   transition: background 0.3s ease;
@@ -141,4 +141,20 @@ a:hover {
 
 .modal-content .new-post:hover {
   background: var(--accent);
+}
+
+.pill-button {
+  display: inline-block;
+  padding: 0.5rem 0.5rem;
+  background-color: white;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--hover);
+  border-radius: 50px; 
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.pill-button:hover {
+  background-color: var(--hover);
 }
