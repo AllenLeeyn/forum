@@ -77,7 +77,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	}
 	postNum, err := db.InsertPost(post)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating post", http.StatusInternalServerError)
+		ExecuteError(w, "json", "Error creating post. Must select at least one category.", http.StatusInternalServerError)
 		return
 	}
 	extendSession(w, sessionCookie)
