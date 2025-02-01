@@ -13,6 +13,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	if r.Method != http.MethodGet {
 		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
 
 	// check session from cookie to get feedback data
@@ -38,6 +39,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	posts, err := db.SelectPosts(filterBy, orderBy, id, userID)
 	if err != nil {
 		ExecuteError(w, "Tmpl", "Error getting posts", http.StatusInternalServerError)
+		return
 	}
 	extendSession(w, sessionCookie)
 	ExecuteTmpl(w, "home.html",

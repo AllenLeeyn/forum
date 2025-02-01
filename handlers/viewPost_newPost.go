@@ -37,6 +37,7 @@ func ViewPost(w http.ResponseWriter, r *http.Request) {
 		ExecuteTmpl(w, "viewPost.html", postpageData{sessionCookie, *post, comments, db.Categories})
 	} else {
 		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
 }
 

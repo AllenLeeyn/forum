@@ -33,13 +33,14 @@ func main() {
 
 	http.HandleFunc("/signup", handlers.Signup)
 	http.HandleFunc("/terms", handlers.Terms)
+	http.HandleFunc("/about", handlers.About)
 
 	http.HandleFunc("/login", handlers.Login)
 	http.HandleFunc("/logout", handlers.LogOut)
-	http.HandleFunc("/profile-page", handlers.ProfilePage)
+	http.HandleFunc("/profile-page", handlers.Profile)
 
 	http.HandleFunc("/post", handlers.ViewPost)
-	http.HandleFunc("/profile", handlers.ViewProfilePage)
+	http.HandleFunc("/profile", handlers.ViewProfile)
 	http.HandleFunc("/new-post", handlers.NewPost)
 	http.HandleFunc("/add-comment", handlers.Comment)
 

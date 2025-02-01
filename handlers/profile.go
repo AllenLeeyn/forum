@@ -5,7 +5,7 @@ import (
 )
 
 // Profile page
-func ProfilePage(w http.ResponseWriter, r *http.Request) {
+func Profile(w http.ResponseWriter, r *http.Request) {
 	// check if user is logged in using session id
 	sessionCookie, userID := checkSessionValidity(w, r)
 	if userID == -1 {
@@ -17,6 +17,7 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		posts, err := db.SelectPosts("createdBy", "", userID, userID)
 		if err != nil {
 			ExecuteError(w, "Tmpl", "Error getting user posts", http.StatusInternalServerError)
+			return
 		}
 		user, err := db.SelectUserByField("id", userID)
 		if err != nil {
@@ -34,5 +35,6 @@ func ProfilePage(w http.ResponseWriter, r *http.Request) {
 		ExecuteTmpl(w, "profile.html", data)
 	} else {
 		ExecuteError(w, "Tmpl", "Invalid User Method", http.StatusMethodNotAllowed)
+		return
 	}
 }

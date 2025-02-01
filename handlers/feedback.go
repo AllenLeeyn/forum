@@ -14,6 +14,7 @@ func Feedback(w http.ResponseWriter, r *http.Request) {
 	}
 	if r.Method != http.MethodPost {
 		ExecuteError(w, "Tmpl", "Method not allowed", http.StatusMethodNotAllowed)
+		return
 	}
 
 	userFeedback := struct {
@@ -42,11 +43,13 @@ func Feedback(w http.ResponseWriter, r *http.Request) {
 			Rating:   userFeedback.Rating}
 		if err = db.InsertFeedback(userFeedback.Tgt, *fb); err != nil {
 			ExecuteError(w, "json", "Error giving feedback", http.StatusInternalServerError)
+			return
 		}
 	} else {
 		fb.Rating = userFeedback.Rating
 		if err = db.UpdateFeedback(userFeedback.Tgt, *fb); err != nil {
 			ExecuteError(w, "json", "Error giving feedback", http.StatusInternalServerError)
+			return
 		}
 	}
 	w.WriteHeader(http.StatusOK)
