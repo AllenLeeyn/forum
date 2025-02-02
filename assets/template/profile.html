@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <title>grit:hub</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/static/toastMsg.css" />
+    <link rel="stylesheet" href="/static/header.css" />
+    <link rel="stylesheet" href="/static/profile.css" />
+    <link rel="stylesheet" href="/static/postCard.css" />
+    <script src="/static/script/toastMsg.js" defer></script>
+    <script src="/static/script/header.js" defer></script>
+    <script src="/static/script/feedback.js" defer></script>
+  </head>
+  <body>
+    {{template "header" .}}
+
+    <div class="container">
+      <!-- Info Sidebar with Profile Info -->
+      <div class="info">
+        <h3>Profile</h3>
+        <ul><b>Name:</b> {{.Name}}</ul>
+        {{if .Email}}
+          <ul><b>Email:</b> {{.Email}}</ul>
+        {{end}}
+      </div>
+
+      <!-- Posts Feed -->
+      <div class="feed">
+        <section id="general">
+          {{if eq .ProfileID .ViewerID}}
+            {{if .Posts}}
+              <h2>Your Posts</h2>
+            {{else}}
+              <h2>You haven't posted anything yet :(</h2>
+            {{end}}
+          {{else}}
+            {{if .Posts}}
+              <h2>{{.Name}}'s Posts</h2>
+            {{else}}
+              <h2>{{.Name}} hasn't posted anything yet :(</h2>
+            {{end}}
+          {{end}}
+          {{range .Posts}}
+            {{template "post-card" .}}
+          {{end}}
+        </section>
+      </div>
+
+      {{template "newPostModal" .}}
+    </div>
+  </body>
+</html>

@@ -24,7 +24,6 @@ LABEL project="Forum"
 LABEL version="1.0"
 LABEL description="A web application allowing users to authenticate, create posts and add their feedback."
 COPY --from=builder /app/forum /app/forum
-COPY --from=builder /app/template/ /app/template
 COPY --from=builder /app/assets/ /app/assets
 COPY --from=builder /app/database/ /app/database
 

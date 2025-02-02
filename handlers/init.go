@@ -65,7 +65,7 @@ type PostError struct {
 // Initializes all html files in templates folder
 func Init(dbMain *dbTools.DBContainer) {
 	var err error
-	tmpl, err = template.ParseGlob("template/*.html")
+	tmpl, err = template.ParseGlob("assets/template/*.html")
 	if err != nil {
 		log.Fatalf("Error parsing templates: %v", err)
 	}

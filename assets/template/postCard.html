@@ -1,0 +1,38 @@
+{{define "post-card"}}
+
+<div class="post-card">
+    <div class="post-header">
+      <div class="post-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="post-meta">
+        <a href="/profile?id={{.UserID}}" class="post-author">{{.UserName}}</a>
+        <div class="post-time">{{.TimeAgo}}</div>
+      </div>
+    </div>
+    <div class="post-content">
+      <h3>
+        <a href="/post?id={{.ID}}">{{.Title}}</a>
+      </h3>
+      <p>{{.Content}}</p>
+    </div>
+    <div class="post-actions" data-id={{.ID}} data-state="{{.Rating}}" data-for="post">
+      <button class="icon-button like-button" data-id={{.ID}} data-for="post">
+        <i class="fas fa-thumbs-up"></i> <span>{{.LikeCount}}</span>
+      </button>
+      <button class="icon-button dislike-button" data-id={{.ID}} data-for="post">
+        <i class="fas fa-thumbs-down"></i> <span>{{.DislikeCount}}</span>
+      </button>
+      <form action="/post?id={{.ID}}" method="GET">
+        <input type="hidden" name="id" value="{{.ID}}" />
+        <button type="submit" class="icon-button">
+          <i class="fas fa-comment"></i> <span>{{.CommentCount}}</span>
+        </button>
+      </form>
+      <p class="action-button">
+        <span>{{.CatNames}}</span>
+      </p>
+    </div>
+  </div>
+
+{{end}}

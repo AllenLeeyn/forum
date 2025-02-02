@@ -4,13 +4,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
     <title>grit:hub</title>
-    <link rel="stylesheet" href="/static/viewPost.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link rel="stylesheet" href="/static/toastMsg.css" />
+    <link rel="stylesheet" href="/static/header.css" />
+    <link rel="stylesheet" href="/static/viewPost.css" />
+    <link rel="stylesheet" href="/static/postCard.css" />
+    <script src="/static/script/toastMsg.js" defer></script>
+    <script src="/static/script/header.js" defer></script>
     <script src="/static/script/feedback.js" defer></script>
     <script src="/static/script/submitComment.js" defer></script>
   </head>
@@ -19,40 +24,7 @@
     {{template "header" .}}
 
     <div class="content">
-      <div class="post-card">
-        <div class="post-header">
-          <div class="post-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="post-meta">
-            <a href="/profile?id={{.Post.UserID}}" class="post-author">{{.Post.UserName}}</a>
-            <div class="post-time">{{.Post.TimeAgo}}</div>
-          </div>
-        </div>
-        <div class="post-content">
-          <h3>
-            <a href="/post?id={{.Post.ID}}">{{.Post.Title}}</a>
-          </h3>
-          <p>{{.Post.Content}}</p>
-        </div>
-        <div class="post-actions" data-id={{.Post.ID}} data-state="{{.Post.Rating}}" data-for="post">
-          <button class="icon-button like-button" data-id={{.Post.ID}} data-for="post">
-            <i class="fas fa-thumbs-up"></i> <span>{{.Post.LikeCount}}</span>
-          </button>
-          <button class="icon-button dislike-button" data-id={{.Post.ID}} data-for="post">
-            <i class="fas fa-thumbs-down"></i> <span>{{.Post.DislikeCount}}</span>
-          </button>
-          <form action="/post?id={{.Post.ID}}" method="GET">
-            <input type="hidden" name="id" value="{{.Post.ID}}" />
-            <button type="submit" class="icon-button">
-              <i class="fas fa-comment"></i> <span>{{.Post.CommentCount}}</span>
-            </button>
-          </form>
-          <p class="action-button">
-            <span>{{.Post.CatNames}}</span>
-          </p>
-        </div>
-      </div>
+      {{template "post-card" .Post}}
 
       <div id="comment-form">
         <textarea id="comment-input" placeholder="Write your comment here..." rows="3"></textarea>
