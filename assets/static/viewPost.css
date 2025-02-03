@@ -77,24 +77,6 @@ a:hover {
   background: var(--accent);
 }
 
-.comment-block {
-  margin-top: 2rem;
-  background: var(--card-background);
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.comment-block h5 {
-  font-size: 0.9rem;
-  color: var(--text-light);
-}
-
-.comment-body {
-  color: var(--text);
-  margin-bottom: 1rem;
-}
-
 @media (max-width: 1024px) {
   .content {
     margin-top: 80px;

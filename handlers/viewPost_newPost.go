@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"forum/dbTools"
+	"html"
 	"net/http"
 	"strconv"
 )
@@ -77,7 +78,8 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	}
 	postNum, err := db.InsertPost(post)
 	if err != nil {
-		ExecuteError(w, "json", "Error creating post. Must select at least one category.", http.StatusInternalServerError)
+		ExecuteError(w, "json", "Error creating post. Must select at least one category.",
+			http.StatusInternalServerError)
 		return
 	}
 	extendSession(w, sessionCookie)
@@ -108,14 +110,15 @@ func CheckPostValidity(input string, dataType string) (bool, string) {
 }
 
 // Gets and parses data from front end post
-func GetData(w http.ResponseWriter, r *http.Request) (title string, content string, categoriesInt []int, err error) {
-	err = r.ParseMultipartForm(10 << 20)
+func GetData(w http.ResponseWriter, r *http.Request) (string, string, []int, error) {
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		return "", "", nil, fmt.Errorf("error parsing form data")
 	}
-	title = r.FormValue("threadTitle")
-	content = r.FormValue("threadContent")
+	title := html.EscapeString(r.FormValue("threadTitle"))
+	content := html.EscapeString(r.FormValue("threadContent"))
 	categoriesStr := r.Form["category"]
+	categoriesInt := []int{}
 	for _, value := range categoriesStr {
 		intVal, err := strconv.Atoi(value)
 		if err != nil {

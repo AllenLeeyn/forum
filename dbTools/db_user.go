@@ -1,6 +1,11 @@
 package dbTools
 
+import "fmt"
+
 func (db *DBContainer) SelectUserByField(fieldName string, fieldValue interface{}) (*User, error) {
+	if fieldName != "id" && fieldName != "name" && fieldName != "email" {
+		return nil, fmt.Errorf("invalid field")
+	}
 	qry := `SELECT * FROM users WHERE ` + fieldName + ` = ?`
 	var u User
 	err := db.conn.QueryRow(qry, fieldValue).Scan(

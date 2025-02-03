@@ -44,6 +44,11 @@
     color: var(--text);
 }
 
+.post-content pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 .post-content h3 {
     margin-bottom: 0.5rem;
 }

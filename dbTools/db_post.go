@@ -102,11 +102,7 @@ func (db *DBContainer) SelectPosts(filterBy, orderBy string, id, userID int) ([]
 		if len(p.Content) > 50 {
 			p.Content = p.Content[:50] + "..."
 		}
-		if rating.Valid {
-			p.Rating = int(rating.Int64)
-		} else {
-			p.Rating = 0
-		}
+		p.Rating = int(rating.Int64)
 		p.TimeAgo = getTimeAgo(p.CreatedAt)
 		posts = append(posts, p)
 	}
@@ -146,11 +142,7 @@ func (db *DBContainer) SelectPost(id, userID int) (*Post, error) {
 	if err != nil {
 		return nil, err
 	}
-	if rating.Valid {
-		p.Rating = int(rating.Int64)
-	} else {
-		p.Rating = 0
-	}
+	p.Rating = int(rating.Int64)
 	p.TimeAgo = getTimeAgo(p.CreatedAt)
 	return &p, err
 }
@@ -162,14 +154,8 @@ func (db *DBContainer) InsertPost(p Post) (int, error) {
 		return -1, err
 	}
 	qry := `INSERT INTO posts 
-			(user_id, title, content, created_at)
-			VALUES (?, ?, ?, ?)`
-
-	if p.CreatedAt.IsZero() {
-		qry = `INSERT INTO posts 
 			(user_id, title, content)
 			VALUES (?, ?, ?)`
-	}
 
 	res, err := db.conn.Exec(qry,
 		p.UserID,

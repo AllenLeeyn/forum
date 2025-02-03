@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"html"
 	"io"
 	"net/http"
 	"strconv"
@@ -29,6 +30,9 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(body, &s); err != nil {
 		ExecuteError(w, "json", "Error reading json", http.StatusInternalServerError)
 		return
+	} else if bodyIsValid, bodyErr := CheckPostValidity(s.Comment, "postContent"); !bodyIsValid {
+		ExecuteError(w, "json", bodyErr, http.StatusInternalServerError)
+		return
 	}
 
 	postId := r.URL.Query().Get("postId")
@@ -52,7 +56,7 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	c := comment{
 		UserID:   userID,
 		PostID:   pId,
-		Content:  s.Comment,
+		Content:  html.EscapeString(s.Comment),
 		UserName: user.Name}
 
 	if err := db.InsertComment(c); err != nil {

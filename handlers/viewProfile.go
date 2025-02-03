@@ -7,7 +7,6 @@ import (
 
 // Profile page
 func ViewProfile(w http.ResponseWriter, r *http.Request) {
-	var viewer int
 	var data profilepageData
 	if r.Method == http.MethodGet {
 		idStr := r.URL.Query().Get("id")
@@ -17,7 +16,7 @@ func ViewProfile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		user, err := db.SelectUserByField("id", id)
-		if err != nil {
+		if err != nil || user == nil {
 			ExecuteError(w, "Tmpl", "Error getting user details", http.StatusInternalServerError)
 			return
 		}
@@ -25,34 +24,23 @@ func ViewProfile(w http.ResponseWriter, r *http.Request) {
 		if sessionCookie != nil {
 			extendSession(w, sessionCookie)
 		}
-		if userID != -1 {
-			viewer = userID
-		} else {
-			viewer = -1
-		}
-		posts, err := db.SelectPosts("createdBy", "", id, viewer)
+		posts, err := db.SelectPosts("createdBy", "", id, userID)
 		if err != nil {
 			ExecuteError(w, "Tmpl", "Error getting user posts", http.StatusInternalServerError)
 			return
 		}
-		if viewer == id {
-			data = profilepageData{
-				ProfileID:     id,
-				ViewerID:      viewer,
-				Name:          user.Name,
-				Email:         user.Email,
-				Posts:         posts,
-				SessionCookie: sessionCookie,
-				Categories:    db.Categories,
-			}
-		} else {
-			data = profilepageData{
-				ProfileID:  id,
-				ViewerID:   viewer,
-				Name:       user.Name,
-				Posts:      posts,
-				Categories: db.Categories,
-			}
+		data = profilepageData{
+			ProfileID:     id,
+			ViewerID:      userID,
+			Name:          user.Name,
+			Email:         user.Email,
+			Posts:         posts,
+			SessionCookie: sessionCookie,
+			Categories:    db.Categories,
+		}
+		if userID == id {
+			data.Email = user.Email
+			data.SessionCookie = sessionCookie
 		}
 		ExecuteTmpl(w, "profile.html", data)
 	} else {

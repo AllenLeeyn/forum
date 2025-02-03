@@ -54,86 +54,6 @@ a:hover {
   margin-bottom: 5px;
 }
 
-/* Navbar */
-.navbar {
-  background: var(--card-background);
-  padding: 1rem;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.nav-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-actions {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.nav-actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: var(--text-light);
-}
-
-.nav-actions .new-post {
-  background: var(--primary);
-  color: var(--card-background);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  transition: background 0.3s ease;
-}
-
-.nav-actions .new-post:hover {
-  background: var(--accent);
-}
-
-/* User Dropdown */
-.user-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  background: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  min-width: 120px;
-}
-
-.dropdown-content a {
-  color: var(--text);
-  padding: 0.8rem 1rem;
-  text-decoration: none;
-  display: block;
-  font-size: 0.9rem;
-  transition: background 0.3s ease;
-}
-
-.dropdown-content a:hover {
-  background: var(--hover);
-}
-
-.user-dropdown:hover .dropdown-content {
-  display: block;
-}
-
 /* Main Layout */
 .container {
   max-width: 1200px;
@@ -142,37 +62,6 @@ a:hover {
   display: grid;
   grid-template-columns: 240px 1fr 300px;
   gap: 2rem;
-}
-
-/* Categories Sidebar */
-.categories {
-  position: sticky;
-  top: 90px;
-  height: calc(100vh - 100px);
-  overflow-y: auto;
-  padding-right: 1rem;
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-  color: var(--text);
-}
-
-.category-item:hover {
-  background: var(--highlight);
-  color: var(--card-background);
-}
-
-.category-item i {
-  margin-right: 1rem;
-  font-size: 1.2rem;
-  color: var(--primary);
 }
 
 /* Mobile Responsiveness */

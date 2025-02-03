@@ -47,5 +47,6 @@ func main() {
 	http.HandleFunc("/feedback", handlers.Feedback)
 
 	fmt.Println("Starting Forum on http://localhost:8080/...")
-	http.ListenAndServe(":8080", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
+	db.Close()
 }

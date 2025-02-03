@@ -69,7 +69,7 @@ func (db *DBContainer) isValidCategories(categories []int) error {
 		return fmt.Errorf("no categories")
 	}
 	for _, catID := range categories {
-		if catID > len(db.Categories) {
+		if catID > len(db.Categories) || catID < 0 {
 			return fmt.Errorf("invalid category")
 		}
 	}
@@ -100,6 +100,10 @@ func getTimeAgo(createdAt time.Time) string {
 	default:
 		return fmt.Sprintf("%d year(s) ago", int(timeDiff/year))
 	}
+}
+
+func (db *DBContainer) Close() {
+	db.conn.Close()
 }
 
 // db.deleteAllusers() for testing purposes

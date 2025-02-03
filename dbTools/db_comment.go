@@ -46,11 +46,7 @@ func (db *DBContainer) SelectComments(id, userID int, orderBy string) ([]Comment
 		if err != nil {
 			return nil, err
 		}
-		if rating.Valid {
-			c.Rating = int(rating.Int64)
-		} else {
-			c.Rating = 0
-		}
+		c.Rating = int(rating.Int64)
 		c.TimeAgo = getTimeAgo(c.CreatedAt)
 		comments = append(comments, c)
 	}
